@@ -5238,11 +5238,11 @@ export default function App() {
           style={{ transition: 'filter 0.3s ease' }}
         >
         {/* ===== LEFT NAVIGATION BAR ===== */}
-        <div className="w-16 border-r flex flex-col items-center py-4 justify-between z-30 flex-shrink-0 bg-[#090D16] border-[#1F2C34]">
-          <div className="flex flex-col items-center gap-3">
+        <div className="w-16 border-r flex flex-col items-center py-4 justify-between z-30 flex-shrink-0 bg-[#090D16]/90 backdrop-blur-md border-[#1F2C34]/50">
+          <div className="flex flex-col items-center gap-2.5">
             <button
               onClick={() => setActiveTab('chats')}
-              className={`p-3 rounded-xl transition ${activeTab === 'chats' ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white shadow-lg' : 'text-[#8696A0] hover:bg-[#111B21]'}`}
+              className={`p-2.5 rounded-2xl transition-all duration-200 ${activeTab === 'chats' ? 'bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-rose-500/20 text-indigo-400 border border-indigo-500/30 shadow-lg shadow-indigo-500/20' : 'text-[#8696A0] hover:bg-[#111B21]/50 hover:text-white hover:border-transparent'}`}
               title="Chats"
             >
               <MessageSquare className="w-5 h-5" />
@@ -5250,7 +5250,7 @@ export default function App() {
 
             <button
               onClick={() => setShowSpatialAudio(true)}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-cyan-400 transition"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-cyan-400 transition-all duration-200"
               title="Spatial Audio Spaces"
             >
               <Radio className="w-5 h-5" />
@@ -5258,7 +5258,7 @@ export default function App() {
 
             <button
               onClick={() => setShowWorkflowModal(true)}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-emerald-400 transition"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-emerald-400 transition-all duration-200"
               title="AI Automation Recipes"
             >
               <Workflow className="w-5 h-5" />
@@ -5266,7 +5266,7 @@ export default function App() {
 
             <button
               onClick={() => setShowStories(true)}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-white transition"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-white transition-all duration-200"
               title="Status"
             >
               <Layout className="w-5 h-5" />
@@ -5274,7 +5274,7 @@ export default function App() {
 
             <button
               onClick={() => setShowCommandPalette(true)}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-indigo-400 transition"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-indigo-400 transition-all duration-200"
               title="Smart Command Palette (Cmd+K)"
             >
               <Command className="w-5 h-5" />
@@ -5282,7 +5282,7 @@ export default function App() {
 
             <button
               onClick={() => setShowTokenGateModal(true)}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-yellow-400 transition"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-yellow-400 transition-all duration-200"
               title="Token-Gated Channels"
             >
               <Coins className="w-5 h-5" />
@@ -5290,7 +5290,7 @@ export default function App() {
 
             <button
               onClick={() => setShowGameVault(true)}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-emerald-400 transition relative"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-emerald-400 transition-all duration-200 relative"
               title="50-Game Arcade Vault"
             >
               <Gamepad2 className="w-5 h-5" />
@@ -5299,7 +5299,7 @@ export default function App() {
 
             <button
               onClick={() => { setActiveTab('calls'); setShowCallLog(true); setCallFilter('all'); }}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-[#00a884] transition relative"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-[#00a884] transition-all duration-200 relative"
               title="Call Logs"
             >
               <Phone className="w-5 h-5" />
@@ -5310,7 +5310,7 @@ export default function App() {
 
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className={`p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-gray-300 transition ${showSettings ? 'text-white' : ''}`}
+              className={`p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-gray-300 transition-all duration-200 ${showSettings ? 'text-white' : ''}`}
               title="Settings"
             >
               <Settings className="w-5 h-5" />
@@ -5324,17 +5324,17 @@ export default function App() {
                 setShowAuthScreen(false);
                 window.location.reload();
               }}
-              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#1F2C34] hover:text-red-400 transition"
+              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#1F2C34]/50 hover:text-red-400 transition-all duration-200"
               title="Sign Out"
             >
               <LogOut className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2.5">
             <button
               onClick={() => setQuantumEncryptionActive(!quantumEncryptionActive)}
-              className={`p-2 rounded-xl transition ${quantumEncryptionActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-yellow-500/20 text-yellow-400'}`}
+              className={`p-2 rounded-xl transition-all duration-200 ${quantumEncryptionActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-yellow-500/20 text-yellow-400'}`}
               title={quantumEncryptionActive ? 'Quantum-Resistant Encryption Active' : 'Standard Encryption'}
             >
               <Shield className="w-4 h-4" />
@@ -5342,7 +5342,7 @@ export default function App() {
 
             <button
               onClick={() => setMonochromeMode(!monochromeMode)}
-              className={`p-2 rounded-xl transition ${monochromeMode ? 'bg-white text-black' : 'bg-[#111B21] text-gray-400'}`}
+              className={`p-2 rounded-xl transition-all duration-200 ${monochromeMode ? 'bg-white text-black' : 'bg-[#111B21] text-gray-400'}`}
               title="Monochrome E-Ink Mode Toggle"
             >
               <Moon className="w-4 h-4" />
@@ -5639,13 +5639,13 @@ export default function App() {
                 )}
 
                 {/* Attachment + Input Row */}
-                <div className="flex items-end gap-2 bg-[#111B21] rounded-xl p-2 border border-[#2A3942] shadow-lg">
+                <div className="flex items-end gap-2 bg-[#111B21]/80 backdrop-blur-md rounded-2xl p-2 border border-[#2A3942]/50 shadow-xl">
                   {/* Attachment Button (+) */}
                   <button
                     onClick={() => setShowAttachMenu(!showAttachMenu)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-emerald-400 hover:bg-[#2A3942] transition border border-transparent hover:border-[#3A4952]"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-emerald-400 hover:bg-[#2A3942] transition-all duration-200 border border-transparent hover:border-emerald-500/30"
                   >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-4 h-4" />
                   </button>
 
                   {/* Text Input */}
@@ -5665,27 +5665,32 @@ export default function App() {
                           ? 'Ask the AI... or type @ai in any chat'
                           : 'Message...'
                       }
-                      className="w-full bg-transparent text-sm text-[#E9EDEF] px-3 py-2.5 focus:outline-none placeholder-[#6B7280] max-h-[200px]"
-                      style={{ maxHeight: '200px', overflowY: 'auto' }}
+                      className="w-full bg-transparent text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none pr-4"
                     />
                     {currentConv?.is_ai && (
                       <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-600 bg-[#111B21] px-1">
                         @ai
                       </div>
                     )}
+                    <div className="absolute inset-y-0 right-2 flex items-center gap-1.5">
+                      <button
+                        onClick={() => setShowAttachMenu(!showAttachMenu)}
+                        className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-[#2A3942] transition-all"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={handleSendMessage}
+                        disabled={!inputText.trim() && attachments.length === 0}
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200 ${inputText.trim() || attachments.length > 0 ? 'bg-gradient-to-r from-indigo-500 to-rose-500 text-white shadow-lg shadow-indigo-500/30' : 'bg-zinc-800/50 text-zinc-500 hover:bg-zinc-700'}`}
+                      >
+                        <Send className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Send Button */}
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!inputText.trim()}
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center text-white transition-all duration-200 ${!inputText.trim() ? 'opacity-30 cursor-not-allowed bg-[#2A3942] border border-[#3A4952]' : 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] shadow-[0_0_15px_rgba(131,58,180,0.5)] hover:shadow-[0_0_25px_rgba(131,58,180,0.8)] border border-transparent hover:scale-105'}`}
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
                 </div>
 
-                {/* Attachment Menu (Instagram-style) */}
+                {/* Attachment Menu */}
                 {showAttachMenu && (
                   <div className="absolute bottom-[75px] left-4 w-64 bg-[#111B21] rounded-2xl border border-[#2A3942] shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
                     <div className="grid grid-cols-4 gap-2 text-center">
