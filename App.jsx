@@ -20,17 +20,32 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY_HERE';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
 // ============================================================
-// LOCALSTORAGE KEYS
+// ACCOUNT SESSION & PER-USER STORAGE SCOPE
 // ============================================================
-const LS_CONVERSATIONS = 'whatsgram_conversations';
-const LS_MESSAGES = 'whatsgram_messages';
-const LS_CUSTOM_BOTS = 'whatsgram_custom_bots';
-const LS_ARCADE_SCORES = 'whatsgram_arcade_scores';
-const LS_IDENTITY_PROFILES = 'whatsgram_identity_profiles';
-const LS_ACTIVE_PROFILE = 'whatsgram_active_profile';
-const LS_USER_ID = 'whatsgram_user_id';
-const LS_MONOCHROME = 'whatsgram_monochrome';
-const LS_QUANTUM = 'whatsgram_quantum';
+const readSession = () => {
+  try {
+    const raw = localStorage.getItem('whatsgram_session');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+};
+const ACTIVE_SESSION = readSession();
+const ACTIVE_USER_ID = ACTIVE_SESSION && ACTIVE_SESSION.userId ? ACTIVE_SESSION.userId : null;
+// All app data is namespaced by the signed-in account so two accounts never
+// share the same conversations, bots, scores, profiles, or settings.
+const SCOPE = ACTIVE_USER_ID ? `whatsgram:${ACTIVE_USER_ID}:` : 'whatsgram:guest:';
+
+// ============================================================
+// LOCALSTORAGE KEYS (scoped per account)
+// ============================================================
+const LS_CONVERSATIONS = `${SCOPE}conversations`;
+const LS_MESSAGES = `${SCOPE}messages`;
+const LS_CUSTOM_BOTS = `${SCOPE}custom_bots`;
+const LS_ARCADE_SCORES = `${SCOPE}arcade_scores`;
+const LS_IDENTITY_PROFILES = `${SCOPE}identity_profiles`;
+const LS_ACTIVE_PROFILE = `${SCOPE}active_profile`;
+const LS_USER_ID = `${SCOPE}user_id`;
+const LS_MONOCHROME = `${SCOPE}monochrome`;
+const LS_QUANTUM = `${SCOPE}quantum`;
 
 // ============================================================
 // HELPERS
@@ -55,7 +70,13 @@ const nowISO = () => new Date().toISOString();
 let supabase = null;
 try { supabase = getSupabase(); } catch { /* Supabase not configured — localStorage only */ }
 
-const supabaseReady = () => supabase && typeof window !== 'undefined';
+// Supabase cloud sync is intentionally disabled for the local-account system.
+// The remote schema is keyed by Supabase Auth UUIDs, while these accounts use
+// client-generated ids. Enabling it without per-user scoping would merge every
+// account's data. Flip to true only after wiring Supabase Auth + RLS per user.
+const REMOTE_SYNC_ENABLED = false;
+
+const supabaseReady = () => REMOTE_SYNC_ENABLED && supabase && typeof window !== 'undefined';
 
 const sbUpsert = async (table, row) => {
   if (!supabaseReady()) return;
@@ -3652,7 +3673,16 @@ export default function App() {
   const [messages, setMessages] = useState(() => safeJson(LS_MESSAGES, INITIAL_MESSAGES));
   const [customBots, setCustomBots] = useState(() => safeJson(LS_CUSTOM_BOTS, []));
   const [arcadeScores, setArcadeScores] = useState(() => safeJson(LS_ARCADE_SCORES, {}));
-  const [identityProfiles, setIdentityProfiles] = useState(() => safeJson(LS_IDENTITY_PROFILES, DEFAULT_PROFILES));
+  const [identityProfiles, setIdentityProfiles] = useState(() => {
+    const stored = safeJson(LS_IDENTITY_PROFILES, null);
+    if (Array.isArray(stored) && stored.length > 0) return stored;
+    // First load for this account: personalize the default profile.
+    const base = DEFAULT_PROFILES.map((p) => ({ ...p }));
+    if (ACTIVE_SESSION && ACTIVE_SESSION.username) {
+      base[0] = { ...base[0], name: ACTIVE_SESSION.username };
+    }
+    return base;
+  });
   const [activeProfileId, setActiveProfileId] = useState(() => safeJson(LS_ACTIVE_PROFILE, 'prof_me'));
   const [userId, setUserId] = useState(() => safeJson(LS_USER_ID, `usr_${Date.now()}`));
   const [monochromeMode, setMonochromeMode] = useState(() => safeJson(LS_MONOCHROME, false));
@@ -3672,15 +3702,19 @@ export default function App() {
   const [botFatherState, setBotFatherState] = useState('idle');
   const [newBotData, setNewBotData] = useState({ name: '', username: '' });
   const [showSettings, setShowSettings] = useState(false);
-  const [recipeActive, setRecipeActive] = useState(() => safeJson('whatsgram_recipe_active', { pdf: true, voice: true }));
+  const [recipeActive, setRecipeActive] = useState(() => safeJson(`${SCOPE}recipe_active`, { pdf: true, voice: true }));
   const [editingProfileId, setEditingProfileId] = useState(null);
   const [profileDraft, setProfileDraft] = useState(null);
   const [aiTyping, setAiTyping] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [showStories, setShowStories] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => safeJson('whatsgram_authenticated', false));
-  const [user, setUser] = useState(() => safeJson('whatsgram_user', null));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!ACTIVE_USER_ID);
+  const [user, setUser] = useState(() => (
+    ACTIVE_SESSION
+      ? { id: ACTIVE_SESSION.userId, username: ACTIVE_SESSION.username, email: ACTIVE_SESSION.email }
+      : null
+  ));
   const [showAuthScreen, setShowAuthScreen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
@@ -3719,9 +3753,14 @@ export default function App() {
   useEffect(() => { safeSet(LS_USER_ID, userId); }, [userId]);
   useEffect(() => { safeSet(LS_MONOCHROME, monochromeMode); }, [monochromeMode]);
   useEffect(() => { safeSet(LS_QUANTUM, quantumEncryptionActive); }, [quantumEncryptionActive]);
-  useEffect(() => { safeSet('whatsgram_recipe_active', recipeActive); }, [recipeActive]);
-  useEffect(() => { safeSet('whatsgram_authenticated', isAuthenticated); }, [isAuthenticated]);
-  useEffect(() => { safeSet('whatsgram_user', user); }, [user]);
+  useEffect(() => { safeSet(`${SCOPE}recipe_active`, recipeActive); }, [recipeActive]);
+  // Clean up auth keys written by the previous (non-account) auth system.
+  useEffect(() => {
+    try {
+      localStorage.removeItem('whatsgram_authenticated');
+      localStorage.removeItem('whatsgram_user');
+    } catch { /* ignore */ }
+  }, []);
 
   // Load initial data from Supabase on mount (falls back to localStorage)
   useEffect(() => {
@@ -4028,14 +4067,31 @@ export default function App() {
     // BotFather flow
     if (currentConv?.is_bot && currentConv.id === 'conv_botfather') {
       setTimeout(() => {
-        let reply = "I didn't understand that command. Try /newbot, /mybots, /help, or /token";
-        if (text === '/newbot') {
+        const lower = text.trim().toLowerCase();
+        const [cmd, ...args] = lower.split(/\s+/);
+        const argText = args.join(' ');
+        let reply = "I didn't understand that command. Send /help for a list of commands.";
+
+        // ===== BotFather management commands =====
+        if (cmd === '/help') {
+          reply = "Available BotFather commands:\n" +
+            "/newbot - Create a new bot\n" +
+            "/mybots - List your bots\n" +
+            "/setname <bot> <name> - Change a bot's name\n" +
+            "/setusername <bot> <name> - Change a bot's username\n" +
+            "/setabout <bot> <text> - Set a bot's description\n" +
+            "/setcommands <bot> <cmds> - Set bot commands list\n" +
+            "/deletebot <bot> - Delete a bot\n" +
+            "/revoke <bot> - Regenerate a bot's token\n" +
+            "/token <bot> - Show a bot's token\n" +
+            "/help - Show this help";
+        } else if (cmd === '/newbot') {
           setBotFatherState('awaiting_name');
           reply = 'Alright, a new bot. How are we going to call it? Please choose a name for your bot.';
         } else if (botFatherState === 'awaiting_name') {
-          setNewBotData({ name: text, username: '' });
+          setNewBotData({ name: argText || text, username: '' });
           setBotFatherState('awaiting_username');
-          reply = `Good. Now choose a username for your bot. It must end in '_bot'. (e.g. ${slug(text)}_bot)`;
+          reply = `Good. Now choose a username for your bot. It must end in '_bot'. (e.g. ${slug(argText || text)}_bot)`;
         } else if (botFatherState === 'awaiting_username') {
           const username = text.endsWith('_bot') ? text : `${text}_bot`;
           const botId = `bot_${Date.now()}`;
@@ -4044,6 +4100,8 @@ export default function App() {
             name: newBotData.name || 'My Bot',
             username,
             token: `token_${Math.random().toString(36).slice(2, 14)}`,
+            about: '',
+            commands: '',
             created_at: nowISO()
           };
           setCustomBots((prev) => [...prev, newBot]);
@@ -4066,12 +4124,106 @@ export default function App() {
           setConversations((prev) => [newConv, ...prev]);
           setBotFatherState('idle');
           reply = `Success! Generated bot: @${username}\nHTTP API Token: ${newBot.token}\nSend /help to manage commands.`;
-        } else if (text === '/mybots') {
-          reply = customBots.length === 0 ? "You have no custom bots yet. Send /newbot to create one!" : `Your bots:\n${customBots.map((b) => `- ${b.name} (@${b.username})`).join('\n')}`;
-        } else if (text === '/help') {
-          reply = "Available BotFather commands:\n/newbot - Create new bot\n/mybots - List your bots\n/token - Revoke a token\n/help - Show this help";
-        } else if (text === '/token') {
-          reply = "Token management coming soon. For now your bot token is shown after creation.";
+        } else if (cmd === '/mybots') {
+          if (customBots.length === 0) {
+            reply = "You have no custom bots yet. Send /newbot to create one!";
+          } else {
+            const lines = customBots.map((b) =>
+              `- ${b.name} (@${b.username})\n   Token: ${b.token}\n   About: ${b.about || '(none)'}\n   Commands: ${b.commands || '(none)'}`
+            );
+            reply = `Your bots:\n${lines.join('\n\n')}`;
+          }
+        } else if (cmd === '/setname') {
+          const [botName, ...newNameParts] = args;
+          const newName = newNameParts.join(' ');
+          if (!botName || !newName) {
+            reply = 'Usage: /setname <bot username or name> <new name>';
+          } else {
+            const bot = customBots.find((b) => b.username === botName || b.name === botName);
+            if (!bot) {
+              reply = `Bot "${botName}" not found. Send /mybots to list your bots.`;
+            } else {
+              setCustomBots((prev) => prev.map((b) => b.id === bot.id ? { ...b, name: newName } : b));
+              reply = `Name updated. Your bot @${bot.username} is now called "${newName}".`;
+            }
+          }
+        } else if (cmd === '/setusername') {
+          const [botName, ...newUserParts] = args;
+          const newUsername = newUserParts.join(' ').endsWith('_bot') ? newUserParts.join(' ') : `${newUserParts.join(' ')}_bot`;
+          if (!botName || !newUserParts.join(' ')) {
+            reply = 'Usage: /setusername <bot username or name> <new username>';
+          } else {
+            const bot = customBots.find((b) => b.username === botName || b.name === botName);
+            if (!bot) {
+              reply = `Bot "${botName}" not found. Send /mybots to list your bots.`;
+            } else if (customBots.some((b) => b.username === newUsername && b.id !== bot.id)) {
+              reply = `Username ${newUsername} is already taken.`;
+            } else {
+              setCustomBots((prev) => prev.map((b) => b.id === bot.id ? { ...b, username: newUsername } : b));
+              reply = `Username updated. Your bot is now @${newUsername}.`;
+            }
+          }
+        } else if (cmd === '/setabout') {
+          const [botName, ...aboutParts] = args;
+          const aboutText = aboutParts.join(' ');
+          if (!botName || !aboutText) {
+            reply = 'Usage: /setabout <bot username or name> <description>';
+          } else {
+            const bot = customBots.find((b) => b.username === botName || b.name === botName);
+            if (!bot) {
+              reply = `Bot "${botName}" not found. Send /mybots to list your bots.`;
+            } else {
+              setCustomBots((prev) => prev.map((b) => b.id === bot.id ? { ...b, about: aboutText } : b));
+              reply = `About updated for @${bot.username}.`;
+            }
+          }
+        } else if (cmd === '/setcommands') {
+          const [botName, ...cmdParts] = args;
+          const cmdsText = cmdParts.join(' ');
+          if (!botName || !cmdsText) {
+            reply = 'Usage: /setcommands <bot username or name> <commands>';
+          } else {
+            const bot = customBots.find((b) => b.username === botName || b.name === botName);
+            if (!bot) {
+              reply = `Bot "${botName}" not found. Send /mybots to list your bots.`;
+            } else {
+              setCustomBots((prev) => prev.map((b) => b.id === bot.id ? { ...b, commands: cmdsText } : b));
+              reply = `Commands set for @${bot.username}: ${cmdsText}`;
+            }
+          }
+        } else if (cmd === '/deletebot') {
+          const botName = args[0];
+          if (!botName) {
+            reply = 'Usage: /deletebot <bot username or name>';
+          } else {
+            const bot = customBots.find((b) => b.username === botName || b.name === botName);
+            if (!bot) {
+              reply = `Bot "${botName}" not found. Send /mybots to list your bots.`;
+            } else {
+              setCustomBots((prev) => prev.filter((b) => b.id !== bot.id));
+              setConversations((prev) => prev.filter((c) => c.id !== `conv_${bot.id}`));
+              if (activeConversationId === `conv_${bot.id}`) {
+                setActiveConversationId('conv_ai');
+              }
+              reply = `Bot @${bot.username} deleted.`;
+            }
+          }
+        } else if (cmd === '/revoke' || cmd === '/token') {
+          const botName = args[0];
+          if (!botName) {
+            reply = 'Usage: /revoke <bot username or name> (or /token to show)';
+          } else {
+            const bot = customBots.find((b) => b.username === botName || b.name === botName);
+            if (!bot) {
+              reply = `Bot "${botName}" not found. Send /mybots to list your bots.`;
+            } else if (cmd === '/revoke') {
+              const newToken = `token_${Math.random().toString(36).slice(2, 14)}`;
+              setCustomBots((prev) => prev.map((b) => b.id === bot.id ? { ...b, token: newToken } : b));
+              reply = `Token revoked and regenerated for @${bot.username}:\n${newToken}`;
+            } else {
+              reply = `Token for @${bot.username}:\n${bot.token}`;
+            }
+          }
         }
 
         setMessages((prev) => ({
@@ -4089,16 +4241,68 @@ export default function App() {
     if (currentConv?.is_bot && currentConv.id !== 'conv_botfather') {
       const bot = customBots.find((b) => `conv_${b.id}` === currentConv.id);
       setTimeout(() => {
-        let reply = `I received your message: "${text}". Use /help for commands.`;
-        if (text === '/help') {
-          reply = `I'm ${bot?.name || 'a bot'} (@${bot?.username}). Commands: /echo <text>, /info, /ping`;
-        } else if (text === '/ping') {
+        const lower = text.trim().toLowerCase();
+        const [cmd, ...args] = lower.split(/\s+/);
+        const argText = args.join(' ');
+        let reply = `I received your message: "${text}". Send /help for commands.`;
+
+        if (cmd === '/help') {
+          const botCmds = bot?.commands ? `\nCustom commands: ${bot.commands}` : '';
+          reply = `I'm ${bot?.name || 'a bot'} (@${bot?.username}). Built-in commands:\n/echo <text> - Repeat your text\n/ping - Check if bot is online\n/info - Show bot details\n/time - Current time\n/date - Current date\n/calc <expr> - Simple calculator\n/roll <sides> - Roll a die\n/flip - Coin flip\n/quote - Random quote\n/joke - Random joke${botCmds}`;
+        } else if (cmd === '/ping') {
           reply = '🏓 Pong! Bot is online.';
-        } else if (text.startsWith('/echo ')) {
-          reply = text.slice(6);
-        } else if (text === '/info') {
-          reply = `Bot: ${bot?.name}\nUsername: @${bot?.username}\nToken: ${bot?.token}`;
+        } else if (cmd === '/info') {
+          reply = `Bot: ${bot?.name}\nUsername: @${bot?.username}\nToken: ${bot?.token}\nAbout: ${bot?.about || '(none)'}\nCommands: ${bot?.commands || '(none)'}`;
+        } else if (cmd === '/echo') {
+          reply = argText || 'Usage: /echo <text>';
+        } else if (cmd === '/time') {
+          reply = `Current time: ${new Date().toLocaleTimeString()}`;
+        } else if (cmd === '/date') {
+          reply = `Today: ${new Date().toLocaleDateString()}`;
+        } else if (cmd === '/calc') {
+          try {
+            // Safe-ish math: only allow digits, operators, parens, spaces, dots
+            if (!/^[\d\s\+\-\*\/\(\)\.]+$/.test(argText)) throw new Error('unsafe');
+            const result = new Function('return ' + argText)();
+            reply = `${argText} = ${result}`;
+          } catch {
+            reply = 'Usage: /calc <expression> (e.g. /calc 2 + 2 * 3)';
+          }
+        } else if (cmd === '/roll') {
+          const sides = parseInt(args[0], 10) || 6;
+          const roll = Math.floor(Math.random() * Math.max(1, sides)) + 1;
+          reply = `🎲 You rolled a ${roll} (1-${sides}).`;
+        } else if (cmd === '/flip') {
+          reply = Math.random() < 0.5 ? '🪙 Heads!' : '🪙 Tails!';
+        } else if (cmd === '/quote') {
+          const quotes = [
+            'The only way to do great work is to love what you do. — Steve Jobs',
+            'Innovation distinguishes between a leader and a follower. — Steve Jobs',
+            'Stay hungry, stay foolish. — Steve Jobs',
+            'The future belongs to those who believe in the beauty of their dreams. — Eleanor Roosevelt',
+            'It does not matter how slowly you go as long as you do not stop. — Confucius'
+          ];
+          reply = quotes[Math.floor(Math.random() * quotes.length)];
+        } else if (cmd === '/joke') {
+          const jokes = [
+            "Why don't scientists trust atoms? Because they make up everything!",
+            "I told my wife she was drawing her eyebrows too high. She looked surprised.",
+            "Why did the scarecrow win an award? He was outstanding in his field.",
+            "Parallel lines have so much in common. It's a shame they'll never meet.",
+            "I'm reading a book on anti-gravity. It's impossible to put down!"
+          ];
+          reply = jokes[Math.floor(Math.random() * jokes.length)];
+        } else if (bot?.commands) {
+          // Match custom commands set via /setcommands
+          const customCmdList = bot.commands.split(',').map((c) => c.trim()).filter(Boolean);
+          const matched = customCmdList.find((c) => c.toLowerCase() === cmd.slice(1));
+          if (matched) {
+            reply = `Custom command "${matched}" executed for ${bot.name}.`;
+          } else {
+            reply = `Unknown command. Send /help for available commands.`;
+          }
         }
+
         setMessages((prev) => ({
           ...prev,
           [currentConv.id]: [
@@ -4172,6 +4376,9 @@ export default function App() {
               setIsAuthenticated(true);
               setUser(userData);
               setShowAuthScreen(false);
+              // Reload so every storage key is re-scoped to this account and the
+              // workspace loads only this user's own data.
+              window.location.reload();
             }}
           />
         ) : (
@@ -4259,7 +4466,13 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => { setIsAuthenticated(false); setUser(null); setShowAuthScreen(false); }}
+              onClick={() => {
+                try { localStorage.removeItem('whatsgram_session'); } catch { /* ignore */ }
+                setIsAuthenticated(false);
+                setUser(null);
+                setShowAuthScreen(false);
+                window.location.reload();
+              }}
               className="p-3 rounded-xl text-[#8696A0] hover:bg-[#1F2C34] hover:text-red-400 transition"
               title="Sign Out"
             >
