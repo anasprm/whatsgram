@@ -10,7 +10,8 @@ import {
   Trash2, Edit3, Plus, Minus, RotateCw, Maximize2, Minimize2,
   ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
   Circle, Triangle, Star, MapPin, CreditCard, Heart, Eye, Music, MessageCircle,
-  MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power, UserPlus
+  MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power, UserPlus,
+  Phone, PhoneIncoming, PhoneOutgoing, PhoneMissed, Video, Info, Speaker as SpeakerIcon
 } from 'lucide-react';
 
 // ============================================================
@@ -284,6 +285,67 @@ const INITIAL_MESSAGES = {
   conv_ai: [{ id: 'm2', sender_id: 'usr_ai', body: 'Hello! I am your WhatsGram AI assistant powered by Google Gemini. Ask me any question!', created_at: nowISO() }],
   conv_alex: [{ id: 'm3', sender_id: 'usr_alex', body: 'Check out the new IG Reels integration! 🔥', created_at: nowISO() }]
 };
+
+// ============================================================
+// INITIAL CALL LOGS
+// ============================================================
+const INITIAL_CALL_LOGS = [
+  {
+    id: 'call_1',
+    contactId: 'usr_alex',
+    contactName: 'Alex Rivera',
+    contactAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    type: 'voice',
+    direction: 'incoming',
+    duration: 245,
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    dataUsage: 8.2,
+  },
+  {
+    id: 'call_2',
+    contactId: 'usr_botfather',
+    contactName: 'BotFather',
+    contactAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
+    type: 'voice',
+    direction: 'outgoing',
+    duration: 120,
+    timestamp: new Date(Date.now() - 7200000).toISOString(),
+    dataUsage: 4.1,
+  },
+  {
+    id: 'call_3',
+    contactId: 'usr_ai',
+    contactName: 'WhatsGram AI',
+    contactAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
+    type: 'video',
+    direction: 'missed',
+    duration: 0,
+    timestamp: new Date(Date.now() - 10800000).toISOString(),
+    dataUsage: 0,
+  },
+  {
+    id: 'call_4',
+    contactId: 'usr_alex',
+    contactName: 'Alex Rivera',
+    contactAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    type: 'video',
+    direction: 'outgoing',
+    duration: 890,
+    timestamp: new Date(Date.now() - 86400000).toISOString(),
+    dataUsage: 45.6,
+  },
+  {
+    id: 'call_5',
+    contactId: 'usr_ai',
+    contactName: 'WhatsGram AI',
+    contactAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
+    type: 'voice',
+    direction: 'incoming',
+    duration: 67,
+    timestamp: new Date(Date.now() - 172800000).toISOString(),
+    dataUsage: 2.3,
+  },
+];
 
 // ============================================================
 // ALL 50 GAMES — each mapped to a playable engine type
@@ -4107,6 +4169,22 @@ export default function App() {
   const [newBotData, setNewBotData] = useState({ name: '', username: '' });
   const [showSettings, setShowSettings] = useState(false);
   const [recipeActive, setRecipeActive] = useState(() => safeJson(`${SCOPE}recipe_active`, { pdf: true, voice: true }));
+
+  // ===== CALL LOGS STATE =====
+  const [callLogs, setCallLogs] = useState(() => {
+    try {
+      const raw = localStorage.getItem(`${SCOPE}call_logs`);
+      return raw ? JSON.parse(raw) : INITIAL_CALL_LOGS;
+    } catch { return INITIAL_CALL_LOGS; }
+  });
+  const [callFilter, setCallFilter] = useState('all'); // 'all' | 'missed'
+  const [showCallLog, setShowCallLog] = useState(false);
+  const [showCallDetails, setShowCallDetails] = useState(false);
+  const [selectedCall, setSelectedCall] = useState(null);
+  const [activeCall, setActiveCall] = useState(null); // { id, contact, type, status: 'calling' | 'ringing' | 'connected' | 'ended' }
+  const [callTimer, setCallTimer] = useState(0);
+  const [callTimerRef, setCallTimerRef] = useState(null);
+
   const [editingProfileId, setEditingProfileId] = useState(null);
   const [profileDraft, setProfileDraft] = useState(null);
   const [aiTyping, setAiTyping] = useState(false);
@@ -4169,6 +4247,7 @@ export default function App() {
   useEffect(() => { safeSet(`${SCOPE}recipe_active`, recipeActive); }, [recipeActive]);
   useEffect(() => { safeSet(`${SCOPE}arcade_sound`, soundEnabled); }, [soundEnabled]);
   useEffect(() => { safeSet(`${SCOPE}contacts`, contacts); }, [contacts]);
+  useEffect(() => { safeSet(`${SCOPE}call_logs`, callLogs); }, [callLogs]);
   // Clean up auth keys written by the previous (non-account) auth system.
   useEffect(() => {
     try {
@@ -4753,6 +4832,85 @@ export default function App() {
     }
   }, [inputText, activeConversationId, currentConv, currentMessages, botFatherState, newBotData, customBots, currentUserId, callGeminiAPI]);
 
+  // ===== CALL LOG HELPERS =====
+  const formatCallTime = (iso) => {
+    const d = new Date(iso);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    const isYesterday = d.toDateString() === new Date(now - 86400000).toDateString();
+    const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (isToday) return `Today, ${time}`;
+    if (isYesterday) return `Yesterday, ${time}`;
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ', ' + time;
+  };
+
+  const formatDuration = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const addCallLog = useCallback((contact, type, direction) => {
+    const log = {
+      id: `call_${Date.now()}`,
+      contactId: contact.id,
+      contactName: contact.display_name || contact.username || contact.name || 'Unknown',
+      contactAvatar: contact.avatar_url || null,
+      type,
+      direction,
+      duration: 0,
+      timestamp: nowISO(),
+      dataUsage: 0,
+    };
+    setCallLogs((prev) => [log, ...prev]);
+    return log;
+  }, []);
+
+  const handleStartCall = useCallback((contact, type = 'voice') => {
+    const log = addCallLog(contact, type, 'outgoing');
+    setActiveCall({
+      id: log.id,
+      contact: contact,
+      type,
+      status: 'calling',
+    });
+    setShowCallLog(false);
+    setShowCallDetails(false);
+    let elapsed = 0;
+    const timer = setInterval(() => {
+      setCallTimer((prev) => {
+        elapsed += 1;
+        return elapsed;
+      });
+    }, 1000);
+    setCallTimerRef(timer);
+    // Auto-connect after 3 seconds
+    setTimeout(() => {
+      setActiveCall((prev) => (prev ? { ...prev, status: 'connected' } : null));
+    }, 3000);
+  }, [addCallLog]);
+
+  const handleEndCall = useCallback(() => {
+    if (callTimerRef.current) clearInterval(callTimerRef.current);
+    setActiveCall(null);
+    setCallTimer(0);
+    setCallTimerRef(null);
+  }, [callTimerRef]);
+
+  const handleClearCallLog = useCallback((id) => {
+    setCallLogs((prev) => prev.filter((l) => l.id !== id));
+    if (selectedCall?.id === id) {
+      setShowCallDetails(false);
+      setSelectedCall(null);
+    }
+  }, [selectedCall]);
+
+  const handleClearAllCallLogs = useCallback(() => {
+    setCallLogs([]);
+    setShowCallDetails(false);
+    setSelectedCall(null);
+  }, []);
+
   // ===== CONTACT SEARCH (Instagram-style "Add Contacts") =====
   const handleSearchUsers = useCallback(async () => {
     const q = contactSearchQuery.trim();
@@ -4818,7 +4976,7 @@ export default function App() {
   const exportChatHistory = useCallback(() => {
     const conv = currentConv;
     const msgs = currentMessages;
-    const md = [`# ${conv?.name || 'Chat'}`, '', 'Exported from WhatsGram', '', ...msgs.map((m) => `- **${m.sender_id}** (${new Date(m.created_at).toLocaleString()}): ${m.body}`)].join('\n');
+    const md = [`# ${conv?.name || 'Chat'}`, '', 'Exported from WhatsGram', '', ...msgs.map((m) => `- **${m.sender_id}** (${new Date(m.created_at).toLocaleString()}: ${m.body}`)].join('\n');
     const blob = new Blob([md], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -4925,6 +5083,17 @@ export default function App() {
             >
               <Gamepad2 className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+            </button>
+
+            <button
+              onClick={() => { setActiveTab('calls'); setShowCallLog(true); setCallFilter('all'); }}
+              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-[#00a884] transition relative"
+              title="Call Logs"
+            >
+              <Phone className="w-5 h-5" />
+              {callLogs.filter(l => l.direction === 'missed').length > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              )}
             </button>
 
             <button
@@ -5065,7 +5234,108 @@ export default function App() {
 
         {/* ===== MAIN CONVERSATION PANEL ===== */}
         <div className="flex-1 flex flex-col relative z-10 bg-[#000000]">
-          {currentConv ? (
+          {activeTab === 'calls' ? (
+            <div className="flex-1 flex flex-col bg-[#000000]">
+              {/* Call Log Header */}
+              <div className="p-3 bg-[#0B141A] border-b border-[#1F2C34] flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Phone className="w-5 h-5 text-[#00a884]" /> Calls
+                  </h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCallFilter('all')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${callFilter === 'all' ? 'bg-[#00a884]/20 text-[#00a884]' : 'text-[#8696A0] hover:bg-[#111B21]'}`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setCallFilter('missed')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${callFilter === 'missed' ? 'bg-[#ea0038]/20 text-[#ea0038]' : 'text-[#8696A0] hover:bg-[#111B21]'}`}
+                  >
+                    Missed
+                  </button>
+                  <button
+                    onClick={() => handleClearAllCallLogs()}
+                    className="text-xs text-[#ea0038] hover:text-red-400 transition"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+
+              {/* Call Log List */}
+              <div className="flex-1 overflow-y-auto scrollbar-hide">
+                {callLogs.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <Phone className="w-16 h-16 text-gray-700 mb-4" />
+                    <h3 className="text-lg font-bold text-white">No Call Logs</h3>
+                    <p className="text-sm text-gray-400 mt-1">Your call history will appear here.</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[#1F2C34]">
+                    {callLogs
+                      .filter((l) => callFilter === 'all' || l.direction === 'missed')
+                      .map((log) => {
+                        const isMissed = log.direction === 'missed';
+                        const isOutgoing = log.direction === 'outgoing';
+                        const dirIcon = isMissed ? <PhoneMissed className="w-4 h-4 text-red-500" /> : isOutgoing ? <PhoneOutgoing className="w-4 h-4 text-[#00a884]" /> : <PhoneIncoming className="w-4 h-4 text-[#00a884]" />;
+                        const mediaIcon = log.type === 'video' ? <Video className="w-3 h-3 text-[#00a884]" /> : <Phone className="w-3 h-3 text-[#00a884]" />;
+                        return (
+                          <button
+                            key={log.id}
+                            onClick={() => { setSelectedCall(log); setShowCallDetails(true); }}
+                            className="flex items-center gap-3 p-4 hover:bg-[#111B21] transition group border-b border-[#0a0a0a]/50"
+                          >
+                            <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]">
+                              <img
+                                src={log.contactAvatar}
+                                alt="Avatar"
+                                className="w-11 h-11 rounded-full object-cover border-2 border-black"
+                                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(log.contactName) + '&background=random'; }}
+                              />
+                              {log.direction === 'missed' && (
+                                <div className="absolute bottom-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-black" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-baseline">
+                                <h4 className="text-sm font-semibold text-white truncate">
+                                  {log.contactName}
+                                </h4>
+                                <span className="text-[10px] text-[#8696A0]">{formatCallTime(log.timestamp)}</span>
+                              </div>
+                              <div className="flex items-center gap-1 mt-0.5">
+                                {dirIcon}
+                                {mediaIcon}
+                                <span className="text-[10px] text-[#8696A0]">{isMissed ? 'Missed' : isOutgoing ? 'Outgoing' : 'Incoming'} • {formatDuration(log.duration)}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleStartCall({ id: log.contactId, display_name: log.contactName, avatar_url: log.contactAvatar }, log.type); }}
+                                className="p-2 rounded-full bg-[#00a884]/10 text-[#00a884] hover:bg-[#00a884]/20 transition"
+                                title="Call"
+                              >
+                                <Phone className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleClearCallLog(log.id); }}
+                                className="p-2 rounded-full bg-[#ea0038]/10 text-[#ea0038] hover:bg-[#ea0038]/20 transition"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </button>
+                        );
+                      })}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : currentConv ? (
             <>
               <div className="p-3 bg-[#0B141A] flex justify-between items-center border-b border-[#1F2C34]">
                 <div className="flex items-center gap-3">
@@ -5788,6 +6058,174 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ===== MODAL: CALL DETAILS ===== */}
+      {showCallDetails && selectedCall && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => { setShowCallDetails(false); setSelectedCall(null); }}>
+          <div className="bg-[#0B141A] rounded-2xl p-6 w-full max-w-md text-white shadow-2xl border border-[#1F2C34] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-white">Call Info</h3>
+              </div>
+              <button
+                onClick={() => { setShowCallDetails(false); setSelectedCall(null); }}
+                className="p-2 hover:bg-[#1F2C34] rounded-lg transition"
+                title="Close"
+              >
+                <X className="w-5 h-5 text-gray-400 hover:text-white" />
+              </button>
+            </div>
+
+            {/* Contact Header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]">
+                <img
+                  src={selectedCall.contactAvatar}
+                  alt="Avatar"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-black"
+                  onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(selectedCall.contactName) + '&background=random'; }}
+                />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">{selectedCall.contactName}</h3>
+                <p className="text-xs text-[#8696A0]">{selectedCall.type === 'video' ? 'Video Call' : 'Voice Call'}</p>
+              </div>
+              <div className="ml-auto flex items-center gap-2">
+                <button
+                  onClick={() => { setShowCallDetails(false); setShowCallLog(false); }}
+                  className="px-3 py-1 bg-[#00a884] hover:bg-[#00a884]/90 text-white text-xs rounded-lg transition flex items-center gap-1"
+                >
+                  <Phone className="w-3 h-3" /> Message
+                </button>
+              </div>
+            </div>
+
+            {/* Call Info Items */}
+            <div className="space-y-4 mb-6">
+              <div className="p-3 bg-[#1F2C34] rounded-xl border border-[#2A3942]">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs text-[#8696A0]">Date</span>
+                  <span className="text-xs text-white">{formatCallTime(selectedCall.timestamp)}</span>
+                </div>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs text-[#8696A0]">Direction</span>
+                  <span className="text-xs text-white capitalize">{selectedCall.direction}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-[#8696A0]">Type</span>
+                  <span className="text-xs text-white capitalize">{selectedCall.type}</span>
+                </div>
+              </div>
+
+              {selectedCall.duration > 0 && (
+                <div className="p-3 bg-[#1F2C34] rounded-xl border border-[#2A3942]">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs text-[#8696A0]">Duration</span>
+                    <span className="text-xs text-white">{formatDuration(selectedCall.duration)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-[#8696A0]">Data Used</span>
+                    <span className="text-xs text-white">{selectedCall.dataUsage.toFixed(1)} MB</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-2 border-t border-[#1F2C34]">
+                <p className="text-[10px] text-[#5A6B7A] mb-2">Recent calls with {selectedCall.contactName}</p>
+                <div className="space-y-2">
+                  {callLogs
+                    .filter((l) => l.contactId === selectedCall.contactId && l.id !== selectedCall.id)
+                    .slice(0, 3)
+                    .map((l) => (
+                      <div key={l.id} className="flex justify-between items-center p-2 bg-[#111B21] rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className={l.direction === 'missed' ? 'w-3 h-3 bg-red-500 rounded-full' : 'w-3 h-3 bg-[#00a884] rounded-full'} />
+                          <span className="text-xs text-white">{l.direction === 'missed' ? 'Missed' : l.direction === 'outgoing' ? 'Outgoing' : 'Incoming'}</span>
+                        </div>
+                        <span className="text-xs text-[#8696A0]">{formatCallTime(l.timestamp)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-[#1F2C34] flex justify-end gap-2">
+              <button
+                onClick={() => { setShowCallDetails(false); setSelectedCall(null); }}
+                className="px-4 py-1.5 bg-[#1F2C34] text-gray-300 text-xs rounded-lg border border-[#2A3942] hover:bg-[#2A3942] transition"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+      )}
+
+      {/* ===== ACTIVE CALL OVERLAY ===== */}
+      {activeCall && (
+        <div className="fixed inset-0 bg-[#000000] z-60 flex flex-col items-center justify-center p-4">
+          <div className="bg-[#0B141A] rounded-2xl p-8 w-full max-w-md text-center shadow-2xl border border-[#1F2C34]">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCB045] flex items-center justify-center mx-auto mb-6 relative">
+              <img
+                src={activeCall.contact.avatar_url}
+                alt="Avatar"
+                className="w-20 h-20 rounded-full object-cover border-4 border-black"
+                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(activeCall.contact.display_name || activeCall.contact.username || 'User') + '&background=random'; }}
+              />
+              {activeCall.status === 'ringing' && (
+                <div className="absolute -right-2 -top-2 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-pulse" />
+              )}
+              {activeCall.status === 'connected' && (
+                <div className="absolute -right-2 -top-2 w-3 h-3 bg-[#00a884] rounded-full border-2 border-black animate-pulse" />
+              )}
+            </div>
+
+            <h3 className="text-xl font-bold text-white mb-1">{activeCall.contact.display_name || activeCall.contact.username || 'User'}</h3>
+            <p className="text-[#8696A0] text-sm mb-8">
+              {activeCall.status === 'calling' ? 'Calling...' : activeCall.status === 'ringing' ? 'Ringing...' : activeCall.status === 'connected' ? 'On Call' : 'Call Ended'}
+            </p>
+
+            {/* Call Timer */}
+            {activeCall.status === 'connected' && (
+              <div className="text-2xl font-mono text-white mb-8">
+                {Math.floor(callTimer / 60).toString().padStart(2, '0')}:{ (callTimer % 60).toString().padStart(2, '0') }
+              </div>
+            )}
+
+            {/* Call Controls */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <button
+                onClick={() => { /* toggle mute */ }}
+                className="w-12 h-12 rounded-full bg-[#1F2C34] text-[#8696A0] hover:bg-[#2A3942] hover:text-white flex items-center justify-center transition"
+              >
+                <Mic className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => { /* toggle speaker */ }}
+                className="w-12 h-12 rounded-full bg-[#1F2C34] text-[#8696A0] hover:bg-[#2A3942] hover:text-white flex items-center justify-center transition"
+              >
+                <SpeakerIcon className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => { /* switch video */ }}
+                className="w-12 h-12 rounded-full bg-[#1F2C34] text-[#8696A0] hover:bg-[#2A3942] hover:text-white flex items-center justify-center transition"
+              >
+                <Video className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* End Call Button */}
+            <button
+              onClick={handleEndCall}
+              className="w-full py-3 bg-red-500 hover:bg-[#ea0038] text-white font-bold rounded-xl text-lg transition shadow-lg"
+            >
+              End Call
+            </button>
+          </div>
+        </div>
+      )}
     </ErrorBoundary>
   );
 }
+
+
