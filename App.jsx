@@ -3390,7 +3390,7 @@ function GamePlayer({ gameId, onScore, soundEnabled, arcadeScores }) {
 // ============================================================
 // MESSAGE COMPONENT
 // ============================================================
-function MessageItem({ message, currentUserId }) {
+function MessageItem({ message, currentUserId, messageReactions, setMessageReactions, messageActionsMenu, setMessageActionsMenu, showEmojiPicker, setShowEmojiPicker, setReplyingToMessage, setConversations }) {
   const isMe = message.sender_id === currentUserId;
   const time = message.created_at ? new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
   const atts = message.attachments || [];
@@ -5607,7 +5607,7 @@ export default function App() {
 
               <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
                 {currentMessages.map((m) => (
-                  <MessageItem key={m.id} message={m} currentUserId={currentUserId} />
+                  <MessageItem key={m.id} message={m} currentUserId={currentUserId} messageReactions={messageReactions} setMessageReactions={setMessageReactions} messageActionsMenu={messageActionsMenu} setMessageActionsMenu={setMessageActionsMenu} showEmojiPicker={showEmojiPicker} setShowEmojiPicker={setShowEmojiPicker} setReplyingToMessage={setReplyingToMessage} setConversations={setConversations} />
                 ))}
                 {aiTyping && <TypingIndicator />}
                 <div ref={messagesEndRef} />
