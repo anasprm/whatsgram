@@ -4444,7 +4444,7 @@ export default function App() {
 
                 {/* Attachment Menu (Instagram-style) */}
                 {showAttachMenu && (
-                  <div className="absolute bottom-[70px] left-1/2 -translate-x-1/2 w-64 bg-[#111B21] rounded-2xl border border-[#2A3942] shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                  <div className="absolute bottom-[75px] left-4 w-64 bg-[#111B21] rounded-2xl border border-[#2A3942] shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
                     <div className="grid grid-cols-4 gap-2 text-center">
                       <AttachmentButton
                         icon={<Camera className="w-5 h-5 text-cyan-400" />}
