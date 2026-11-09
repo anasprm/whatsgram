@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 import './globals.css';
 import { AuthProvider } from '@/lib/AuthProvider';
 import { ThemeProvider } from '@/lib/ThemeProvider';
 import { UiStyleProvider } from '@/lib/UiStyleProvider';
 import { ToastProvider } from '@/lib/ToastProvider';
+import { BootstrapScripts } from '@/components/BootstrapScripts';
 
 export const metadata: Metadata = {
   title: {
@@ -43,51 +43,6 @@ export const viewport: Viewport = {
   ],
 };
 
-function bootstrapScript(): string {
-  return `(window.__RELAY_BOOTSTRAP__ = ${JSON.stringify({ conversations: [], user: null })});`;
-}
-
-const bootstrapPayload = bootstrapScript();
-
-const themeScript = `
-(function () {
-  try {
-    var host = location.hostname;
-    var site =
-      host.indexOf('valiyakath') === 0
-        ? 'whatsapp'
-        : host.indexOf('relay-messengerpro') === 0
-          ? 'formal'
-          : 'whatsapp';
-    document.documentElement.dataset.site = site;
-
-    var storedTheme = localStorage.getItem('relay.theme');
-    var dark = storedTheme
-      ? storedTheme === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (dark) document.documentElement.classList.add('dark');
-    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-
-    var storedUi = localStorage.getItem('relay.ui');
-    var ui =
-      storedUi === 'minimal' || storedUi === 'official'
-        ? storedUi
-        : site === 'formal'
-          ? 'minimal'
-          : 'official';
-    document.documentElement.dataset.ui = ui;
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').catch(function(err) {
-          console.log('SW registration failed: ', err);
-        });
-      });
-    }
-  } catch (error) {}
-})();
-`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -98,10 +53,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="192x192" href="/pwa/icon-192x192.png" />
         <meta name="theme-color" content="#25D366" />
-        <Script id="theme-script" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <Script id="bootstrap-script" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: bootstrapPayload }} />
       </head>
       <body className="min-h-screen bg-app text-ink antialiased">
+        <BootstrapScripts />
         <ThemeProvider>
           <UiStyleProvider>
             <AuthProvider>
