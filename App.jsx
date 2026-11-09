@@ -4168,6 +4168,13 @@ export default function App() {
   const [botFatherState, setBotFatherState] = useState('idle');
   const [newBotData, setNewBotData] = useState({ name: '', username: '' });
   const [showSettings, setShowSettings] = useState(false);
+  const [geminiApiKey, setGeminiApiKey] = useState(() => {
+    try {
+      const raw = localStorage.getItem('whatsgram_gemini_key');
+      return raw || '';
+    } catch { return ''; }
+  });
+  const [apiKeyError, setApiKeyError] = useState('');
   const [recipeActive, setRecipeActive] = useState(() => safeJson(`${SCOPE}recipe_active`, { pdf: true, voice: true }));
 
   // ===== CALL LOGS STATE =====
@@ -4322,15 +4329,47 @@ export default function App() {
   // ===== GEMINI API CALL =====
   const callGeminiAPI = useCallback(async (conversationHistory, userMessage) => {
     try {
-      // Build a single prompt string from conversation history for the server-side AI route
+      // Build prompt string for Gemini API
       const recentMsgs = conversationHistory.slice(-10);
       const lines = recentMsgs.map((m) => {
-        const role = m.sender_id === 'usr_ai' ? 'AI' : m.sender_id === currentUserId ? 'You' : 'User';
+        const role = m.sender_id === 'usr_ai' ? 'model' : m.sender_id === currentUserId ? 'user' : 'user';
         return `${role}: ${m.body || ''}`;
       });
-      lines.push(`You: ${userMessage}`);
+      lines.push(`user: ${userMessage}`);
       const prompt = lines.join('\n');
 
+      // If user has provided their own API key, call Gemini directly client-side
+      if (geminiApiKey && geminiApiKey.trim()) {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey.trim()}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          const errBody = await res.text().catch(() => '');
+          if (res.status === 401 || /API_KEY_INVALID|INVALID_ARGUMENT/i.test(errBody)) {
+            setApiKeyError('Invalid Gemini API key. Please update your key in Settings.');
+            return '⚠️ Invalid Gemini API key. Please go to Settings and enter a valid API key.';
+          }
+          throw new Error(`Gemini API error ${res.status}: ${errBody || await res.text()}`);
+        }
+
+        const data = await res.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error('Empty response from Gemini');
+        // Clear any previous key error on success
+        setApiKeyError('');
+        return text;
+      }
+
+      // Otherwise, use the server-side AI route
       const res = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -4344,12 +4383,29 @@ export default function App() {
 
       const data = await res.json();
       if (!data.response) throw new Error('Empty response from AI service');
+      setApiKeyError('');
       return data.response;
     } catch (err) {
       console.error('AI API call failed:', err);
-      return `⚠️ Sorry, I'm having trouble connecting to the AI service right now. (${err.message})`;
+      setApiKeyError('');
+      // Smart fallback responses when no key or service unavailable
+      const lower = userMessage.toLowerCase().trim();
+      if (lower.match(/^(hi|hello|hey|greetings|yo|sup)(\s|$|!|\.|,)/i)) {
+        return "Hello! I'm your WhatsGram AI assistant. Add your Gemini API key in Settings to unlock live AI responses. How can I help you today?";
+      }
+      if (lower.match(/\b(help|assist|what can you do|capabilities|features|who are you)\b/i)) {
+        return "I'm your AI assistant! Add your Google Gemini API key in Settings to unlock live AI chat. Without a key, I can still help with basic greetings, jokes, and explaining WhatsGram features.";
+      }
+      if (lower.match(/\b(joke|funny|comedy|laugh)\b/i)) {
+        const jokes = ["Why do developers prefer dark mode? Because light attracts bugs! 🐛", "Why did the React component go to therapy? It had too many state issues! ⚛️"];
+        return jokes[Math.floor(Math.random() * jokes.length)];
+      }
+      if (lower.match(/\b(relay|whatsgram|workspace|messenger)\b/i)) {
+        return "WhatsGram is your all-in-one power-user workspace combining WhatsApp messaging, Instagram feeds, Telegram-style bots, and a 50-game arcade vault. Add your Gemini API key in Settings for live AI responses!";
+      }
+      return `⚠️ Sorry, I'm having trouble connecting to the AI service right now. (${err.message}) Add your Gemini API key in Settings to enable live AI responses.`;
     }
-  }, [currentUserId]);
+  }, [currentUserId, geminiApiKey]);
 
   // ===== ATTACHMENT HANDLERS =====
   const handleCamera = () => {
@@ -5759,12 +5815,69 @@ export default function App() {
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold flex items-center gap-2">
                   <User className="w-5 h-5 text-cyan-400" />
-                  {editingProfileId ? 'Edit Profile' : 'Identity Sub-Profiles'}
+                  {editingProfileId ? 'Edit Profile' : 'Settings'}
                 </h3>
                 <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-[#1F2C34] rounded-lg transition">
                   <X className="w-5 h-5 text-gray-400 hover:text-white" />
                 </button>
               </div>
+
+              {/* ===== API KEY CONFIGURATION ===== */}
+              {!editingProfileId && (
+                <div className="bg-[#1F2C34] border border-[#2A3942] rounded-2xl p-4 mb-4 space-y-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <h4 className="text-sm font-semibold text-white">Gemini API Key</h4>
+                  </div>
+                  <p className="text-xs text-[#8696A0] mb-2">
+                    Enter your Google Gemini API key to unlock live AI responses in WhatsGram AI chat.
+                    Your key is stored locally in your browser and never sent to our servers.
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="password"
+                      value={geminiApiKey}
+                      onChange={(e) => setGeminiApiKey(e.target.value)}
+                      placeholder="sk-... or AIza..."
+                      className="flex-1 bg-[#0B141A] border border-[#2A3942] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-400 transition placeholder-zinc-600"
+                    />
+                    <button
+                      onClick={() => {
+                        if (!geminiApiKey.trim()) {
+                          setApiKeyError('Please enter a valid API key.');
+                          return;
+                        }
+                        try {
+                          localStorage.setItem('whatsgram_gemini_key', geminiApiKey.trim());
+                          setApiKeyError('');
+                        } catch {
+                          setApiKeyError('Failed to save API key to localStorage.');
+                        }
+                      }}
+                      className="px-4 py-2 bg-gradient-to-r from-[#833AB4] to-[#E1306C] hover:from-[#7e69af] hover:to-[#c50f5b] text-white text-xs font-bold rounded-lg transition shadow-lg shadow-emerald-500/30"
+                    >
+                      Save
+                    </button>
+                  </div>
+                  {apiKeyError && (
+                    <div className="flex items-center gap-2 px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg text-xs">
+                      <AlertCircle size={14} className="shrink-0" />
+                      <span>{apiKeyError}</span>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-[#5A6B7A]">
+                    Get your free API key at{' '}
+                    <a
+                      href="https://makersuite.google.com/app/apikey"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-400 hover:underline"
+                    >
+                      Google AI Studio
+                    </a>
+                  </p>
+                </div>
+              )}
 
               {/* Back button when editing */}
               {editingProfileId && (
