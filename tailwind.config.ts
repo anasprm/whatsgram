@@ -57,6 +57,18 @@ const tailwindConfig: Config = {
         fadeIn: 'fadeIn var(--transition-normal) ease-out',
         slideIn: 'slideIn var(--transition-normal) ease-out',
         fadeInUp: 'fadeInUp var(--transition-normal) ease-out',
+        blob: 'blob 7s infinite',
+      },
+      animationDelay: {
+        '0': '0ms',
+        '100': '100ms',
+        '200': '200ms',
+        '300': '300ms',
+        '400': '400ms',
+        '500': '500ms',
+        '1000': '1000ms',
+        '2000': '2000ms',
+        '3000': '3000ms',
       },
       
       // === Spatial Shadows (performance: use box-shadow sparingly) ===
