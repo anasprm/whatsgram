@@ -10,7 +10,7 @@ import {
   Trash2, Edit3, Plus, Minus, RotateCw, Maximize2, Minimize2,
   ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
   Circle, Triangle, Star, MapPin, CreditCard, Heart, Eye, Music, MessageCircle,
-  MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power
+  MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power, UserPlus
 } from 'lucide-react';
 
 // ============================================================
@@ -3951,6 +3951,15 @@ export default function App() {
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [showStories, setShowStories] = useState(false);
+  const [showContactSearch, setShowContactSearch] = useState(false);
+  const [contactSearchQuery, setContactSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [contacts, setContacts] = useState(() => {
+    try {
+      const raw = localStorage.getItem(`${SCOPE}contacts`);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!ACTIVE_USER_ID);
   const [user, setUser] = useState(() => (
     ACTIVE_SESSION
@@ -3997,6 +4006,7 @@ export default function App() {
   useEffect(() => { safeSet(LS_QUANTUM, quantumEncryptionActive); }, [quantumEncryptionActive]);
   useEffect(() => { safeSet(`${SCOPE}recipe_active`, recipeActive); }, [recipeActive]);
   useEffect(() => { safeSet(`${SCOPE}arcade_sound`, soundEnabled); }, [soundEnabled]);
+  useEffect(() => { safeSet(`${SCOPE}contacts`, contacts); }, [contacts]);
   // Clean up auth keys written by the previous (non-account) auth system.
   useEffect(() => {
     try {
@@ -4581,6 +4591,67 @@ export default function App() {
     }
   }, [inputText, activeConversationId, currentConv, currentMessages, botFatherState, newBotData, customBots, currentUserId, callGeminiAPI]);
 
+  // ===== CONTACT SEARCH (Instagram-style "Add Contacts") =====
+  const handleSearchUsers = useCallback(async () => {
+    const q = contactSearchQuery.trim();
+    if (!q) { setSearchResults([]); return; }
+    try {
+      const accounts = JSON.parse(localStorage.getItem('whatsgram_accounts') || '[]');
+      const currentUsername = user?.username || '';
+      const currentEmail = user?.email || '';
+      const results = accounts
+        .filter((a) =>
+          a.username.toLowerCase().includes(q.toLowerCase()) ||
+          a.email.toLowerCase().includes(q.toLowerCase())
+        )
+        .filter((a) => a.username !== currentUsername && a.email !== currentEmail)
+        .filter((a) => !contacts.includes(a.id))
+        .slice(0, 20);
+      setSearchResults(results);
+    } catch (e) {
+      console.warn('Contact search failed:', e);
+      setSearchResults([]);
+    }
+  }, [contactSearchQuery, contacts, user]);
+
+  const handleStartChatWithContact = useCallback((account) => {
+    // Check if a conversation already exists with this user
+    const existing = conversations.find(
+      (c) => !c.is_group && c.participant?.id === account.id
+    );
+    if (existing) {
+      setActiveConversationId(existing.id);
+      setShowContactSearch(false);
+      setContactSearchQuery('');
+      setSearchResults([]);
+      return;
+    }
+    // Create a new conversation
+    const convId = `conv_contact_${account.id}`;
+    const newConv = {
+      id: convId,
+      is_group: false,
+      is_bot: false,
+      folder: 'personal',
+      name: account.username,
+      participant: {
+        id: account.id,
+        display_name: account.username,
+        avatar_url: null,
+        is_online: false
+      },
+      last_message: '',
+      unread_count: 0,
+      created_at: nowISO()
+    };
+    setConversations((prev) => [newConv, ...prev]);
+    setContacts((prev) => (prev.includes(account.id) ? prev : [...prev, account.id]));
+    setActiveConversationId(convId);
+    setShowContactSearch(false);
+    setContactSearchQuery('');
+    setSearchResults([]);
+  }, [conversations, contacts, nowISO]);
+
   // ===== COMMAND PALETTE ACTIONS =====
   const exportChatHistory = useCallback(() => {
     const conv = currentConv;
@@ -4754,6 +4825,13 @@ export default function App() {
                 title="Command Palette (Cmd+K)"
               >
                 <Command className="w-3.5 h-3.5" /> Cmd+K
+              </button>
+              <button
+                onClick={() => { setShowContactSearch(true); setContactSearchQuery(''); setSearchResults([]); }}
+                className="flex items-center gap-1 px-2.5 py-1 bg-[#1F2C34] hover:bg-[#2A3942] text-emerald-400 rounded-lg text-xs font-medium transition"
+                title="New Chat"
+              >
+                <UserPlus className="w-3.5 h-3.5" /> New Chat
               </button>
             </div>
 
@@ -5467,6 +5545,86 @@ export default function App() {
           </div>
         )}
       </div>
+      )}
+
+      {/* ===== MODAL: CONTACT SEARCH (Instagram-style "Add Contacts") ===== */}
+      {showContactSearch && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setShowContactSearch(false)}>
+          <div className="bg-[#0B141A] rounded-2xl p-6 w-full max-w-md text-white shadow-2xl border border-[#1F2C34] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-emerald-400" /> New Chat
+              </h3>
+              <button
+                onClick={() => { setShowContactSearch(false); setContactSearchQuery(''); setSearchResults([]); }}
+                className="p-2 hover:bg-[#1F2C34] rounded-lg transition"
+                title="Close"
+              >
+                <X className="w-5 h-5 text-gray-400 hover:text-white" />
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 w-4 h-4" />
+              <input
+                type="text"
+                value={contactSearchQuery}
+                onChange={(e) => { setContactSearchQuery(e.target.value); setSearchResults([]); }}
+                onBlur={handleSearchUsers}
+                placeholder="Search by username or email..."
+                className="w-full bg-[#1F2C34] border border-[#2A3942] rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
+              />
+            </div>
+
+            {/* Search Results */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
+              {searchResults.length === 0 && contactSearchQuery.trim() !== '' && (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <UserPlus className="w-12 h-12 text-[#2A3942] mb-2" />
+                  <p className="text-xs text-[#8696A0]">No accounts found</p>
+                  <p className="text-[10px] text-[#5A6B7A] mt-1">Try searching by username or email</p>
+                </div>
+              )}
+              {searchResults.map((account) => (
+                <button
+                  key={account.id}
+                  onClick={() => handleStartChatWithContact(account)}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-[#1F2C34] hover:bg-[#2A3942] transition group"
+                >
+                  <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]">
+                    <img
+                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(account.username)}&background=random`}
+                      alt="Avatar"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-black"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-semibold text-white truncate">{account.username}</h4>
+                    <p className="text-[10px] text-[#8696A0] truncate">{account.email}</p>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-semibold">Add</span>
+                </button>
+              ))}
+              {searchResults.length > 0 && (
+                <div className="pt-2 border-t border-[#1F2C34]">
+                  <p className="text-[10px] text-[#5A6B7A] px-3 py-2">
+                    Tap an account to start a new chat
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-[#1F2C34] flex justify-end">
+              <button
+                onClick={() => { setShowContactSearch(false); setContactSearchQuery(''); setSearchResults([]); }}
+                className="px-4 py-1.5 bg-[#1F2C34] text-gray-300 text-xs rounded-lg border border-[#2A3942] hover:bg-[#2A3942] transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </ErrorBoundary>
   );
