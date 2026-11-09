@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { AuthProvider } from '@/lib/AuthProvider';
 import { ThemeProvider } from '@/lib/ThemeProvider';
@@ -97,8 +98,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="192x192" href="/pwa/icon-192x192.png" />
         <meta name="theme-color" content="#25D366" />
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script dangerouslySetInnerHTML={{ __html: bootstrapPayload }} />
+        <Script id="theme-script" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <Script id="bootstrap-script" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: bootstrapPayload }} />
       </head>
       <body className="min-h-screen bg-app text-ink antialiased">
         <ThemeProvider>
