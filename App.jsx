@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   MessageSquare, User, Gamepad2, Send, CheckCheck, X, Shield, Moon,
-  Command, Radio, Workflow, Coins, Trophy, FileDown, Search, FolderOpen,
+  Command, Radio, Workflow, Coins, Square, FileDown, Search, FolderOpen,
   Mic, Play, Pause, Upload, Clock, Bot, Brain, Key, Settings, Layout, List,
   Image as ImageIcon, FileText, ArrowRight, ChevronLeft, ChevronRight,
   Trash2, Edit3, Plus, Minus, RotateCw, Maximize2, Minimize2,
   ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
-  Circle, Square, Triangle, Star
+  Circle, Triangle, Star
 } from 'lucide-react';
 
 // ============================================================
