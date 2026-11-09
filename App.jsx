@@ -3116,6 +3116,7 @@ export default function App() {
   const [botFatherState, setBotFatherState] = useState('idle');
   const [newBotData, setNewBotData] = useState({ name: '', username: '' });
   const [showSettings, setShowSettings] = useState(false);
+  const [recipeActive, setRecipeActive] = useState(() => safeJson('whatsgram_recipe_active', { pdf: true, voice: true }));
 
   // Derived
   const currentConv = useMemo(() => conversations.find((c) => c.id === activeConversationId), [conversations, activeConversationId]);
@@ -3136,6 +3137,7 @@ export default function App() {
   useEffect(() => { safeSet(LS_USER_ID, userId); }, [userId]);
   useEffect(() => { safeSet(LS_MONOCHROME, monochromeMode); }, [monochromeMode]);
   useEffect(() => { safeSet(LS_QUANTUM, quantumEncryptionActive); }, [quantumEncryptionActive]);
+  useEffect(() => { safeSet('whatsgram_recipe_active', recipeActive); }, [recipeActive]);
 
   // Auto-scroll messages to bottom
   useEffect(() => {
@@ -3707,21 +3709,25 @@ export default function App() {
                 </button>
               </div>
               <div className="space-y-3">
-                <div className="p-3 bg-[#1F2C34] rounded-xl flex justify-between items-center border border-[#2A3942]">
-                  <div>
-                    <h4 className="text-xs font-bold">Auto-Summarize PDFs</h4>
-                    <p className="text-[10px] text-[#8696A0]">On PDF Received</p>
+              {[ { id: 'pdf', title: 'Auto-Summarize PDFs', desc: 'On PDF Received', color: 'emerald' }, { id: 'voice', title: 'Voice Transcription', desc: 'On Voice Note Received', color: 'cyan' } ].map((recipe) => {
+                const toggled = recipeActive[recipe.id] ?? true;
+                const colorMap = { emerald: 'bg-emerald-500 text-emerald-900', cyan: 'bg-cyan-500 text-cyan-900' };
+                return (
+                  <div key={recipe.id} className="p-3 bg-[#1F2C34] rounded-xl flex justify-between items-center border border-[#2A3942]">
+                    <div>
+                      <h4 className="text-xs font-bold text-white">{recipe.title}</h4>
+                      <p className="text-[10px] text-[#8696A0]">{recipe.desc}</p>
+                    </div>
+                    <button
+                      onClick={() => setRecipeActive((prev) => ({ ...prev, [recipe.id]: !toggled }))}
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold transition ${toggled ? colorMap[recipe.color] : 'bg-[#3A4952] text-gray-400'}`}
+                    >
+                      {toggled ? 'Active' : 'Inactive'}
+                    </button>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500 text-white">Active</span>
-                </div>
-                <div className="p-3 bg-[#1F2C34] rounded-xl flex justify-between items-center border border-[#2A3942]">
-                  <div>
-                    <h4 className="text-xs font-bold">Voice Transcription</h4>
-                    <p className="text-[10px] text-[#8696A0]">On Voice Note Received</p>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-cyan-500 text-white">Active</span>
-                </div>
-              </div>
+                );
+              })}
+            </div>
               <button
                 onClick={() => setShowWorkflowModal(false)}
                 className="w-full py-2.5 bg-[#1F2C34] text-gray-300 font-bold rounded-xl text-xs hover:bg-[#2A3942]"
