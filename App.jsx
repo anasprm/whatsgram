@@ -4892,11 +4892,11 @@ export default function App() {
             <button
               onClick={() => setShowStories(true)}
               className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-white transition relative"
-              title="Stories"
+              title="Status"
             >
               <div className="relative w-5 h-5">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCCF31] p-[1px] mask mask-[radial-gradient(white_60%,black_60%)]">
-                  <Camera className="w-4 h-4 text-white relative z-10" />
+                  <Layout className="w-4 h-4 text-white relative z-10" />
                 </div>
               </div>
               <span className="absolute top-1 right-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse" />
