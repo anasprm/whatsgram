@@ -3086,7 +3086,7 @@ function GameChess({ onScore, theme }) {
 }
 
 // --- Game Router ---
-function GamePlayer({ gameId, onScore, soundEnabled }) {
+function GamePlayer({ gameId, onScore, soundEnabled, arcadeScores }) {
   const game = ALL_GAMES.find(g => g.id === gameId);
   const name = game ? game.name : `Game #${gameId}`;
   const theme = game ? game.theme : '#833AB4';
@@ -5050,7 +5050,7 @@ export default function App() {
                     <p className="text-xs text-[#8696A0]">Fully playable arcade session — use arrow keys to play</p>
                   </div>
 
-                  <GamePlayer gameId={selectedGameId} soundEnabled={soundEnabled} onScore={(pts) => {
+                  <GamePlayer gameId={selectedGameId} soundEnabled={soundEnabled} arcadeScores={arcadeScores} onScore={(pts) => {
                     setArcadeScores((prev) => ({ ...prev, [selectedGameId]: Math.max(prev[selectedGameId] || 0, pts) }));
                   }} />
 
