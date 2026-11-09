@@ -151,7 +151,7 @@ const syncGameScoresToSupabase = (scores) => {
 };
 
 // Sync identity profiles to Supabase
-const syncProfilesToSupabase = (profiles) => {
+const syncProfilesToSupabase = (profiles, activeProfileId) => {
   if (!supabaseReady()) return;
   profiles.forEach((p) => {
     sbUpsert('identity_sub_profiles', {
@@ -3319,8 +3319,8 @@ export default function App() {
   }, [arcadeScores]);
   useEffect(() => {
     safeSet(LS_IDENTITY_PROFILES, identityProfiles);
-    syncProfilesToSupabase(identityProfiles);
-  }, [identityProfiles]);
+    syncProfilesToSupabase(identityProfiles, activeProfileId);
+  }, [identityProfiles, activeProfileId]);
   useEffect(() => { safeSet(LS_ACTIVE_PROFILE, activeProfileId); }, [activeProfileId]);
   useEffect(() => { safeSet(LS_USER_ID, userId); }, [userId]);
   useEffect(() => { safeSet(LS_MONOCHROME, monochromeMode); }, [monochromeMode]);
