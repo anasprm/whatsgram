@@ -5,7 +5,7 @@ import {
   Mic, Play, Pause, Upload, Clock, Bot, Brain, Key, Settings, Layout, List,
   Image as ImageIcon, FileText, ArrowRight, ChevronLeft, ChevronRight,
   Trash2, Edit3, Plus, Minus, RotateCw, Maximize2, Minimize2,
-  ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target,
+  ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
   Circle, Square, Triangle, Star
 } from 'lucide-react';
 
@@ -43,9 +43,33 @@ const nowISO = () => new Date().toISOString();
 // INITIAL DATA
 // ============================================================
 const DEFAULT_PROFILES = [
-  { id: 'prof_me', name: 'You', color: '#833AB4', avatar: null },
-  { id: 'prof_work', name: 'Work Identity', color: '#0ea5e9', avatar: null },
-  { id: 'prof_personal', name: 'Personal Identity', color: '#22c55e', avatar: null },
+  {
+    id: 'prof_me',
+    name: 'You',
+    color: '#833AB4',
+    avatar: null,
+    bio: '',
+    about: 'Hey there! I am using WhatsGram.',
+    status: 'Available',
+  },
+  {
+    id: 'prof_work',
+    name: 'Work Identity',
+    color: '#0ea5e9',
+    avatar: null,
+    bio: '',
+    about: 'Professional contacts only.',
+    status: 'At Work',
+  },
+  {
+    id: 'prof_personal',
+    name: 'Personal Identity',
+    color: '#22c55e',
+    avatar: null,
+    bio: '',
+    about: 'Friends and family.',
+    status: 'Available',
+  },
 ];
 
 const INITIAL_CONVERSATIONS = [
@@ -3117,6 +3141,8 @@ export default function App() {
   const [newBotData, setNewBotData] = useState({ name: '', username: '' });
   const [showSettings, setShowSettings] = useState(false);
   const [recipeActive, setRecipeActive] = useState(() => safeJson('whatsgram_recipe_active', { pdf: true, voice: true }));
+  const [editingProfileId, setEditingProfileId] = useState(null);
+  const [profileDraft, setProfileDraft] = useState(null);
 
   // Derived
   const currentConv = useMemo(() => conversations.find((c) => c.id === activeConversationId), [conversations, activeConversationId]);
@@ -3831,54 +3857,225 @@ export default function App() {
         {/* ===== MODAL: SETTINGS / IDENTITY PROFILES ===== */}
         {showSettings && (
           <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setShowSettings(false)}>
-            <div className="bg-[#0B141A] rounded-2xl p-6 space-y-4 max-w-md w-full text-white shadow-2xl border border-[#1F2C34]" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[#0B141A] rounded-2xl p-6 space-y-4 max-w-2xl w-full text-white shadow-2xl border border-[#1F2C34] flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+              {/* Header */}
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold flex items-center gap-2">
-                  <User className="w-5 h-5 text-cyan-400" /> Identity Sub-Profiles
+                  <User className="w-5 h-5 text-cyan-400" />
+                  {editingProfileId ? 'Edit Profile' : 'Identity Sub-Profiles'}
                 </h3>
                 <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-[#1F2C34] rounded-lg transition">
                   <X className="w-5 h-5 text-gray-400 hover:text-white" />
                 </button>
               </div>
-              <p className="text-xs text-[#8696A0] mb-4">Switch between your identity sub-profiles. Each profile has its own color and display name.</p>
-              <div className="space-y-2">
-                {identityProfiles.map((profile) => (
-                  <button
-                    key={profile.id}
-                    onClick={() => switchProfile(profile.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${activeProfileId === profile.id ? 'bg-gradient-to-r from-[#833AB4]/30 to-[#E1306C]/30 border-[#833AB4]/50' : 'bg-[#1F2C34] border-[#2A3942] hover:bg-[#2A3942]'}`}
-                  >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow ${profile.color}`}>
-                      {String(profile.name).charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-white">{profile.name}</div>
-                      <div className="text-[10px] text-gray-500">ID: {profile.id}</div>
-                    </div>
-                    {activeProfileId === profile.id && (
-                      <CheckCheck className="w-4 h-4 text-emerald-400" />
-                    )}
-                  </button>
-                ))}
-              </div>
-              <div className="pt-4 border-t border-[#2A3942]">
+
+              {/* Back button when editing */}
+              {editingProfileId && (
                 <button
-                  onClick={() => {
-                    const newProfile = { id: uid(), name: `Profile ${identityProfiles.length + 1}`, color: '#6366f1', avatar: null };
-                    setIdentityProfiles((prev) => [...prev, newProfile]);
-                    switchProfile(newProfile.id);
-                  }}
-                  className="w-full py-2 bg-[#1F2C34] hover:bg-[#2A3942] text-gray-300 text-xs rounded border border-[#2A3942] transition"
+                  onClick={() => { setEditingProfileId(null); setProfileDraft(null); }}
+                  className="flex items-center gap-1 px-3 py-1.5 bg-[#1F2C34] hover:bg-[#2A3942] text-[#8696A0] rounded-lg text-xs font-medium transition border border-[#2A3942]"
                 >
-                  <Plus className="w-3 h-3 mr-2" /> Add New Profile
+                  <ChevronLeft className="w-3 h-3 mr-1" /> Back to Profiles
                 </button>
-              </div>
-              <button
-                onClick={() => setShowSettings(false)}
-                className="w-full py-2.5 bg-[#1F2C34] text-gray-300 font-bold rounded-xl text-xs hover:bg-[#2A3942]"
-              >
-                Done
-              </button>
+              )}
+
+              {/* ===== PROFILE LIST VIEW ===== */}
+              {!editingProfileId && (
+                <div className="flex-1 overflow-y-auto space-y-2 scrollbar-hide">
+                  <p className="text-xs text-[#8696A0] mb-3">Switch between your identity sub-profiles. Each profile has its own color, bio, and display name.</p>
+                  {identityProfiles.map((profile) => {
+                    const isActive = activeProfileId === profile.id;
+                    return (
+                      <div key={profile.id} className="flex items-center gap-3 p-3 rounded-xl border transition hover:bg-[#2A3942] border-[#2A3942] cursor-pointer group">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shadow ${profile.color} relative`}>
+                          {profile.avatar ? (
+                            <img src={profile.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=${profile.color.replace('#','')}&color=ffffff`; }} />
+                          ) : (
+                            String(profile.name).charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-baseline">
+                            <div className="text-sm font-medium text-white truncate">{profile.name}</div>
+                            {isActive && <span className="bg-emerald-500 text-emerald-900 text-[9px] px-1.5 py-0.5 rounded-full font-bold">Active</span>}
+                          </div>
+                          {profile.about && (
+                            <div className="text-[10px] text-gray-500 truncate">{profile.about}</div>
+                          )}
+                          <div className="text-[10px] text-gray-600">{profile.status || 'Available'}</div>
+                        </div>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); switchProfile(profile.id); }}
+                            className="p-1.5 hover:bg-[#2A3942] rounded text-gray-400 transition"
+                            title="Switch to this profile"
+                          >
+                            <CheckCheck className={`w-3 h-3 ${isActive ? 'text-emerald-400' : 'text-gray-600'}`} />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setEditingProfileId(profile.id); setProfileDraft({ ...profile }); }}
+                            className="p-1.5 hover:bg-[#2A3942] rounded text-[#833AB4] transition"
+                            title="Edit profile"
+                          >
+                            <Edit3 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* ===== PROFILE EDITOR VIEW (WhatsApp-style) ===== */}
+              {editingProfileId && profileDraft && (
+                <div className="flex-1 overflow-y-auto space-y-5 scrollbar-hide">
+                  <p className="text-xs text-[#8696A0]">Customize your identity sub-profile details.</p>
+
+                  {/* Profile Picture Section */}
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="relative group">
+                      <div className={`w-24 h-24 rounded-full flex items-center justify-center shadow-2xl border-4 border-[#1F2C34] ${profileDraft.color}`} style={{ background: profileDraft.color }}>
+                        {profileDraft.avatar ? (
+                          <img src={profileDraft.avatar} alt="Profile" className="w-full h-full rounded-full object-cover" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profileDraft.name)}&background=${profileDraft.color.replace('#','')}&color=ffffff`; }} />
+                        ) : (
+                          <span className="text-xl font-bold text-white">{String(profileDraft.name).charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => { document.getElementById('profile-avatar-input')?.click(); }}
+                        className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#833AB4] flex items-center justify-center text-white text-[10px] shadow-lg hover:scale-105 transition"
+                        title="Change photo"
+                      >
+                        <Camera className="w-3 h-3" />
+                      </button>
+                      <input
+                        id="profile-avatar-input"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (ev) => {
+                            setProfileDraft((prev) => prev ? { ...prev, avatar: ev.target.result } : null);
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-gray-500">Tap to change profile photo</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* Display Name */}
+                    <div>
+                      <label className="flex items-center gap-1 text-xs font-medium text-gray-400 mb-1">
+                        <span>*</span> Name
+                      </label>
+                      <input
+                        type="text"
+                        value={profileDraft.name}
+                        onChange={(e) => setProfileDraft((prev) => prev ? { ...prev, name: e.target.value } : null)}
+                        className="w-full bg-[#1F2C34] border border-[#2A3942] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500 transition"
+                        placeholder="Enter name"
+                      />
+                    </div>
+
+                    {/* About / Bio */}
+                    <div>
+                      <label className="flex items-center gap-1 text-xs font-medium text-gray-400 mb-1">
+                        About
+                      </label>
+                      <textarea
+                        value={profileDraft.about || ''}
+                        onChange={(e) => setProfileDraft((prev) => prev ? { ...prev, about: e.target.value } : null)}
+                        rows={3}
+                        className="w-full bg-[#1F2C34] border border-[#2A3942] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500 transition"
+                        placeholder="Hey there! I am using WhatsGram."
+                      />
+                      <div className="flex justify-end mt-1">
+                        <span className="text-[10px] text-gray-600">{profileDraft.about?.length || 0}/139</span>
+                      </div>
+                    </div>
+
+                    {/* Status */}
+                    <div>
+                      <label className="flex items-center gap-1 text-xs font-medium text-gray-400 mb-1">
+                        Status
+                      </label>
+                      <select
+                        value={profileDraft.status || 'Available'}
+                        onChange={(e) => setProfileDraft((prev) => prev ? { ...prev, status: e.target.value } : null)}
+                        className="w-full bg-[#1F2C34] border border-[#2A3942] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500 transition"
+                      >
+                        <option value="Available">Available</option>
+                        <option value="At Work">At Work</option>
+                        <option value="At the Gym">At the Gym</option>
+                        <option value="In a Meeting">In a Meeting</option>
+                        <option value="At the Movies">At the Movies</option>
+                        <option value="Sleeping">Sleeping</option>
+                        <option value="Urgent calls only">Urgent calls only</option>
+                        <option value="Battery about to die">Battery about to die</option>
+                        <option value="Custom…">Custom…</option>
+                      </select>
+                    </div>
+
+                    {/* Profile Color */}
+                    <div>
+                      <label className="flex items-center gap-1 text-xs font-medium text-gray-400 mb-2">
+                        Profile Color
+                      </label>
+                      <div className="flex gap-2">
+                        {['#833AB4', '#0ea5e9', '#22c55e', '#ef4444', '#f59e0b', '#ec4899', '#a855f7', '#6366f1'].map((c) => (
+                          <button
+                            key={c}
+                            onClick={() => setProfileDraft((prev) => prev ? { ...prev, color: c } : null)}
+                            className={`w-8 h-8 rounded-full border-2 transition ${profileDraft.color === c ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0B141A]' : 'border-transparent hover:scale-110'}`}
+                            style={{ background: c }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#2A3942] flex justify-between">
+                    <button
+                      onClick={() => { setEditingProfileId(null); setProfileDraft(null); }}
+                      className="px-4 py-2 bg-[#1F2C34] hover:bg-[#2A3942] text-gray-300 text-xs font-medium rounded-lg transition border border-[#2A3942]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIdentityProfiles((prev) => prev.map((p) => (p.id === profileDraft.id ? profileDraft : p)));
+                        setEditingProfileId(null);
+                        setProfileDraft(null);
+                      }}
+                      className="px-4 py-2 bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white text-xs font-medium rounded-lg shadow hover:opacity-90 transition"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Add New Profile button (only in list view) */}
+              {!editingProfileId && (
+                <div className="pt-4 border-t border-[#2A3942]">
+                  <button
+                    onClick={() => {
+                      const newProfile = { id: uid(), name: `Profile ${identityProfiles.length + 1}`, color: '#6366f1', avatar: null, bio: '', about: '', status: 'Available' };
+                      setIdentityProfiles((prev) => [...prev, newProfile]);
+                      setEditingProfileId(newProfile.id);
+                      setProfileDraft({ ...newProfile });
+                    }}
+                    className="w-full py-2 bg-[#1F2C34] hover:bg-[#2A3942] text-gray-300 text-xs rounded border border-[#2A3942] transition flex items-center justify-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add New Profile
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
