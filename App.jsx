@@ -340,7 +340,8 @@ const GAME_TYPES = {
   PARKING: 'parking',
   SLIDING: 'sliding',
   MATCHING: 'matching',
-  REFLEX: 'reflex'
+  REFLEX: 'reflex',
+  BOWLING2: 'dice_race'
 };
 
 const ALL_GAMES = [
@@ -393,7 +394,9 @@ const ALL_GAMES = [
   { id: 47, name: 'Pet Tamagotchi',            type: GAME_TYPES.TAMAGOTCHI, category: 'Casual & Clicker',theme: '#ec4899' },
   { id: 48, name: 'Virtual Drumkit',           type: GAME_TYPES.DRUMKIT,    category: 'Casual & Clicker',theme: '#64748b' },
   { id: 49, name: 'Typing Speed Test',         type: GAME_TYPES.TYPING,     category: 'Puzzle & Strategy',theme: '#0ea5e9' },
-  { id: 50, name: 'Zen Meditation Idle',       type: GAME_TYPES.ZEN,        category: 'Casual & Clicker',theme: '#22c55e' }
+  { id: 50, name: 'Zen Meditation Idle',       type: GAME_TYPES.ZEN,        category: 'Casual & Clicker',theme: '#22c55e' },
+  { id: 51, name: 'Minesweeper Classic',       type: GAME_TYPES.MINECRAFT,  category: 'Puzzle & Strategy',theme: '#64748b' },
+  { id: 52, name: 'Dice Race',                 type: GAME_TYPES.BOWLING2,   category: 'Arcade & Action',theme: '#fbbf24' },
 ];
 
 const GAME_ICONS = {
@@ -441,6 +444,7 @@ const GAME_ICONS = {
   [GAME_TYPES.SPACEINVADERS]: Square,
   [GAME_TYPES.TRIVIA]: Square,
   [GAME_TYPES.MINECRAFT]: Square,
+  [GAME_TYPES.BOWLING2]: Square,
   [GAME_TYPES.FISHING]: Square,
   [GAME_TYPES.RACING]: Square,
   [GAME_TYPES.PARKING]: Square,
@@ -2178,6 +2182,244 @@ function GameBattleship({ onScore, theme }) {
   );
 }
 
+// --- Tetris (proper) ---
+function GameTetris({ onScore, theme, sound }) {
+  const canvasRef = useRef(null);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [started, setStarted] = useState(false);
+  const animRef = useRef(null);
+
+  const SHAPES = [
+    [[1,1,1,1]],                                    // I
+    [[1,1],[1,1]],                                  // O
+    [[0,1,0],[1,1,1]],                              // T
+    [[1,0,0],[1,1,1]],                              // J
+    [[0,0,1],[1,1,1]],                              // L
+    [[0,1,1],[1,1,0]],                              // S
+    [[1,1,0],[0,1,1]]                               // Z
+  ];
+  const COLORS = ['#0ea5e9','#22c55e','#a855f7','#3b82f6','#f59e0b','#ec4899','#ef4444'];
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const COLS = 10, ROWS = 20, BS = 20;
+    let board = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+    let piece = null, px = 0, py = 0;
+    let running = true, last = 0, drop = 700, s = 0;
+
+    function newPiece() {
+      const i = Math.floor(Math.random() * SHAPES.length);
+      piece = SHAPES[i].map(r => [...r]);
+      px = Math.floor(COLS / 2) - Math.floor(piece[0].length / 2);
+      py = 0;
+      if (collide(board, piece, px, py)) { running = false; setGameOver(true); onScore(s); }
+    }
+    function collide(b, p, x, y) {
+      for (let r = 0; r < p.length; r++) for (let c = 0; c < p[r].length; c++)
+        if (p[r][c] && (b[y + r] == null || b[y + r][x + c] == null || b[y + r][x + c] !== 0)) return true;
+      return false;
+    }
+    function merge() {
+      for (let r = 0; r < piece.length; r++) for (let c = 0; c < piece[r].length; c++)
+        if (piece[r][c]) board[py + r][px + c] = 1;
+      let cleared = 0;
+      outer: for (let r = ROWS - 1; r >= 0; r--) {
+        if (board[r].every(v => v !== 0)) { board.splice(r, 1); board.unshift(Array(COLS).fill(0)); cleared++; r++; }
+      }
+      s += cleared * 100; setScore(s); onScore(s);
+    }
+    function move(dx, dy) {
+      if (!running) return;
+      if (!collide(board, piece, px + dx, py + dy)) { px += dx; py += dy; }
+      else if (dy > 0) { merge(); newPiece(); }
+    }
+    function rotate() {
+      const rot = piece[0].map((_, i) => piece.map(row => row[i]).reverse());
+      if (!collide(board, rot, px, py)) piece = rot;
+    }
+    const draw = (t) => {
+      if (!running) return;
+      const dt = t - last;
+      if (dt < drop) { animRef.current = requestAnimationFrame(draw); return; }
+      last = t;
+      move(0, 1);
+      ctx.fillStyle = '#0B141A'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = theme; ctx.lineWidth = 2; ctx.strokeRect(0, 0, canvas.width, canvas.height);
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (board[r][c]) { ctx.fillStyle = theme; ctx.fillRect(c * BS + 1, r * BS + 1, BS - 2, BS - 2); }
+      if (piece) { ctx.fillStyle = COLORS[Math.floor(Math.random() * COLORS.length)]; piece.forEach((row, r) => row.forEach((v, c) => { if (v) ctx.fillRect((px + c) * BS + 1, (py + r) * BS + 1, BS - 2, BS - 2); })); }
+      animRef.current = requestAnimationFrame(draw);
+    };
+    const keydown = (e) => { if (e.key === 'ArrowLeft') move(-1, 0); else if (e.key === 'ArrowRight') move(1, 0); else if (e.key === 'ArrowDown') move(0, 1); else if (e.key === 'ArrowUp') rotate(); };
+    newPiece();
+    if (started) animRef.current = requestAnimationFrame(draw);
+    window.addEventListener('keydown', keydown);
+    return () => { running = false; if (animRef.current) cancelAnimationFrame(animRef.current); window.removeEventListener('keydown', keydown); };
+  }, [started, theme, sound]);
+
+  return (
+    <div className="w-full flex flex-col items-center gap-3">
+      <canvas ref={canvasRef} width={200} height={400} className="w-full max-w-md h-[400px] bg-[#0B141A] rounded-xl border border-[#2A3942] shadow-inner" />
+      <div className="flex gap-2">
+        <button onClick={() => { setStarted(false); setScore(0); setGameOver(false); }} className="px-3 py-1 bg-[#2A3942] text-white text-xs rounded hover:bg-[#3A4952]">Reset</button>
+        <button onClick={() => { setScore(0); setGameOver(false); setStarted(true); }} className="px-3 py-1 bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white text-xs rounded hover:opacity-90">Start</button>
+      </div>
+      {gameOver && <div className="text-emerald-400 text-xs font-bold">Game Over — Score: {score}</div>}
+      <p className="text-[10px] text-gray-500">Arrows: move/rotate • Down: drop</p>
+    </div>
+  );
+}
+
+// --- Minesweeper (proper) ---
+function GameMinesweeper({ onScore, theme, sound }) {
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [board, setBoard] = useState([]);
+  const [revealed, setRevealed] = useState([]);
+  const [flags, setFlags] = useState([]);
+  const ROWS = 8, COLS = 8, MINES = 10;
+
+  const initBoard = () => {
+    const b = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+    let placed = 0;
+    while (placed < MINES) {
+      const r = Math.floor(Math.random() * ROWS), c = Math.floor(Math.random() * COLS);
+      if (b[r][c] !== 9) { b[r][c] = 9; placed++; }
+    }
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (b[r][c] !== 9) {
+      let n = 0;
+      for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) if (b[r + dr] && b[r + dr][c + dc] === 9) n++;
+      b[r][c] = n;
+    }
+    return b;
+  };
+
+  const reset = () => {
+    setBoard(initBoard());
+    setRevealed(Array(ROWS).fill().map(() => Array(COLS).fill(false)));
+    setFlags(Array(ROWS).fill().map(() => Array(COLS).fill(false)));
+    setScore(0); setGameOver(false); setStarted(false);
+  };
+
+  const reveal = (r, c) => {
+    if (gameOver || !started || revealed[r][c] || flags[r][c]) return;
+    const next = revealed.map(row => [...row]); next[r][c] = true; setRevealed(next);
+    if (board[r][c] === 9) { setGameOver(true); onScore(score); return; }
+    setScore(s => s + 10); onScore(score + 10);
+    if (board[r][c] === 0) {
+      for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) if (r + dr >= 0 && r + dr < ROWS && c + dc >= 0 && c + dc < COLS) reveal(r + dr, c + dc);
+    }
+    const unrevealed = revealed.reduce((acc, row, ri) => acc + row.filter((v, ci) => !v && board[ri][ci] !== 9).length, 0);
+    if (unrevealed === 0) { setGameOver(true); onScore(score + 500); }
+  };
+
+  const toggleFlag = (r, c) => {
+    if (gameOver || !started || revealed[r][c]) return;
+    const next = flags.map(row => [...row]); next[r][c] = !next[r][c]; setFlags(next);
+  };
+
+  if (!started) {
+    return (
+      <div className="w-full flex flex-col items-center gap-3">
+        <div className="w-full max-w-md bg-[#1F2C34] rounded-xl p-6 border border-[#2A3942] text-center">
+          <div className="text-2xl text-emerald-400 mb-2">💣</div>
+          <h4 className="text-lg font-bold text-white mb-2">Minesweeper Classic</h4>
+          <p className="text-xs text-gray-400 mb-4">Find all {MINES} mines without clicking one.</p>
+          <button onClick={() => { reset(); setStarted(true); }} className="px-4 py-2 bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white text-xs rounded hover:opacity-90">Start Game</button>
+        </div>
+        <p className="text-[10px] text-gray-500">Left click: reveal • Right click: flag</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full flex flex-col items-center gap-3">
+      <div className="w-full max-w-md bg-[#1F2C34] rounded-xl p-4 border border-[#2A3942] text-center">
+        <div className="flex justify-between mb-2 text-xs font-mono">
+          <span className="text-emerald-400">Score: {score}</span>
+          <span className="text-red-400">Mines: {MINES}</span>
+        </div>
+        <div className="grid grid-cols-8 gap-0.5 w-64 mx-auto mb-3">
+          {board.map((row, r) => (
+            <div key={r} className="grid grid-cols-8 gap-0.5">
+              {row.map((cell, c) => {
+                const isFlag = flags[r][c];
+                const isRev = revealed[r][c];
+                return (
+                  <button
+                    key={c}
+                    onClick={() => reveal(r, c)}
+                    onContextMenu={(e) => { e.preventDefault(); toggleFlag(r, c); }}
+                    disabled={isRev || gameOver}
+                    className={`aspect-square rounded border text-[10px] font-bold ${gameOver && board[r][c] === 9 ? 'bg-red-500 text-white' : isRev ? (cell === 9 ? 'bg-red-500 text-white' : cell === 0 ? 'bg-[#3A4952]' : 'bg-[#1F2C34]') : 'bg-[#2A3942] border-[#3A4952] hover:bg-[#3A4952]'} ${isFlag ? 'text-yellow-400' : ''}`}
+                  >
+                    {isFlag ? '🚩' : isRev ? (cell === 9 ? '💣' : cell > 0 ? cell : '') : ''}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-1">
+          <button onClick={() => { reset(); setStarted(true); }} className="h-8 w-8 rounded bg-[#2A3942] text-[10px]">⟲</button>
+        </div>
+        <button onClick={() => { setStarted(false); reset(); }} className="mt-2 px-4 py-1 bg-[#2A3942] text-white text-xs rounded hover:bg-[#3A4952]">Reset</button>
+      </div>
+      {gameOver && <div className="text-emerald-400 text-xs font-bold">{board.flat().includes(9) && revealed.some((row, r) => row.some((v, c) => v && board[r][c] === 9)) ? 'Boom! Game Over.' : 'You cleared the minefield! 🎉'}</div>}
+      <p className="text-[10px] text-gray-500">Right-click to flag mines.</p>
+    </div>
+  );
+}
+
+// --- Dice Race ---
+function GameDiceRace({ onScore, theme, sound }) {
+  const [score, setScore] = useState(0);
+  const [dice1, setDice1] = useState(1);
+  const [dice2, setDice2] = useState(1);
+  const [position, setPosition] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const GOAL = 50;
+
+  const roll = () => {
+    if (finished) return;
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = Math.floor(Math.random() * 6) + 1;
+    setDice1(d1); setDice2(d2);
+    setPosition(p => { const np = Math.min(p + d1 + d2, GOAL); if (np >= GOAL) setFinished(true); return np; });
+    setScore(s => s + (d1 + d2));
+    onScore(score + d1 + d2);
+  };
+
+  const reset = () => { setPosition(0); setScore(0); setDice1(1); setDice2(1); setFinished(false); onScore(0); };
+
+  return (
+    <div className="w-full flex flex-col items-center gap-3">
+      <div className="w-full max-w-md bg-[#1F2C34] rounded-xl p-6 border border-[#2A3942] text-center">
+        <div className="text-4xl text-emerald-400 mb-2">🎲</div>
+        <h4 className="text-lg font-bold text-white mb-2">Dice Race</h4>
+        <p className="text-xs text-gray-400 mb-4">Roll two dice and race to {GOAL}!</p>
+        <div className="flex justify-center gap-3 mb-4">
+          <div className="w-16 h-16 bg-[#1F2C34] border border-[#3A4952] rounded-xl flex items-center justify-center text-4xl shadow-inner">{dice1}</div>
+          <div className="w-16 h-16 bg-[#1F2C34] border border-[#3A4952] rounded-xl flex items-center justify-center text-4xl shadow-inner">{dice2}</div>
+        </div>
+        <div className="w-full h-4 bg-[#2A3942] rounded-full mb-4 overflow-hidden border border-[#3A4952]">
+          <div className={`h-full bg-gradient-to-r from-[#833AB4] to-[#E1306C] rounded-full transition-all duration-500`} style={{ width: `${Math.min(position / GOAL, 1) * 100}%` }} />
+        </div>
+        <div className="text-xs font-mono text-cyan-400 mb-4">Position: {position} / {GOAL}</div>
+        <button onClick={roll} disabled={finished} className={`px-6 py-3 rounded-xl text-lg font-bold transition ${finished ? 'bg-gray-600 text-gray-300' : 'bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white hover:opacity-90 shadow-lg'}`}>
+          {finished ? 'Finished!' : 'Roll Dice'}
+        </button>
+        <button onClick={reset} className="mt-3 px-4 py-1 bg-[#2A3942] text-white text-xs rounded hover:bg-[#3A4952]">Reset</button>
+      </div>
+      {finished && <div className="text-emerald-400 text-xs font-bold">You reached {GOAL}! 🎉</div>}
+      <p className="text-[10px] text-gray-500">Roll to advance • First to 50 wins</p>
+    </div>
+  );
+}
+
 // --- Pac-Grid ---
 function GamePacGrid({ onScore, theme }) {
   const [score, setScore] = useState(0);
@@ -2844,7 +3086,7 @@ function GameChess({ onScore, theme }) {
 }
 
 // --- Game Router ---
-function GamePlayer({ gameId, onScore }) {
+function GamePlayer({ gameId, onScore, soundEnabled }) {
   const game = ALL_GAMES.find(g => g.id === gameId);
   const name = game ? game.name : `Game #${gameId}`;
   const theme = game ? game.theme : '#833AB4';
@@ -2854,7 +3096,7 @@ function GamePlayer({ gameId, onScore }) {
     [GAME_TYPES.SNAKE]: GameSnake,
     [GAME_TYPES.PONG]: GamePong,
     [GAME_TYPES.BREAKOUT]: GameBreakout,
-    [GAME_TYPES.TETRIS]: GameSnake,
+    [GAME_TYPES.TETRIS]: GameTetris,
     [GAME_TYPES.WHACKAMOLE]: GameWhackAMole,
     [GAME_TYPES.MEMORY]: GameMemory,
     [GAME_TYPES.MEMORYMATCH]: GameMemoryMatch,
@@ -2894,7 +3136,7 @@ function GamePlayer({ gameId, onScore }) {
     [GAME_TYPES.DINO]: GameDino,
     [GAME_TYPES.SPACEINVADERS]: GameSpaceInvaders,
     [GAME_TYPES.TRIVIA]: GameTrivia,
-    [GAME_TYPES.MINECRAFT]: GameMinecraft,
+    [GAME_TYPES.MINECRAFT]: GameMinesweeper,
     [GAME_TYPES.FISHING]: GameFishing,
     [GAME_TYPES.RACING]: GameRacing,
     [GAME_TYPES.PARKING]: GameParking,
@@ -2902,7 +3144,8 @@ function GamePlayer({ gameId, onScore }) {
     [GAME_TYPES.MATCHING]: GameMatching,
     [GAME_TYPES.REFLEX]: GameReflex,
     [GAME_TYPES.BUBBLE]: GameBubble,
-    [GAME_TYPES.BOARD]: GameChess
+    [GAME_TYPES.BOARD]: GameChess,
+    [GAME_TYPES.BOWLING2]: GameDiceRace,
   };
 
   const Engine = engines[game?.type] || GameSnake;
@@ -2914,9 +3157,9 @@ function GamePlayer({ gameId, onScore }) {
           <IconComponent className="w-6 h-6 text-cyan-400" />
           <h4 className="text-xl font-bold text-emerald-400">{name}</h4>
         </div>
-        <p className="text-xs text-[#8696A0]">{game?.category} • High Score: {0}</p>
+        <p className="text-xs text-[#8696A0]">{game?.category} • High Score: {arcadeScores[gameId] || 0} • Sound: {soundEnabled ? 'On' : 'Off'}</p>
       </div>
-      <Engine theme={theme} onScore={onScore} />
+      <Engine theme={theme} onScore={onScore} sound={soundEnabled} />
     </div>
   );
 }
@@ -3695,6 +3938,7 @@ export default function App() {
   const [inputText, setInputText] = useState('');
   const [showGameVault, setShowGameVault] = useState(false);
   const [selectedGameId, setSelectedGameId] = useState(null);
+  const [soundEnabled, setSoundEnabled] = useState(() => safeJson(`${SCOPE}arcade_sound`, true));
   const [showSpatialAudio, setShowSpatialAudio] = useState(false);
   const [showWorkflowModal, setShowWorkflowModal] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
@@ -3754,6 +3998,7 @@ export default function App() {
   useEffect(() => { safeSet(LS_MONOCHROME, monochromeMode); }, [monochromeMode]);
   useEffect(() => { safeSet(LS_QUANTUM, quantumEncryptionActive); }, [quantumEncryptionActive]);
   useEffect(() => { safeSet(`${SCOPE}recipe_active`, recipeActive); }, [recipeActive]);
+  useEffect(() => { safeSet(`${SCOPE}arcade_sound`, soundEnabled); }, [soundEnabled]);
   // Clean up auth keys written by the previous (non-account) auth system.
   useEffect(() => {
     try {
@@ -4761,9 +5006,17 @@ export default function App() {
                 <h3 className="text-lg font-bold flex items-center gap-2">
                   <Gamepad2 className="w-6 h-6 text-emerald-400" /> 50-Game Arcade Vault
                 </h3>
-                <button onClick={() => { setShowGameVault(false); setSelectedGameId(null); }} className="p-2 hover:bg-[#1F2C34] rounded-lg transition">
-                  <X className="w-5 h-5 text-gray-400 hover:text-white" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSoundEnabled((v) => !v)}
+                    className={`p-2 rounded-lg transition ${soundEnabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-[#2A3942] text-gray-500'}`} title="Toggle Sound"
+                  >
+                    <Volume2 className="w-5 h-5" />
+                  </button>
+                  <button onClick={() => { setShowGameVault(false); setSelectedGameId(null); }} className="p-2 hover:bg-[#1F2C34] rounded-lg transition">
+                    <X className="w-5 h-5 text-gray-400 hover:text-white" />
+                  </button>
+                </div>
               </div>
 
               {!selectedGameId ? (
@@ -4797,7 +5050,7 @@ export default function App() {
                     <p className="text-xs text-[#8696A0]">Fully playable arcade session — use arrow keys to play</p>
                   </div>
 
-                  <GamePlayer gameId={selectedGameId} onScore={(pts) => {
+                  <GamePlayer gameId={selectedGameId} soundEnabled={soundEnabled} onScore={(pts) => {
                     setArcadeScores((prev) => ({ ...prev, [selectedGameId]: Math.max(prev[selectedGameId] || 0, pts) }));
                   }} />
 
