@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { getSupabase } from '@/lib/supabase/browser';
 import {
   MessageSquare, User, Gamepad2, Send, CheckCheck, X, Shield, Moon,
   Command, Radio, Workflow, Coins, Square, FileDown, Search, FolderOpen,
@@ -44,6 +45,145 @@ const safeSet = (key, value) => {
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 const uid = () => `id_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 const nowISO = () => new Date().toISOString();
+
+// ============================================================
+// SUPABASE SYNC (persists to cloud + localStorage)
+// ============================================================
+let supabase = null;
+try { supabase = getSupabase(); } catch { /* Supabase not configured — localStorage only */ }
+
+const supabaseReady = () => supabase && typeof window !== 'undefined';
+
+const sbUpsert = async (table, row) => {
+  if (!supabaseReady()) return;
+  try {
+    await supabase.from(table).upsert(row, { onConflict: 'id' });
+  } catch (e) { console.warn(`Supabase upsert ${table} failed:`, e); }
+};
+
+const sbInsert = async (table, row) => {
+  if (!supabaseReady()) return;
+  try {
+    await supabase.from(table).insert(row);
+  } catch (e) { console.warn(`Supabase insert ${table} failed:`, e); }
+};
+
+const sbDelete = async (table, id) => {
+  if (!supabaseReady()) return;
+  try {
+    await supabase.from(table).delete().eq('id', id);
+  } catch (e) { console.warn(`Supabase delete ${table} failed:`, e); }
+};
+
+const sbSelect = async (table, filter = {}) => {
+  if (!supabaseReady()) return [];
+  try {
+    let q = supabase.from(table).select('*');
+    Object.entries(filter).forEach(([k, v]) => { q = q.eq(k, v); });
+    const { data } = await q;
+    return data || [];
+  } catch (e) { console.warn(`Supabase select ${table} failed:`, e); return [];
+  }
+};
+
+// Sync conversations to Supabase
+const syncConversationsToSupabase = async (convs) => {
+  if (!supabaseReady()) return;
+  for (const c of convs) {
+    await sbUpsert('conversations', {
+      id: c.id,
+      is_group: c.is_group || false,
+      name: c.name || null,
+      folder: c.folder || 'all',
+      is_bot: c.is_bot || false,
+      is_ai: c.is_ai || false,
+      is_pinned: c.is_pinned || false,
+      last_message: c.last_message || null,
+      unread_count: c.unread_count || 0,
+      participant: c.participant || null,
+      updated_at: nowISO()
+    });
+  }
+};
+
+// Sync messages to Supabase
+const syncMessagesToSupabase = async (convId, msgs) => {
+  if (!supabaseReady()) return;
+  for (const m of msgs) {
+    await sbUpsert('messages', {
+      id: m.id,
+      conversation_id: convId,
+      sender_id: m.sender_id,
+      body: m.body || '',
+      kind: 'text',
+      created_at: m.created_at || nowISO(),
+      updated_at: nowISO()
+    });
+  }
+};
+
+// Sync custom bots to Supabase
+const syncBotsToSupabase = async (bots) => {
+  if (!supabaseReady()) return;
+  for (const b of bots) {
+    await sbUpsert('custom_bots', {
+      id: b.id,
+      name: b.name || '',
+      username: b.username || '',
+      token: b.token || '',
+      created_at: b.created_at || nowISO()
+    });
+  }
+};
+
+// Sync game scores to Supabase
+const syncGameScoresToSupabase = (scores) => {
+  if (!supabaseReady()) return;
+  Object.entries(scores).forEach(([gameId, score]) => {
+    sbUpsert('game_records', {
+      id: `game_${gameId}_${uid().slice(0, 8)}`,
+      game_id: parseInt(gameId),
+      game_name: ALL_GAMES.find((g) => g.id === parseInt(gameId))?.name || `Game #${gameId}`,
+      score: score || 0,
+      category: ALL_GAMES.find((g) => g.id === parseInt(gameId))?.category || 'Unknown'
+    });
+  });
+};
+
+// Sync identity profiles to Supabase
+const syncProfilesToSupabase = (profiles) => {
+  if (!supabaseReady()) return;
+  profiles.forEach((p) => {
+    sbUpsert('identity_sub_profiles', {
+      id: p.id,
+      name: p.name || '',
+      color: p.color || '#833AB4',
+      avatar_url: p.avatar || null,
+      bio: p.bio || '',
+      about: p.about || '',
+      status: p.status || 'Available',
+      is_active: p.id === activeProfileId
+    });
+  });
+};
+
+// Load initial data from Supabase on mount
+const loadFromSupabase = async () => {
+  if (!supabaseReady()) return null;
+  try {
+    const [convs, msgs, bots, scores, profiles] = await Promise.all([
+      sbSelect('conversations'),
+      sbSelect('messages'),
+      sbSelect('custom_bots'),
+      sbSelect('game_records'),
+      sbSelect('identity_sub_profiles')
+    ]);
+    return { conversations: convs || [], messages: msgs || [], bots: bots || [], scores: scores || [], profiles: profiles || [] };
+  } catch (e) {
+    console.warn('Supabase load failed:', e);
+    return null;
+  }
+};
 
 // ============================================================
 // INITIAL DATA
@@ -3161,16 +3301,59 @@ export default function App() {
   const commandInputRef = useRef(null);
 
   // Persistence effects
-  useEffect(() => { safeSet(LS_CONVERSATIONS, conversations); }, [conversations]);
-  useEffect(() => { safeSet(LS_MESSAGES, messages); }, [messages]);
-  useEffect(() => { safeSet(LS_CUSTOM_BOTS, customBots); }, [customBots]);
-  useEffect(() => { safeSet(LS_ARCADE_SCORES, arcadeScores); }, [arcadeScores]);
-  useEffect(() => { safeSet(LS_IDENTITY_PROFILES, identityProfiles); }, [identityProfiles]);
+  useEffect(() => {
+    safeSet(LS_CONVERSATIONS, conversations);
+    syncConversationsToSupabase(conversations);
+  }, [conversations]);
+  useEffect(() => {
+    safeSet(LS_MESSAGES, messages);
+    Object.entries(messages).forEach(([convId, msgs]) => syncMessagesToSupabase(convId, msgs));
+  }, [messages]);
+  useEffect(() => {
+    safeSet(LS_CUSTOM_BOTS, customBots);
+    syncBotsToSupabase(customBots);
+  }, [customBots]);
+  useEffect(() => {
+    safeSet(LS_ARCADE_SCORES, arcadeScores);
+    syncGameScoresToSupabase(arcadeScores);
+  }, [arcadeScores]);
+  useEffect(() => {
+    safeSet(LS_IDENTITY_PROFILES, identityProfiles);
+    syncProfilesToSupabase(identityProfiles);
+  }, [identityProfiles]);
   useEffect(() => { safeSet(LS_ACTIVE_PROFILE, activeProfileId); }, [activeProfileId]);
   useEffect(() => { safeSet(LS_USER_ID, userId); }, [userId]);
   useEffect(() => { safeSet(LS_MONOCHROME, monochromeMode); }, [monochromeMode]);
   useEffect(() => { safeSet(LS_QUANTUM, quantumEncryptionActive); }, [quantumEncryptionActive]);
   useEffect(() => { safeSet('whatsgram_recipe_active', recipeActive); }, [recipeActive]);
+
+  // Load initial data from Supabase on mount (falls back to localStorage)
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      const remote = await loadFromSupabase();
+      if (!mounted || !remote) return;
+      // Merge remote data with local state (remote wins for server-persisted data)
+      setConversations((prev) => (remote.conversations.length > 0 ? remote.conversations : prev));
+      setMessages((prev) => {
+        const merged = { ...prev };
+        remote.messages.forEach((m) => {
+          if (!merged[m.conversation_id]) merged[m.conversation_id] = [];
+          merged[m.conversation_id].push(m);
+        });
+        return merged;
+      });
+      setCustomBots((prev) => (remote.bots.length > 0 ? remote.bots : prev));
+      setArcadeScores((prev) => {
+        const next = { ...prev };
+        remote.scores.forEach((s) => { next[String(s.game_id)] = s.score; });
+        return next;
+      });
+      setIdentityProfiles((prev) => (remote.profiles.length > 0 ? remote.profiles : prev));
+    };
+    load();
+    return () => { mounted = false; };
+  }, []);
 
   // Auto-scroll messages to bottom
   useEffect(() => {
