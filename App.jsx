@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getSupabase } from '@/lib/supabase/browser';
+import AuthModule from './AuthModule';
 import {
   MessageSquare, User, Gamepad2, Send, CheckCheck, X, Shield, Moon,
   Command, Radio, Workflow, Coins, Square, FileDown, Search, FolderOpen,
@@ -8,7 +9,7 @@ import {
   Trash2, Edit3, Plus, Minus, RotateCw, Maximize2, Minimize2,
   ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
   Circle, Triangle, Star, MapPin, CreditCard, Heart, Eye, Music, MessageCircle,
-  MoreHorizontal, Volume2, VolumeX, RotateCcw
+  MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power
 } from 'lucide-react';
 
 // ============================================================
@@ -3677,6 +3678,8 @@ export default function App() {
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [showStories, setShowStories] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => safeJson('whatsgram_authenticated', false));
+  const [user, setUser] = useState(() => safeJson('whatsgram_user', null));
 
   // Derived
   const currentConv = useMemo(() => conversations.find((c) => c.id === activeConversationId), [conversations, activeConversationId]);
@@ -3713,6 +3716,8 @@ export default function App() {
   useEffect(() => { safeSet(LS_MONOCHROME, monochromeMode); }, [monochromeMode]);
   useEffect(() => { safeSet(LS_QUANTUM, quantumEncryptionActive); }, [quantumEncryptionActive]);
   useEffect(() => { safeSet('whatsgram_recipe_active', recipeActive); }, [recipeActive]);
+  useEffect(() => { safeSet('whatsgram_authenticated', isAuthenticated); }, [isAuthenticated]);
+  useEffect(() => { safeSet('whatsgram_user', user); }, [user]);
 
   // Load initial data from Supabase on mount (falls back to localStorage)
   useEffect(() => {
@@ -4153,10 +4158,18 @@ export default function App() {
   // ===== RENDER =====
   return (
     <ErrorBoundary>
-      <div
-        className={`flex h-screen w-screen overflow-hidden font-sans antialiased bg-[#000000] text-[#E9EDEF] selection:bg-cyan-500/30 ${monochromeMode ? 'grayscale' : ''}`}
-        style={{ transition: 'filter 0.3s ease' }}
-      >
+      {!isAuthenticated ? (
+        <AuthModule
+          onLoginSuccess={(userData) => {
+            setIsAuthenticated(true);
+            setUser(userData);
+          }}
+        />
+      ) : (
+        <div
+          className={`flex h-screen w-screen overflow-hidden font-sans antialiased bg-[#000000] text-[#E9EDEF] selection:bg-cyan-500/30 ${monochromeMode ? 'grayscale' : ''}`}
+          style={{ transition: 'filter 0.3s ease' }}
+        >
         {/* ===== LEFT NAVIGATION BAR ===== */}
         <div className="w-16 border-r flex flex-col items-center py-4 justify-between z-30 flex-shrink-0 bg-[#090D16] border-[#1F2C34]">
           <div className="flex flex-col items-center gap-3">
@@ -4228,6 +4241,14 @@ export default function App() {
               title="Settings"
             >
               <Settings className="w-5 h-5" />
+            </button>
+
+            <button
+              onClick={() => { setIsAuthenticated(false); setUser(null); }}
+              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#1F2C34] hover:text-red-400 transition"
+              title="Sign Out"
+            >
+              <LogOut className="w-5 h-5" />
             </button>
           </div>
 
@@ -4973,6 +4994,7 @@ export default function App() {
           </div>
         )}
       </div>
+      )}
     </ErrorBoundary>
   );
 }
