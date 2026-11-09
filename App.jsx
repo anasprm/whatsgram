@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getSupabase } from '@/lib/supabase/browser';
 import AuthModule from './AuthModule';
+import LandingPage from './LandingPage';
 import {
   MessageSquare, User, Gamepad2, Send, CheckCheck, X, Shield, Moon,
   Command, Radio, Workflow, Coins, Square, FileDown, Search, FolderOpen,
@@ -3680,6 +3681,8 @@ export default function App() {
   const [showStories, setShowStories] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => safeJson('whatsgram_authenticated', false));
   const [user, setUser] = useState(() => safeJson('whatsgram_user', null));
+  const [showAuthScreen, setShowAuthScreen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   // Derived
   const currentConv = useMemo(() => conversations.find((c) => c.id === activeConversationId), [conversations, activeConversationId]);
@@ -3691,6 +3694,7 @@ export default function App() {
   const commandInputRef = useRef(null);
 
   // Persistence effects
+  useEffect(() => { setHydrated(true); }, []);
   useEffect(() => {
     safeSet(LS_CONVERSATIONS, conversations);
     syncConversationsToSupabase(conversations);
@@ -4158,13 +4162,24 @@ export default function App() {
   // ===== RENDER =====
   return (
     <ErrorBoundary>
-      {!isAuthenticated ? (
-        <AuthModule
-          onLoginSuccess={(userData) => {
-            setIsAuthenticated(true);
-            setUser(userData);
-          }}
-        />
+      {!hydrated ? (
+        <div className="h-screen w-screen bg-[#000000]" />
+      ) : !isAuthenticated ? (
+        showAuthScreen ? (
+          <AuthModule
+            onBack={() => setShowAuthScreen(false)}
+            onLoginSuccess={(userData) => {
+              setIsAuthenticated(true);
+              setUser(userData);
+              setShowAuthScreen(false);
+            }}
+          />
+        ) : (
+          <LandingPage
+            onGetStarted={() => setShowAuthScreen(true)}
+            onSignIn={() => setShowAuthScreen(true)}
+          />
+        )
       ) : (
         <div
           className={`flex h-screen w-screen overflow-hidden font-sans antialiased bg-[#000000] text-[#E9EDEF] selection:bg-cyan-500/30 ${monochromeMode ? 'grayscale' : ''}`}
@@ -4244,7 +4259,7 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => { setIsAuthenticated(false); setUser(null); }}
+              onClick={() => { setIsAuthenticated(false); setUser(null); setShowAuthScreen(false); }}
               className="p-3 rounded-xl text-[#8696A0] hover:bg-[#1F2C34] hover:text-red-400 transition"
               title="Sign Out"
             >

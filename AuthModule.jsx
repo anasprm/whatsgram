@@ -11,7 +11,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
-export default function AuthModule({ onLoginSuccess }) {
+export default function AuthModule({ onLoginSuccess, onBack }) {
   const [authMode, setAuthMode] = useState('signin'); // 'signin' | 'signup' | 'forgot' | 'reset'
 
   // Form states
@@ -119,6 +119,17 @@ export default function AuthModule({ onLoginSuccess }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0,transparent_70%)] pointer-events-none" />
 
       <div className="relative w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl">
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="absolute top-5 left-5 flex items-center space-x-1 text-xs font-medium text-zinc-400 hover:text-white transition"
+          >
+            <ArrowLeft size={14} />
+            <span>Home</span>
+          </button>
+        )}
+
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">

@@ -2,7 +2,7 @@
 // Relay PWA Service Worker
 // =================
 
-const CACHE_NAME = 'relay-pwa-v4';
+const CACHE_NAME = 'relay-pwa-v5';
 const OFFLINE_FALLBACK = '/';
 
 // Precache the shell. Each item is added individually so one missing file
@@ -58,19 +58,45 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: cache first, then network, and store successful responses.
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request)
+  // Scripts and styles: network first so a new deploy always wins, with a
+  // cached fallback for offline use. This prevents a stale bundle from being
+  // pinned in the cache across releases.
+  if (request.destination === 'script' || request.destination === 'style') {
+    event.respondWith(
+      fetch(request)
         .then((response) => {
-          if (response && response.ok && (request.destination === 'script' || request.destination === 'style' || request.destination === 'image' || request.destination === 'font')) {
+          if (response && response.ok) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => undefined);
           }
           return response;
         })
-        .catch(() => cached || Response.error());
-    }),
+        .catch(async () => (await caches.match(request)) || Response.error()),
+    );
+    return;
+  }
+
+  // Images and fonts: cache first, then network, and store successful responses.
+  if (request.destination === 'image' || request.destination === 'font') {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request)
+          .then((response) => {
+            if (response && response.ok) {
+              const copy = response.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => undefined);
+            }
+            return response;
+          })
+          .catch(() => Response.error());
+      }),
+    );
+    return;
+  }
+
+  // Everything else: try network, then cache.
+  event.respondWith(
+    fetch(request).catch(async () => (await caches.match(request)) || Response.error()),
   );
 });

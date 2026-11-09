@@ -33,11 +33,24 @@ export function BootstrapScripts() {
         document.documentElement.dataset.ui = ui;
 
         if ('serviceWorker' in navigator) {
-          window.addEventListener('load', function () {
-            navigator.serviceWorker.register('/sw.js').catch(function (err) {
-              console.log('SW registration failed: ', err);
+          if (process.env.NODE_ENV === 'production') {
+            window.addEventListener('load', function () {
+              navigator.serviceWorker.register('/sw.js').catch(function (err) {
+                console.log('SW registration failed: ', err);
+              });
             });
-          });
+          } else {
+            // In development, remove any previously-installed service worker so it
+            // can never serve stale bundles while iterating locally.
+            navigator.serviceWorker
+              .getRegistrations()
+              .then(function (regs) {
+                regs.forEach(function (reg) {
+                  reg.unregister();
+                });
+              })
+              .catch(function () {});
+          }
         }
       } catch (error) {}
     })();
