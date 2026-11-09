@@ -14,10 +14,8 @@ import {
 } from 'lucide-react';
 
 // ============================================================
-// GEMINI API CONFIG
+// AI CHAT — proxied through /api/ai/chat (server-side key, never exposed to client)
 // ============================================================
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY_HERE';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
 // ============================================================
 // ACCOUNT SESSION & PER-USER STORAGE SCOPE
@@ -4073,40 +4071,34 @@ export default function App() {
   // ===== GEMINI API CALL =====
   const callGeminiAPI = useCallback(async (conversationHistory, userMessage) => {
     try {
-      // Build contents array from conversation history (last 10 messages for context)
-      const contents = [];
+      // Build a single prompt string from conversation history for the server-side AI route
       const recentMsgs = conversationHistory.slice(-10);
-      for (const m of recentMsgs) {
-        if (m.sender_id === 'usr_ai') {
-          contents.push({ role: 'model', parts: [{ text: m.body || '' }] });
-        } else if (m.sender_id === currentUserId) {
-          contents.push({ role: 'user', parts: [{ text: m.body || '' }] });
-        }
-      }
-      // Add the current user message
-      contents.push({ role: 'user', parts: [{ text: userMessage }] });
+      const lines = recentMsgs.map((m) => {
+        const role = m.sender_id === 'usr_ai' ? 'AI' : m.sender_id === currentUserId ? 'You' : 'User';
+        return `${role}: ${m.body || ''}`;
+      });
+      lines.push(`You: ${userMessage}`);
+      const prompt = lines.join('\n');
 
-      const res = await fetch(GEMINI_API_URL, {
+      const res = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents, generationConfig: { temperature: 0.7, maxOutputTokens: 1024 } }),
+        body: JSON.stringify({ prompt }),
       });
 
       if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Gemini API error ${res.status}: ${errText}`);
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(`AI error ${res.status}: ${errData.error || await res.text()}`);
       }
 
       const data = await res.json();
-      const candidate = data.candidates?.[0];
-      const text = candidate?.content?.parts?.[0]?.text;
-      if (!text) throw new Error('Empty response from Gemini');
-      return text;
+      if (!data.response) throw new Error('Empty response from AI service');
+      return data.response;
     } catch (err) {
-      console.error('Gemini API call failed:', err);
+      console.error('AI API call failed:', err);
       return `⚠️ Sorry, I'm having trouble connecting to the AI service right now. (${err.message})`;
     }
-  }, [currentUserId, GEMINI_API_URL]);
+  }, [currentUserId]);
 
   // ===== ATTACHMENT HANDLERS =====
   const handleCamera = () => {
