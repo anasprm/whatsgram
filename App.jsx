@@ -11,7 +11,8 @@ import {
   ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
   Circle, Triangle, Star, MapPin, CreditCard, Heart, Eye, Music, MessageCircle,
   MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power, UserPlus,
-  Phone, PhoneIncoming, PhoneOutgoing, PhoneMissed, Video, Info, Speaker as SpeakerIcon
+  Phone, PhoneIncoming, PhoneOutgoing, PhoneMissed, Video, Info, Speaker as SpeakerIcon,
+  MoreVertical, Smile, CornerUpLeft, ShieldAlert, Volume2 as VolumeIcon, BellOff
 } from 'lucide-react';
 
 // ============================================================
@@ -3393,14 +3394,76 @@ function MessageItem({ message, currentUserId }) {
   const isMe = message.sender_id === currentUserId;
   const time = message.created_at ? new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
   const atts = message.attachments || [];
+  const isReply = message.reply_to_id;
+  const reactions = messageReactions[message.id] || [];
+  const userHasReacted = reactions.some((r) => r.users.includes(currentUserId || 'me'));
+  const totalReactions = reactions.reduce((sum, r) => sum + r.users.length, 0);
+
+  const handleAction = (action) => {
+    if (action === 'reply') {
+      setReplyingToMessage(message.id);
+      setMessageActionsMenu(null);
+    } else if (action === 'copy') {
+      navigator.clipboard.writeText(message.body || '');
+      setMessageActionsMenu(null);
+    } else if (action === 'delete') {
+      setConversations((prev) => prev.map((c) => ({
+        ...c,
+        messages: c.messages?.filter((m) => m.id !== message.id) || c.messages
+      })));
+      setMessageActionsMenu(null);
+    } else if (action === 'react') {
+      setShowEmojiPicker(message.id);
+      setMessageActionsMenu(null);
+    }
+  };
+
+  const addReaction = (emoji) => {
+    setMessageReactions((prev) => {
+      const existing = prev[message.id] || [];
+      const userIdx = existing.findIndex((r) => r.users.includes(currentUserId || 'me'));
+      if (userIdx >= 0) {
+        const updated = existing.filter((r) => r.emoji !== emoji);
+        if (updated.length === 0) {
+          const next = { ...prev };
+          delete next[message.id];
+          return next;
+        }
+        updated[userIdx].emoji = emoji;
+        return { ...prev, [message.id]: updated };
+      }
+      return { ...prev, [message.id]: [...existing, { emoji, users: [currentUserId || 'me'] }] };
+    });
+    setShowEmojiPicker(null);
+  };
+
+  const emojiReactionsDisplay = reactions.map((r) => `${r.emoji} (${r.users.length})`).join(' ');
+
   return (
     <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-xs md:max-w-md p-3 rounded-2xl text-xs space-y-1 shadow-lg ${
-        isMe
-          ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
-          : 'bg-[#1F2C34] text-white border border-[#2A3942]'
-      }`}>
-        <p className="whitespace-pre-wrap break-words">{String(message.body || '')}</p>
+      {/* Reply Quote Bubble */}
+      {isReply && (
+        <div className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-1`}>
+          <div className={`max-w-xs md:max-w-md p-2 rounded-xl text-[10px] space-y-1 ${
+            isMe ? 'text-white/90' : 'text-zinc-400'
+          } bg-zinc-800/30 border border-zinc-700/50`}>
+            <span className="text-zinc-500 text-[9px] uppercase tracking-wider font-bold">Reply</span>
+            <span className="text-zinc-300">{message.reply_to_body || 'Message'}</span>
+          </div>
+        </div>
+      )}
+
+      <div
+        className={`relative group ${isMe ? 'justify-end' : 'justify-start'}`}
+        onMouseEnter={() => setMessageActionsMenu({ id: message.id, x: 0, y: 0 })}
+        onMouseLeave={() => setMessageActionsMenu(null)}
+      >
+        <div className={`max-w-xs md:max-w-md p-3 rounded-2xl text-xs shadow-lg ${
+          isMe
+            ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
+            : 'bg-[#1F2C34] text-white border border-[#2A3942]'
+        }`}>
+          <p className="whitespace-pre-wrap break-words">{String(message.body || '')}</p>
 
         {/* Attachments */}
         {atts.length > 0 && (
@@ -3472,11 +3535,98 @@ function MessageItem({ message, currentUserId }) {
             })}
           </div>
         )}
+          {/* Emoji Reactions */}
+          {totalReactions > 0 && (
+            <div className="flex items-center gap-1 mt-1">
+              {reactions.map((r) => (
+                <span
+                  key={r.emoji}
+                  onClick={() => addReaction(r.emoji)}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-700/50 text-[10px]"
+                >
+                  <span className="text-[11px]">{r.emoji}</span>
+                  <span className="text-zinc-400">{r.users.length}</span>
+                </span>
+              ))}
+              {!userHasReacted && (
+                <button
+                  onClick={() => setShowEmojiPicker(message.id)}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-700/50 text-[10px] hover:bg-zinc-600 transition"
+                >
+                  <span className="text-[11px]">+</span>
+                </button>
+              )}
+            </div>
+          )}
 
-        <div className="flex justify-end items-center gap-1 text-[10px] text-gray-200">
-          <span>{time}</span>
-          {isMe && <CheckCheck className="w-3 h-3 text-cyan-300" />}
+          <div className="flex justify-end items-center gap-1 text-[10px] text-zinc-500">
+            <span>{time}</span>
+            {isMe && (
+              <div className="flex items-center gap-1">
+                <CheckCheck className="w-2.5 h-2.5 text-cyan-400" />
+                <MoreVertical
+                  className="w-2.5 h-2.5 text-zinc-500 hover:text-white cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMessageActionsMenu({ id: message.id, x: 0, y: 0 });
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Message Actions Menu */}
+        {messageActionsMenu?.id === message.id && (
+          <div className="absolute right-0 top-full mt-1 w-48 bg-zinc-900 rounded-xl border border-zinc-800 shadow-2xl p-1 z-50">
+            <button
+              onClick={() => handleAction('reply')}
+              className="flex items-center gap-2 w-full p-2 text-sm text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
+            >
+              <CornerUpLeft className="w-4 h-4" />
+              Reply
+            </button>
+            <button
+              onClick={() => handleAction('copy')}
+              className="flex items-center gap-2 w-full p-2 text-sm text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
+            >
+              <Copy className="w-4 h-4" />
+              Copy
+            </button>
+            <button
+              onClick={() => handleAction('react')}
+              className="flex items-center gap-2 w-full p-2 text-sm text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
+            >
+              <Smile className="w-4 h-4" />
+              React
+            </button>
+            <hr className="my-1 border-zinc-700" />
+            <button
+              onClick={() => handleAction('delete')}
+              className="flex items-center gap-2 w-full p-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition"
+            >
+              <Trash2 className="w-4 h-4" />
+              Unsend
+            </button>
+          </div>
+        )}
+
+        {/* Emoji Picker */}
+        {showEmojiPicker === message.id && (
+          <div className="absolute bottom-full left-0 mb-1 w-48 bg-zinc-900 rounded-xl border border-zinc-800 shadow-2xl p-2 z-50">
+            <div className="grid grid-cols-4 gap-1">
+              {['❤️', '🔥', '😂', '👍', '😍', '😮', '😭', '🎉'].map((emoji) => (
+                <button
+                  key={emoji}
+                  onClick={() => addReaction(emoji)}
+                  className="p-1.5 rounded-lg text-[18px] hover:bg-zinc-800 transition"
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -4176,6 +4326,17 @@ export default function App() {
   });
   const [apiKeyError, setApiKeyError] = useState('');
   const [recipeActive, setRecipeActive] = useState(() => safeJson(`${SCOPE}recipe_active`, { pdf: true, voice: true }));
+
+  // ===== INSTAGRAM DM STATE =====
+  const [showChatSettings, setShowChatSettings] = useState(false);
+  const [chatTheme, setChatTheme] = useState(() => {
+    try { return localStorage.getItem(`${SCOPE}chat_theme`) || 'dark'; } catch { return 'dark'; }
+  });
+  const [mutedNotifications, setMutedNotifications] = useState(false);
+  const [messageActionsMenu, setMessageActionsMenu] = useState(null); // { messageId, x, y }
+  const [replyingToMessage, setReplyingToMessage] = useState(null);
+  const [messageReactions, setMessageReactions] = useState({}); // { messageId: [{ emoji, users: [] }] }
+  const [showEmojiPicker, setShowEmojiPicker] = useState(null); // messageId
 
   // ===== CALL LOGS STATE =====
   const [callLogs, setCallLogs] = useState(() => {
@@ -5393,28 +5554,59 @@ export default function App() {
             </div>
           ) : currentConv ? (
             <>
-              <div className="p-3 bg-[#0B141A] flex justify-between items-center border-b border-[#1F2C34]">
+              {/* ===== INSTAGRAM DM HEADER ===== */}
+              <div className="p-3 bg-[#09090b] flex justify-between items-center border-b border-zinc-800">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('chats')}>
+                  <CornerUpLeft className="w-4 h-4 text-zinc-400 hover:text-white transition" />
+                </div>
                 <div className="flex items-center gap-3">
-                  <div className="p-0.5 rounded-full bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]">
+                  <div className="relative">
                     <img
                       src={currentConv.participant?.avatar_url}
                       alt="Avatar"
-                      className="w-9 h-9 rounded-full object-cover border border-black"
+                      className="w-9 h-9 rounded-full object-cover border border-zinc-800"
                       onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(currentConv.participant?.display_name || 'User') + '&background=random'; }}
                     />
+                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#09090b] ${currentConv.participant?.is_online ? 'bg-emerald-500' : 'bg-zinc-600'}`} />
                   </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-white">
-                      {String(currentConv.participant?.display_name || currentConv.name || 'Chat')}
-                    </h3>
-                    <p className="text-xs text-cyan-400 font-mono">
-                      {currentConv.is_bot ? '🤖 Telegram Bot Runner Active' : '🔒 Quantum P2P Handshake Verified'}
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <h3 className="text-sm font-semibold text-white truncate">
+                        {String(currentConv.participant?.display_name || currentConv.name || 'Chat')}
+                      </h3>
+                      {currentConv.participant?.is_online && (
+                        <span className="text-[10px] text-emerald-500 font-medium flex items-center gap-1">
+                          <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" /> Active now
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-zinc-500 truncate">
+                      @{String(currentConv.participant?.display_name || currentConv.name || 'user').toLowerCase().replace(/\s+/g, '.')}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${currentConv.participant?.is_online ? 'bg-emerald-500' : 'bg-gray-600'} animate-pulse`} />
-                  <span className="text-[10px] text-gray-500">Online</span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => handleStartCall({ id: currentConv.participant?.id || 'unknown', display_name: currentConv.participant?.display_name || 'Contact', avatar_url: currentConv.participant?.avatar_url }, 'voice')}
+                    className="p-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
+                    title="Audio Call"
+                  >
+                    <Phone className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleStartCall({ id: currentConv.participant?.id || 'unknown', display_name: currentConv.participant?.display_name || 'Contact', avatar_url: currentConv.participant?.avatar_url }, 'video')}
+                    className="p-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
+                    title="Video Call"
+                  >
+                    <Video className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setShowChatSettings(true)}
+                    className="p-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+                    title="Chat Settings"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
@@ -6337,8 +6529,114 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ===== INSTAGRAM DM SETTINGS MODAL (Three-Dot Dropdown) ===== */}
+      {showChatSettings && (
+        <div className="fixed inset-0 bg-black/80 z-60 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setShowChatSettings(false)}>
+          <div className="bg-[#09090b] rounded-2xl p-6 w-full max-w-md text-white shadow-2xl border border-zinc-800 flex flex-col max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <MoreVertical className="w-4 h-4 text-zinc-400" />
+                Chat Settings
+              </h3>
+              <button
+                onClick={() => setShowChatSettings(false)}
+                className="p-2 hover:bg-zinc-800/50 rounded-lg transition"
+                title="Close"
+              >
+                <X className="w-5 h-5 text-zinc-400 hover:text-white" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {/* View Profile */}
+              <button
+                onClick={() => { setShowChatSettings(false); setShowContactSearch(true); }}
+                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 transition"
+              >
+                <User className="w-5 h-5 text-zinc-400" />
+                <span className="text-sm text-white">View Profile</span>
+              </button>
+
+              {/* Mute Notifications */}
+              <button
+                onClick={() => { setMutedNotifications(!mutedNotifications); setShowChatSettings(false); }}
+                className="flex items-center justify-between p-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 transition"
+              >
+                <span className="flex items-center gap-3">
+                  <BellOff className="w-5 h-5 text-zinc-400" />
+                  <span className="text-sm text-white">Mute Notifications</span>
+                </span>
+                <div className="relative w-10 h-5 bg-zinc-800 rounded-full p-0.5">
+                  <span className={`block h-4 w-4 rounded-full bg-${mutedNotifications ? '#00a884' : '#zinc-600'} transition transform ${mutedNotifications ? 'translate-x-5' : 'translate-x-0'}`} />
+                </div>
+              </button>
+
+              {/* Search in Conversation */}
+              <button
+                onClick={() => { setShowChatSettings(false); }}
+                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 transition"
+              >
+                <Search className="w-5 h-5 text-zinc-400" />
+                <span className="text-sm text-white">Search in Conversation</span>
+              </button>
+
+              {/* Theme / Chat Wallpaper */}
+              <div className="p-3 rounded-xl bg-zinc-900/50 border border-zinc-800">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm text-white">Theme</span>
+                  <Info className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="flex gap-2">
+                  {[['dark', 'OLED Dark'], ['ig-gradient', 'Classic IG Gradient'], ['cyberpunk', 'Cyberpunk']].map(([id, name]) => (
+                    <button
+                      key={id}
+                      onClick={() => { setChatTheme(id); localStorage.setItem(`${SCOPE}chat_theme`, id); }}
+                      className={`flex flex-col items-center gap-1 p-2 rounded-lg transition ${
+                        chatTheme === id
+                          ? 'bg-zinc-800 border border-emerald-500/50'
+                          : 'bg-zinc-900/30 hover:bg-zinc-800 border-transparent'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full ${
+                        id === 'dark' ? 'bg-[#09090b]' :
+                        id === 'ig-gradient' ? 'bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]' :
+                        'bg-gradient-to-tr from-[#0f172a] via-[#3b0764] to-[#1e3a8a]'
+                      } border border-zinc-700`} />
+                      <span className="text-[10px] text-zinc-400">{name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Clear Chat History */}
+              <button
+                onClick={() => { setShowChatSettings(false); }}
+                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 transition text-zinc-400"
+              >
+                <Trash2 className="w-5 h-5" />
+                <span className="text-sm">Clear Chat History</span>
+              </button>
+
+              {/* Block / Report Contact (red) */}
+              <button
+                onClick={() => { setShowChatSettings(false); }}
+                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/50 hover:bg-red-500/10 transition text-red-400 hover:text-red-300 border border-red-500/20"
+              >
+                <ShieldAlert className="w-5 h-5" />
+                <span className="text-sm">Block / Report Contact</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </ErrorBoundary>
   );
 }
+
+
+
+
 
 
