@@ -339,7 +339,8 @@ const GAME_TYPES = {
   SLIDING: 'sliding',
   MATCHING: 'matching',
   REFLEX: 'reflex',
-  BOWLING2: 'dice_race'
+  BOWLING2: 'dice_race',
+  ASTEROIDS: 'asteroids'
 };
 
 const ALL_GAMES = [
@@ -395,6 +396,7 @@ const ALL_GAMES = [
   { id: 50, name: 'Zen Meditation Idle',       type: GAME_TYPES.ZEN,        category: 'Casual & Clicker',theme: '#22c55e' },
   { id: 51, name: 'Minesweeper Classic',       type: GAME_TYPES.MINECRAFT,  category: 'Puzzle & Strategy',theme: '#64748b' },
   { id: 52, name: 'Dice Race',                 type: GAME_TYPES.BOWLING2,   category: 'Arcade & Action',theme: '#fbbf24' },
+  { id: 53, name: 'Asteroids Classic',         type: GAME_TYPES.ASTEROIDS,  category: 'Arcade & Action',theme: '#22c55e' },
 ];
 
 const GAME_ICONS = {
@@ -443,6 +445,7 @@ const GAME_ICONS = {
   [GAME_TYPES.TRIVIA]: Square,
   [GAME_TYPES.MINECRAFT]: Square,
   [GAME_TYPES.BOWLING2]: Square,
+  [GAME_TYPES.ASTEROIDS]: Target,
   [GAME_TYPES.FISHING]: Square,
   [GAME_TYPES.RACING]: Square,
   [GAME_TYPES.PARKING]: Square,
@@ -2270,6 +2273,164 @@ function GameTetris({ onScore, theme, sound }) {
   );
 }
 
+// --- Asteroids (proper) ---
+function GameAsteroids({ onScore, theme, sound }) {
+  const canvasRef = useRef(null);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [started, setStarted] = useState(false);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    let ship = { x: W / 2, y: H / 2, angle: -Math.PI / 2, vx: 0, vy: 0, radius: 6, invuln: 0 };
+    let bullets = [];
+    let asteroids = [];
+    let particles = [];
+    let running = true, last = 0, s = 0, spawnTimer = 0;
+    const keys = {};
+
+    function spawnAsteroid(level = 1) {
+      const side = Math.floor(Math.random() * 4);
+      let x, y, vx, vy;
+      if (side === 0) { x = -40; y = Math.random() * H; vx = 1 + level; vy = (Math.random() - 0.5) * 2; }
+      else if (side === 1) { x = W + 40; y = Math.random() * H; vx = -1 - level; vy = (Math.random() - 0.5) * 2; }
+      else if (side === 2) { x = Math.random() * W; y = -40; vx = (Math.random() - 0.5) * 2; vy = 1 + level; }
+      else { x = Math.random() * W; y = H + 40; vx = (Math.random() - 0.5) * 2; vy = -1 - level; }
+      asteroids.push({ x, y, vx, vy, radius: 25 + Math.random() * 15, level, rot: Math.random() * Math.PI * 2, rotSpeed: (Math.random() - 0.5) * 0.1 });
+    }
+
+    function createParticles(x, y, color, count = 8) {
+      for (let i = 0; i < count; i++) {
+        particles.push({ x, y, vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6, life: 1.0, color });
+      }
+    }
+
+    function shipHit() {
+      if (ship.invuln > 0) return;
+      running = false; setGameOver(true); onScore(s);
+    }
+
+    const drawShip = () => {
+      ctx.save();
+      ctx.translate(ship.x, ship.y);
+      ctx.rotate(ship.angle);
+      ctx.strokeStyle = theme; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(10, 0); ctx.lineTo(-7, 7); ctx.lineTo(-4, 0); ctx.lineTo(-7, -7); ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const draw = (t) => {
+      if (!running) return;
+      const dt = t - last;
+      if (dt < 1000 / 60) { animRef.current = requestAnimationFrame(draw); return; }
+      last = t;
+      ctx.fillStyle = '#0B141A'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = theme; ctx.lineWidth = 2; ctx.strokeRect(0, 0, W, H);
+
+      // Ship physics
+      if (keys['ArrowUp']) { ship.vx += Math.cos(ship.angle) * 0.15; ship.vy += Math.sin(ship.angle) * 0.15; }
+      if (keys['ArrowLeft']) ship.angle -= 0.07;
+      if (keys['ArrowRight']) ship.angle += 0.07;
+      ship.vx *= 0.99; ship.vy *= 0.99;
+      ship.x = (ship.x + ship.vx + W) % W;
+      ship.y = (ship.y + ship.vy + H) % H;
+      if (ship.invuln > 0) ship.invuln--;
+
+      // Draw ship (flash when invulnerable)
+      if (ship.invuln === 0 || Math.floor(Date.now() / 100) % 2 === 0) drawShip();
+
+      // Bullets
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.vx; b.y += b.vy; b.life--;
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 2, 0, Math.PI * 2); ctx.fill();
+        if (b.life <= 0 || b.x < 0 || b.x > W || b.y < 0 || b.y > H) bullets.splice(i, 1);
+      }
+
+      // Asteroids
+      spawnTimer += dt;
+      if (spawnTimer > 2000 && asteroids.length < 6) { spawnAsteroid(); spawnTimer = 0; }
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        const a = asteroids[i];
+        a.x = (a.x + a.vx + W) % W; a.y = (a.y + a.vy + H) % H; a.rot += a.rotSpeed;
+        ctx.save(); ctx.translate(a.x, a.y); ctx.rotate(a.rot);
+        ctx.strokeStyle = theme; ctx.lineWidth = 2; ctx.beginPath();
+        for (let j = 0; j < 8; j++) {
+          const ang = (j / 8) * Math.PI * 2;
+          const r = a.radius * (0.8 + 0.2 * Math.sin(j * 0.7));
+          if (j === 0) ctx.moveTo(Math.cos(ang) * r, Math.sin(ang) * r);
+          else ctx.lineTo(Math.cos(ang) * r, Math.sin(ang) * r);
+        }
+        ctx.closePath(); ctx.stroke();
+        ctx.restore();
+
+        // Ship collision
+        const dx = ship.x - a.x, dy = ship.y - a.y;
+        if (dx * dx + dy * dy < (ship.radius + a.radius) * (ship.radius + a.radius)) shipHit();
+
+        // Bullet collision
+        for (let j = bullets.length - 1; j >= 0; j--) {
+          const b = bullets[j];
+          const bdx = b.x - a.x, bdy = b.y - a.y;
+          if (bdx * bdx + bdy * bdy < a.radius * a.radius) {
+            createParticles(a.x, a.y, theme, 6);
+            s += a.level * 20; setScore(s); onScore(s);
+            bullets.splice(j, 1);
+            if (a.level > 1) {
+              asteroids.push({ x: a.x, y: a.y, vx: a.vx * 0.5 + (Math.random() - 0.5), vy: a.vy * 0.5 + (Math.random() - 0.5), radius: a.radius / 2, level: a.level - 1, rot: Math.random() * Math.PI * 2, rotSpeed: (Math.random() - 0.5) * 0.1 });
+              asteroids.push({ x: a.x, y: a.y, vx: a.vx * 0.5 - (Math.random() - 0.5), vy: a.vy * 0.5 - (Math.random() - 0.5), radius: a.radius / 2, level: a.level - 1, rot: Math.random() * Math.PI * 2, rotSpeed: (Math.random() - 0.5) * 0.1 });
+            }
+            asteroids.splice(i, 1);
+            break;
+          }
+        }
+      }
+
+      // Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy; p.life -= 0.05;
+        ctx.fillStyle = p.color; ctx.globalAlpha = p.life; ctx.fillRect(p.x, p.y, 3, 3); ctx.globalAlpha = 1;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+
+      animRef.current = requestAnimationFrame(draw);
+    };
+
+    const keydown = (e) => {
+      keys[e.key] = true;
+      if (e.key === ' ') {
+        bullets.push({ x: ship.x + Math.cos(ship.angle) * 10, y: ship.y + Math.sin(ship.angle) * 10, vx: Math.cos(ship.angle) * 7, vy: Math.sin(ship.angle) * 7, life: 40 });
+      }
+    };
+    const keyup = (e) => { keys[e.key] = false; };
+
+    spawnAsteroid();
+    if (started) animRef.current = requestAnimationFrame(draw);
+    window.addEventListener('keydown', keydown);
+    window.addEventListener('keyup', keyup);
+    return () => { running = false; if (animRef.current) cancelAnimationFrame(animRef.current); window.removeEventListener('keydown', keydown); window.removeEventListener('keyup', keyup); };
+  }, [started, theme, sound]);
+
+  return (
+    <div className="w-full flex flex-col items-center gap-3">
+      <canvas ref={canvasRef} width={320} height={240} className="w-full max-w-md h-64 bg-[#0B141A] rounded-xl border border-[#2A3942] shadow-inner" />
+      <div className="flex gap-2">
+        <button onClick={() => { setStarted(false); setScore(0); setGameOver(false); }} className="px-3 py-1 bg-[#2A3942] text-white text-xs rounded hover:bg-[#3A4952]">Reset</button>
+        <button onClick={() => { setScore(0); setGameOver(false); setStarted(true); }} className="px-3 py-1 bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white text-xs rounded hover:opacity-90">Start</button>
+      </div>
+      {gameOver && <div className="text-emerald-400 text-xs font-bold">Game Over — Score: {score}</div>}
+      <p className="text-[10px] text-gray-500">Arrows: move/rotate • Space: shoot</p>
+    </div>
+  );
+}
+
 // --- Minesweeper (proper) ---
 function GameMinesweeper({ onScore, theme, sound }) {
   const [score, setScore] = useState(0);
@@ -3144,6 +3305,7 @@ function GamePlayer({ gameId, onScore, soundEnabled, arcadeScores }) {
     [GAME_TYPES.BUBBLE]: GameBubble,
     [GAME_TYPES.BOARD]: GameChess,
     [GAME_TYPES.BOWLING2]: GameDiceRace,
+    [GAME_TYPES.ASTEROIDS]: GameAsteroids,
   };
 
   const Engine = engines[game?.type] || GameSnake;
