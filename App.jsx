@@ -7,7 +7,8 @@ import {
   Image as ImageIcon, FileText, ArrowRight, ChevronLeft, ChevronRight,
   Trash2, Edit3, Plus, Minus, RotateCw, Maximize2, Minimize2,
   ExternalLink, Download, Share2, Lock, Unlock, Sparkles, Target, Camera,
-  Circle, Triangle, Star
+  Circle, Triangle, Star, MapPin, CreditCard, Heart, Eye, Music, MessageCircle,
+  MoreHorizontal, Volume2, VolumeX, RotateCcw
 } from 'lucide-react';
 
 // ============================================================
@@ -439,7 +440,6 @@ const Drop = Square;
 const Grid2 = Square;
 const Rope = Square;
 const Tower = Square;
-const Music = Square;
 const Car = Square;
 const Skull = Square;
 const Cookie = Square;
@@ -2904,6 +2904,7 @@ function GamePlayer({ gameId, onScore }) {
 function MessageItem({ message, currentUserId }) {
   const isMe = message.sender_id === currentUserId;
   const time = message.created_at ? new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+  const atts = message.attachments || [];
   return (
     <div className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-xs md:max-w-md p-3 rounded-2xl text-xs space-y-1 shadow-lg ${
@@ -2912,6 +2913,78 @@ function MessageItem({ message, currentUserId }) {
           : 'bg-[#1F2C34] text-white border border-[#2A3942]'
       }`}>
         <p className="whitespace-pre-wrap break-words">{String(message.body || '')}</p>
+
+        {/* Attachments */}
+        {atts.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {atts.map((att) => {
+              if (att.type === 'image') {
+                return (
+                  <img
+                    key={att.id}
+                    src={att.url}
+                    alt={att.name}
+                    className="w-24 h-24 rounded-lg object-cover cursor-pointer hover:opacity-90"
+                    title={att.name}
+                  />
+                );
+              }
+              if (att.type === 'video') {
+                return (
+                  <div key={att.id} className="w-24 h-24 rounded-lg bg-[#2A3942] flex items-center justify-center relative overflow-hidden">
+                    <video src={att.url} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <Play className="w-6 h-6 text-white ml-1" />
+                    </div>
+                  </div>
+                );
+              }
+              if (att.type === 'location') {
+                return (
+                  <div key={att.id} className="w-24 h-24 rounded-lg bg-[#2A3942] border border-[#3A4952] flex items-center justify-center text-[10px] text-cyan-400 cursor-pointer">
+                    <MapPin className="w-4 h-4 mb-1" />
+                    <div>📍 Location</div>
+                  </div>
+                );
+              }
+              if (att.type === 'payment') {
+                return (
+                  <div key={att.id} className="w-24 h-24 rounded-lg bg-[#2A3942] border border-[#3A4952] flex items-center justify-center text-[10px] text-pink-400">
+                    <CreditCard className="w-4 h-4 mb-1" />
+                    <div>$${att.amount}</div>
+                  </div>
+                );
+              }
+              if (att.type === 'contact') {
+                return (
+                  <div key={att.id} className="w-24 h-24 rounded-lg bg-[#2A3942] border border-[#3A4952] flex items-center justify-center text-[10px] text-gray-400">
+                    <User className="w-4 h-4 mb-1" />
+                    <div>{att.name}</div>
+                  </div>
+                );
+              }
+              if (att.type === 'poll') {
+                return (
+                  <div key={att.id} className="w-24 h-24 rounded-lg bg-[#2A3942] border border-[#3A4952] p-1 text-[10px] text-yellow-400">
+                    <Star className="w-4 h-4 mb-1" />
+                    <div className="truncate">{att.name}</div>
+                    {att.options?.slice(0, 2).map((o, i) => (
+                      <div key={i} className="text-[9px] text-gray-400">○ {o}</div>
+                    ))}
+                  </div>
+                );
+              }
+              // Default file
+              return (
+                <div key={att.id} className="w-24 h-24 rounded-lg bg-[#2A3942] border border-[#3A4952] flex items-center justify-center text-[10px] text-purple-400 cursor-pointer">
+                  <FileText className="w-4 h-4 mb-1" />
+                  <div className="truncate">{att.name}</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         <div className="flex justify-end items-center gap-1 text-[10px] text-gray-200">
           <span>{time}</span>
           {isMe && <CheckCheck className="w-3 h-3 text-cyan-300" />}
@@ -3258,6 +3331,317 @@ function KanbanBoard() {
 }
 
 // ============================================================
+// ATTACHMENT BUTTON COMPONENT (Instagram-style)
+// ============================================================
+function AttachmentButton({ icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center justify-center p-2 rounded-lg bg-[#1A202C] hover:bg-[#2A3942] border border-transparent hover:border-[#3A4952] transition text-xs group"
+    >
+      <div className="w-8 h-8 rounded-lg bg-[#2A3942] flex items-center justify-center mb-1 group-hover:scale-110 transition">
+        {icon}
+      </div>
+      <span className="text-[#9CA3AF] group-hover:text-white">{label}</span>
+    </button>
+  );
+}
+
+// ============================================================
+// INSTAGRAM STORIES VIEWER COMPONENT
+// ============================================================
+function StoryViewer({ onClose }) {
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [replyText, setReplyText] = useState("");
+  const [liked, setLiked] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+
+  const stories = [
+    {
+      id: "user_1",
+      username: "alex.dev",
+      userAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      timeAgo: "2h",
+      isVerified: true,
+      slides: [
+        {
+          type: "image",
+          url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop&q=80",
+          caption: "Building the next-gen web UI 🚀",
+          song: "Synthwave Boy - Lofi Beats",
+          viewsCount: 1420
+        },
+        {
+          type: "image",
+          url: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1080&auto=format&fit=crop&q=80",
+          caption: "Late night debugging session.",
+          song: "Synthwave Boy - Lofi Beats",
+          viewsCount: 984
+        }
+      ]
+    },
+    {
+      id: "user_2",
+      username: "sarah_ui",
+      userAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      timeAgo: "4h",
+      isVerified: false,
+      slides: [
+        {
+          type: "image",
+          url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1080&auto=format&fit=crop&q=80",
+          caption: "Weekend getaway vibes 🌴",
+          song: "Summer Breeze - Tropical Edit",
+          viewsCount: 3210
+        },
+        {
+          type: "image",
+          url: "https://images.unsplash.com/photo-1469313637793-05989c480963?w=1080&auto=format&fit=crop&q=80",
+          caption: "Sunset vibes ✨",
+          song: "Summer Breeze - Tropical Edit",
+          viewsCount: 2105
+        }
+      ]
+    },
+    {
+      id: "user_3",
+      username: "whatsgram",
+      userAvatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80",
+      timeAgo: "6h",
+      isVerified: true,
+      slides: [
+        {
+          type: "image",
+          url: "https://images.unsplash.com/photo-1531297526732-2c0e1a6d241a?w=1080&auto=format&fit=crop&q=80",
+          caption: "New feature drop: Stories! 📱",
+          song: "Neon Dreams",
+          viewsCount: 5420
+        }
+      ]
+    }
+  ];
+
+  const slideDuration = 5000;
+  const activeUser = stories[currentStoryIndex];
+  const activeSlide = activeUser.slides[currentSlideIndex];
+
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = 50;
+    const step = (100 / (slideDuration / interval));
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          handleNextSlide();
+          return 0;
+        }
+        return prev + step;
+      });
+    }, interval);
+    return () => clearInterval(timer);
+  }, [currentStoryIndex, currentSlideIndex, isPaused]);
+
+  const handleNextSlide = () => {
+    setProgress(0);
+    setLiked(false);
+    if (currentSlideIndex < activeUser.slides.length - 1) {
+      setCurrentSlideIndex(currentSlideIndex + 1);
+    } else {
+      if (currentStoryIndex < stories.length - 1) {
+        setCurrentStoryIndex(currentStoryIndex + 1);
+        setCurrentSlideIndex(0);
+      } else {
+        setCurrentStoryIndex(0);
+        setCurrentSlideIndex(0);
+      }
+    }
+  };
+
+  const handlePrevSlide = () => {
+    setProgress(0);
+    setLiked(false);
+    if (currentSlideIndex > 0) {
+      setCurrentSlideIndex(currentSlideIndex - 1);
+    } else {
+      if (currentStoryIndex > 0) {
+        setCurrentStoryIndex(currentStoryIndex - 1);
+        setCurrentSlideIndex(stories[currentStoryIndex - 1].slides.length - 1);
+      }
+    }
+  };
+
+  const handleSendReply = (e) => {
+    e.preventDefault();
+    if (!replyText.trim()) return;
+    alert(`Reply sent to @${activeUser.username}: "${replyText}"`);
+    setReplyText("");
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black flex items-center justify-center font-sans select-none z-[60]">
+      <div
+        className="relative w-full h-full sm:w-[410px] sm:h-[880px] sm:rounded-2xl overflow-hidden bg-zinc-900 flex flex-col justify-between shadow-2xl"
+        onMouseDown={() => setIsPaused(true)}
+        onMouseUp={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => setIsPaused(false)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 left-4 z-20 text-white/60 hover:text-white transition"
+          title="Close Stories"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="absolute inset-0 z-0">
+          {activeSlide.url && (
+            <img
+              src={activeSlide.url}
+              alt="Story content"
+              className="w-full h-full object-cover filter brightness-90"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/80 pointer-events-none" />
+        </div>
+
+        <div className="relative z-10 p-3 pt-4 flex flex-col gap-2">
+          <div className="flex gap-1 w-full">
+            {activeUser.slides.map((_, idx) => (
+              <div key={idx} className="h-[2px] flex-1 bg-white/30 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white transition-all duration-75 ease-linear"
+                  style={{
+                    width:
+                      idx < currentSlideIndex
+                        ? "100%"
+                        : idx === currentSlideIndex
+                        ? `${progress}%`
+                        : "0%",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between text-white mt-1">
+            <div className="flex items-center space-x-3">
+              <img
+                src={activeUser.userAvatar}
+                alt={activeUser.username}
+                className="w-8 h-8 rounded-full border border-white/20 object-cover"
+              />
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold tracking-tight">
+                  {activeUser.username}
+                </span>
+                <span className="text-xs text-white/60">{activeUser.timeAgo}</span>
+              </div>
+              {activeUser.isVerified && (
+                <span className="text-[10px] text-blue-400 font-bold">✓</span>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsMuted(!isMuted)}
+                className="text-white hover:text-white/80 transition"
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+              <button
+                onClick={() => setShowOptions(!showOptions)}
+                className="text-white hover:text-white/80 transition"
+              >
+                <MoreHorizontal size={20} />
+              </button>
+              <button onClick={onClose} className="text-white hover:text-white/80 transition">
+                <X size={22} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute inset-0 z-10 flex">
+          <div className="w-1/3 h-full cursor-pointer" onClick={handlePrevSlide} />
+          <div className="w-2/3 h-full cursor-pointer" onClick={handleNextSlide} />
+        </div>
+
+        <div className="relative z-10 px-4 mt-auto mb-16 pointer-events-none">
+          {activeSlide.song && (
+            <div className="inline-flex items-center space-x-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 mb-3">
+              <Music size={14} className="text-pink-400 animate-pulse" />
+              <span className="text-xs font-medium text-white">{activeSlide.song}</span>
+            </div>
+          )}
+          {activeSlide.caption && (
+            <p className="text-white text-sm font-normal drop-shadow-md bg-black/20 backdrop-blur-sm p-2.5 rounded-xl border border-white/5 inline-block">
+              {activeSlide.caption}
+            </p>
+          )}
+        </div>
+
+        <div className="relative z-20 p-3 pb-5 flex items-center space-x-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
+          <form onSubmit={handleSendReply} className="flex-1 flex items-center bg-transparent border border-white/30 rounded-full px-4 py-2 backdrop-blur-md">
+            <input
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder={`Reply to ${activeUser.username}...`}
+              className="bg-transparent text-white text-sm focus:outline-none w-full placeholder-white/60"
+            />
+          </form>
+
+          <button
+            onClick={() => setLiked(!liked)}
+            className="p-2 transition transform active:scale-125"
+          >
+            <Heart size={26} className={liked ? "text-red-500 fill-red-500" : "text-white"} />
+          </button>
+
+          <button
+            onClick={() => alert("Story shared successfully!")}
+            className="p-2 transition transform active:scale-110"
+          >
+            <Send size={24} className="text-white -rotate-45 mb-1" />
+          </button>
+        </div>
+
+        {showOptions && (
+          <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-end p-4">
+            <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 text-center text-sm text-white">
+              <button
+                onClick={() => { alert("Reported story"); setShowOptions(false); }}
+                className="w-full py-3.5 text-red-500 font-semibold border-b border-zinc-800 active:bg-zinc-800"
+              >
+                Report
+              </button>
+              <button
+                onClick={() => { alert("Link copied to clipboard"); setShowOptions(false); }}
+                className="w-full py-3.5 border-b border-zinc-800 active:bg-zinc-800"
+              >
+                Copy link
+              </button>
+              <button
+                onClick={() => setShowOptions(false)}
+                className="w-full py-3.5 font-semibold text-zinc-400 active:bg-zinc-800"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // MAIN APP
 // ============================================================
 export default function App() {
@@ -3290,6 +3674,9 @@ export default function App() {
   const [editingProfileId, setEditingProfileId] = useState(null);
   const [profileDraft, setProfileDraft] = useState(null);
   const [aiTyping, setAiTyping] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [attachments, setAttachments] = useState([]);
+  const [showStories, setShowStories] = useState(false);
 
   // Derived
   const currentConv = useMemo(() => conversations.find((c) => c.id === activeConversationId), [conversations, activeConversationId]);
@@ -3428,14 +3815,197 @@ export default function App() {
     }
   }, [currentUserId, GEMINI_API_URL]);
 
+  // ===== ATTACHMENT HANDLERS =====
+  const handleCamera = () => {
+    setShowAttachMenu(false);
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*,video/*';
+      input.capture = 'environment';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            setAttachments((prev) => [...prev, {
+              id: uid(),
+              type: file.type.startsWith('video') ? 'video' : 'image',
+              url: ev.target.result,
+              name: file.name,
+              size: file.size,
+              mime: file.type
+            }]);
+            setInputText((prev) => prev + (prev ? ' ' : '') + `📷 ${file.name}`);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    } catch (e) {
+      console.error('Camera error:', e);
+      alert('Camera access not available in this browser.');
+    }
+  };
+
+  const handleGallery = () => {
+    setShowAttachMenu(false);
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*,video/*';
+      input.multiple = true;
+      input.onchange = (e) => {
+        const files = Array.from(e.target.files || []);
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            setAttachments((prev) => [...prev, {
+              id: uid(),
+              type: file.type.startsWith('video') ? 'video' : 'image',
+              url: ev.target.result,
+              name: file.name,
+              size: file.size,
+              mime: file.type
+            }]);
+          };
+          reader.readAsDataURL(file);
+        });
+        setInputText((prev) => prev + (prev ? ' ' : '') + `📁 ${files.length} media file(s)`);
+      };
+      input.click();
+    } catch (e) {
+      console.error('Gallery error:', e);
+    }
+  };
+
+  const handleFile = () => {
+    setShowAttachMenu(false);
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            setAttachments((prev) => [...prev, {
+              id: uid(),
+              type: 'file',
+              url: ev.target.result,
+              name: file.name,
+              size: file.size,
+              mime: file.type
+            }]);
+            setInputText((prev) => prev + (prev ? ' ' : '') + `📄 ${file.name}`);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    } catch (e) {
+      console.error('File error:', e);
+    }
+  };
+
+  const handleLocation = () => {
+    setShowAttachMenu(false);
+    if (!navigator.geolocation) {
+      alert('Geolocation not available.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        setAttachments((prev) => [...prev, {
+          id: uid(),
+          type: 'location',
+          url: mapUrl,
+          name: 'Location',
+          size: 0,
+          mime: 'text/plain',
+          lat: latitude,
+          lng: longitude
+        }]);
+        setInputText((prev) => prev + (prev ? ' ' : '') + `📍 Location shared`);
+      },
+      () => alert('Location access denied.')
+    );
+  };
+
+  const handlePayment = () => {
+    setShowAttachMenu(false);
+    const amount = prompt('Enter payment amount:');
+    if (!amount) return;
+    const note = prompt('Add a note (optional):') || '';
+    setAttachments((prev) => [...prev, {
+      id: uid(),
+      type: 'payment',
+      url: '',
+      name: `Payment: $${amount}`,
+      size: 0,
+      mime: 'application/json',
+      amount: parseFloat(amount),
+      note
+    }]);
+    setInputText((prev) => prev + (prev ? ' ' : '') + `💳 Payment: $${amount}${note ? ` - ${note}` : ''}`);
+  };
+
+  const handleVoice = () => {
+    setShowAttachMenu(false);
+    alert('Voice recording - use the 🎙️ Record Voice button in the chat header area.');
+  };
+
+  const handleContact = () => {
+    setShowAttachMenu(false);
+    const name = prompt('Contact name:');
+    if (!name) return;
+    const phone = prompt('Phone number:') || '';
+    setAttachments((prev) => [...prev, {
+      id: uid(),
+      type: 'contact',
+      url: '',
+      name: name,
+      size: 0,
+      mime: 'text/vcard',
+      phone
+    }]);
+    setInputText((prev) => prev + (prev ? ' ' : '') + `👤 Contact: ${name}`);
+  };
+
+  const handlePoll = () => {
+    setShowAttachMenu(false);
+    const question = prompt('Poll question:');
+    if (!question) return;
+    const options = prompt('Options (comma-separated):') || 'Option A, Option B';
+    setAttachments((prev) => [...prev, {
+      id: uid(),
+      type: 'poll',
+      url: '',
+      name: question,
+      size: 0,
+      mime: 'application/json',
+      options: options.split(',').map(s => s.trim()),
+      votes: {}
+    }]);
+    setInputText((prev) => prev + (prev ? ' ' : '') + `📊 Poll: ${question}`);
+  };
+
+  // Remove attachment helper
+  const removeAttachment = (id) => {
+    setAttachments((prev) => prev.filter((a) => a.id !== id));
+  };
+
   // ===== MESSAGE HANDLING =====
   const handleSendMessage = useCallback(() => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() && attachments.length === 0) return;
     const text = inputText.trim();
     const newMsg = {
       id: uid(),
       sender_id: currentUserId,
       body: text,
+      attachments: attachments.length > 0 ? attachments : undefined,
       created_at: nowISO()
     };
 
@@ -3444,6 +4014,7 @@ export default function App() {
       [activeConversationId]: [...(prev[activeConversationId] || []), newMsg]
     }));
     setInputText('');
+    setAttachments([]);
 
     // BotFather flow
     if (currentConv?.is_bot && currentConv.id === 'conv_botfather') {
@@ -3611,6 +4182,15 @@ export default function App() {
               title="AI Automation Recipes"
             >
               <Workflow className="w-5 h-5" />
+            </button>
+
+            <button
+              onClick={() => setShowStories(true)}
+              className="p-3 rounded-xl text-[#8696A0] hover:bg-[#111B21] hover:text-pink-400 transition relative"
+              title="Stories"
+            >
+              <Eye className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse" />
             </button>
 
             <button
@@ -3790,38 +4370,125 @@ export default function App() {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="p-3 bg-[#0B141A] flex items-center gap-2 border-t border-[#1F2C34]">
-                <div className="relative flex-1">
-                  <input
-                    ref={commandInputRef}
-                    type="text"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    placeholder={
-                      currentConv?.is_bot && currentConv.id === 'conv_botfather'
-                        ? `Type bot command (/newbot, /mybots, /help)...`
-                        : currentConv?.is_bot
-                        ? `Talk to ${currentConv.name}...`
-                        : currentConv?.is_ai
-                        ? 'Ask the AI... or type @ai in any chat'
-                        : 'Type a secure message...'
-                    }
-                    className="flex-1 bg-[#1F2C34] text-sm text-[#E9EDEF] px-4 py-2.5 rounded-full focus:outline-none border border-[#2A3942] focus:border-cyan-500 transition"
-                  />
-                  {currentConv?.is_ai && (
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-600">
-                      @ai
-                    </div>
-                  )}
+              <div className="p-2 bg-[#0B141A] border-t border-[#1F2C34]">
+                {/* Attachment Preview Chips */}
+                {attachments.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2 max-h-24 overflow-y-auto pr-1">
+                    {attachments.map((att) => (
+                      <div
+                        key={att.id}
+                        className="flex items-center gap-2 bg-[#2A3942] border border-[#3A4952] rounded-lg px-2 py-1.5"
+                      >
+                        <div className="w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold">
+                          {att.type === 'image' ? '🖼️' : att.type === 'video' ? '🎬' : att.type === 'file' ? '📄' : att.type === 'location' ? '📍' : att.type === 'payment' ? '💳' : att.type === 'contact' ? '👤' : att.type === 'poll' ? '📊' : '📎'}
+                        </div>
+                        <span className="text-[10px] text-[#E9EDEF] truncate max-w-[120px]">{att.name}</span>
+                        <button
+                          onClick={() => removeAttachment(att.id)}
+                          className="w-5 h-5 rounded flex items-center justify-center text-[#9CA3AF] hover:text-red-400 hover:bg-[#3A4952] transition"
+                          title="Remove"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Attachment + Input Row */}
+                <div className="flex items-end gap-2 bg-[#111B21] rounded-xl p-2 border border-[#2A3942] shadow-lg">
+                  {/* Attachment Button (+) */}
+                  <button
+                    onClick={() => setShowAttachMenu(!showAttachMenu)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-emerald-400 hover:bg-[#2A3942] transition border border-transparent hover:border-[#3A4952]"
+                  >
+                    <Plus className="w-5 h-5" />
+                  </button>
+
+                  {/* Text Input */}
+                  <div className="relative flex-1 min-w-0">
+                    <input
+                      ref={commandInputRef}
+                      type="text"
+                      value={inputText}
+                      onChange={(e) => setInputText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                      placeholder={
+                        currentConv?.is_bot && currentConv.id === 'conv_botfather'
+                          ? `Type bot command (/newbot, /mybots, /help)...`
+                          : currentConv?.is_bot
+                          ? `Talk to ${currentConv.name}...`
+                          : currentConv?.is_ai
+                          ? 'Ask the AI... or type @ai in any chat'
+                          : 'Message...'
+                      }
+                      className="w-full bg-transparent text-sm text-[#E9EDEF] px-3 py-2.5 focus:outline-none placeholder-[#6B7280] max-h-[200px]"
+                      style={{ maxHeight: '200px', overflowY: 'auto' }}
+                    />
+                    {currentConv?.is_ai && (
+                      <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-600 bg-[#111B21] px-1">
+                        @ai
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Send Button */}
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!inputText.trim()}
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center text-white transition-all duration-200 ${!inputText.trim() ? 'opacity-30 cursor-not-allowed bg-[#2A3942] border border-[#3A4952]' : 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] shadow-[0_0_15px_rgba(131,58,180,0.5)] hover:shadow-[0_0_25px_rgba(131,58,180,0.8)] border border-transparent hover:scale-105'}`}
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!inputText.trim()}
-                  className={`p-3 rounded-full text-white transition shadow ${!inputText.trim() ? 'opacity-50 cursor-not-allowed' : 'bg-gradient-to-r from-[#833AB4] to-[#E1306C] hover:opacity-90'}`}
-                >
-                  <Send className="w-4 h-4" />
-                </button>
+
+                {/* Attachment Menu (Instagram-style) */}
+                {showAttachMenu && (
+                  <div className="absolute bottom-[70px] left-1/2 -translate-x-1/2 w-64 bg-[#111B21] rounded-2xl border border-[#2A3942] shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="grid grid-cols-4 gap-2 text-center">
+                      <AttachmentButton
+                        icon={<Camera className="w-5 h-5 text-cyan-400" />}
+                        label="Camera"
+                        onClick={handleCamera}
+                      />
+                      <AttachmentButton
+                        icon={<ImageIcon className="w-5 h-5 text-emerald-400" />}
+                        label="Gallery"
+                        onClick={handleGallery}
+                      />
+                      <AttachmentButton
+                        icon={<FileText className="w-5 h-5 text-purple-400" />}
+                        label="File"
+                        onClick={handleFile}
+                      />
+                      <AttachmentButton
+                        icon={<MapPin className="w-5 h-5 text-blue-400" />}
+                        label="Location"
+                        onClick={handleLocation}
+                      />
+                      <AttachmentButton
+                        icon={<CreditCard className="w-5 h-5 text-pink-400" />}
+                        label="Payment"
+                        onClick={handlePayment}
+                      />
+                      <AttachmentButton
+                        icon={<Mic className="w-5 h-5 text-orange-400" />}
+                        label="Voice"
+                        onClick={handleVoice}
+                      />
+                      <AttachmentButton
+                        icon={<User className="w-5 h-5 text-gray-400" />}
+                        label="Contact"
+                        onClick={handleContact}
+                      />
+                      <AttachmentButton
+                        icon={<Star className="w-5 h-5 text-yellow-400" />}
+                        label="Poll"
+                        onClick={handlePoll}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           ) : (
@@ -4069,6 +4736,11 @@ export default function App() {
               </button>
             </div>
           </div>
+        )}
+
+        {/* ===== MODAL: INSTAGRAM STORIES ===== */}
+        {showStories && (
+          <StoryViewer onClose={() => setShowStories(false)} />
         )}
 
         {/* ===== MODAL: SETTINGS / IDENTITY PROFILES ===== */}
