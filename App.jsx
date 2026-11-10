@@ -3458,10 +3458,10 @@ function MessageItem({ message, currentUserId, messageReactions, setMessageReact
         onMouseEnter={() => setMessageActionsMenu({ id: message.id, x: 0, y: 0 })}
         onMouseLeave={() => setMessageActionsMenu(null)}
       >
-        <div className={`max-w-xs md:max-w-md p-3 rounded-2xl text-xs shadow-lg ${
+        <div className={`max-w-[80%] md:max-w-[65%] p-3 rounded-2xl shadow-sm ${
           isMe
-            ? 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
-            : 'bg-[#1F2C34] text-white border border-[#2A3942]'
+            ? 'rounded-tl-xl rounded-tr-xl rounded-bl-xl bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
+            : 'rounded-tr-xl rounded-tl-xl rounded-br-xl bg-[#1F2C34] text-white border border-[#2A3942]'
         }`}>
           <p className="whitespace-pre-wrap break-words">{String(message.body || '')}</p>
 
@@ -5413,17 +5413,20 @@ export default function App() {
                   <div
                     key={conv.id}
                     onClick={() => setActiveConversationId(conv.id)}
-                    className={`flex items-center gap-3 p-3 cursor-pointer border-b border-[#111B21] transition group ${
-                      isActive ? 'bg-[#1F2C34]' : 'hover:bg-[#111B21]'
+                    className={`flex items-center gap-3 p-3 cursor-pointer border-b border-[#0a0a0a]/50 transition-all duration-200 group ${
+                      isActive ? 'bg-[#1F2C34] border-[#3A4952]/50' : 'hover:bg-[#111B21]/50 hover:border-transparent'
                     }`}
                   >
                     <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]">
                       <img
                         src={conv.participant?.avatar_url}
                         alt="Avatar"
-                        className="w-11 h-11 rounded-full object-cover border-2 border-black"
+                        className="w-10 h-10 rounded-full object-cover border-2 border-black shadow-inner"
                         onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(conv.participant?.display_name || 'User') + '&background=random'; }}
                       />
+                      {conv.participant?.is_online && (
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#09090b] animate-pulse" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline">
@@ -5431,14 +5434,27 @@ export default function App() {
                           {String(conv.participant?.display_name || conv.name || 'Chat')}
                         </h4>
                         {conv.unread_count > 0 && (
-                          <span className="bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
+                          <span className="bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                             {conv.unread_count}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#8696A0] truncate">{String(conv.last_message || '')}</p>
+                      <p className="text-xs text-[#8696A0] truncate leading-none">
+                        {String(conv.last_message || '')}
+                      </p>
                     </div>
-                  </div>
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setActiveConversationId(conv.id); }}
+                        className="p-1.5 rounded-full bg-[#1F2C34] border border-[#2A3942]/50 text-zinc-400 hover:text-white hover:bg-[#2A3942] transition-all"
+                        title="Open Chat"
+                      >
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                    </div>
+
+
                 );
               })}
           </div>
@@ -5740,10 +5756,12 @@ export default function App() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-              <MessageSquare className="w-12 h-12 text-gray-700 mb-4" />
-              <h3 className="text-lg font-bold text-white">Select a conversation</h3>
-              <p className="text-sm text-gray-400 mt-1">Choose a chat from the sidebar to start messaging</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-12">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045] flex items-center justify-center mb-4 text-white shadow-lg shadow-indigo-500/20">
+                <MessageSquare className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Select a conversation</h3>
+              <p className="text-sm text-zinc-500 mt-1">Choose a chat from the sidebar to start messaging</p>
             </div>
           )}
         </div>
@@ -6088,7 +6106,7 @@ export default function App() {
                   {identityProfiles.map((profile) => {
                     const isActive = activeProfileId === profile.id;
                     return (
-                      <div key={profile.id} className="flex items-center gap-3 p-3 rounded-xl border transition hover:bg-[#2A3942] border-[#2A3942] cursor-pointer group">
+                      <div key={profile.id} className="flex items-center gap-3 p-3 rounded-2xl border transition-all duration-200 border-[#1F2C34] cursor-pointer group hover:border-indigo-500/50 hover:bg-[#1F2C34]/50">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shadow ${profile.color} relative`}>
                           {profile.avatar ? (
                             <img src={profile.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=${profile.color.replace('#','')}&color=ffffff`; }} />
