@@ -1,116 +1,83 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Loader2, Pencil, RotateCcw } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
+import React, { useState, useEffect } from "react";
+import { Modal } from "../ui/Modal";
 
 interface ContactAliasDialogProps {
-  open: boolean;
-  otherName: string;
-  username: string;
-  currentName: string;
-  busy: boolean;
-  error: string | null;
+  isOpen: boolean;
   onClose: () => void;
-  onSubmit: (name: string) => void;
+  currentName: string;
+  currentNote?: string;
+  onSave: (alias: string, note: string) => void;
 }
 
-/** A private nickname for one contact. Only the signed-in account sees it. */
-export function ContactAliasDialog({
-  open,
-  otherName,
-  username,
-  currentName,
-  busy,
-  error,
+export const ContactAliasDialog: React.FC<ContactAliasDialogProps> = ({
+  isOpen,
   onClose,
-  onSubmit,
-}: ContactAliasDialogProps) {
-  const [name, setName] = useState('');
+  currentName,
+  currentNote = "",
+  onSave,
+}) => {
+  const [alias, setAlias] = useState(currentName);
+  const [note, setNote] = useState(currentNote);
 
   useEffect(() => {
-    if (!open) return;
-    setName(currentName);
-  }, [open, currentName]);
+    setAlias(currentName);
+    setNote(currentNote);
+  }, [currentName, currentNote, isOpen]);
 
-  function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (busy) return;
-    onSubmit(name.trim());
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(alias, note);
+    onClose();
+  };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Rename contact"
-      description={`Choose the name you see for @${username}. This only changes your own view.`}
-      className="max-w-sm"
-    >
-      <form onSubmit={submit} className="p-5 pt-0">
-        <label
-          htmlFor="contact-alias-name"
-          className="mb-1.5 block text-[12px] text-muted"
-        >
-          Name you see
-        </label>
-        <div className="relative">
-          <Pencil
-            size={14}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
-          />
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Contact Details">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+            Display Alias
+          </label>
           <input
-            id="contact-alias-name"
-            value={name}
-            onChange={(event) => setName(event.target.value.slice(0, 40))}
-            autoComplete="off"
-            autoFocus
-            placeholder={otherName}
-            className="h-11 w-full rounded-lg border border-transparent bg-panel-2 pl-10 pr-3 text-[14px] text-ink outline-none transition-colors focus:border-accent focus:bg-panel"
+            type="text"
+            value={alias}
+            onChange={(e) => setAlias(e.target.value)}
+            placeholder="Custom nickname..."
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+            required
           />
         </div>
 
-        <p className="mt-2 text-[12px] leading-[18px] text-muted">
-          For example, type <span className="font-medium text-ink">Dad</span> and this chat will
-          show that name instead of {otherName}. {otherName} keeps their own name everywhere else.
-        </p>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+            Private Notes
+          </label>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={3}
+            placeholder="Add notes visible only to you..."
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 resize-none"
+          />
+        </div>
 
-        {error && (
-          <p role="alert" className="mt-2 text-[12px] text-danger">
-            {error}
-          </p>
-        )}
-
-        <div className="mt-4 flex items-center justify-between gap-2">
+        <div className="flex items-center justify-end space-x-2 pt-2">
           <button
             type="button"
-            onClick={() => onSubmit('')}
-            disabled={busy}
-            className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2 text-[12.5px] text-muted transition-colors hover:text-ink disabled:opacity-60"
+            onClick={onClose}
+            className="rounded-xl px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <RotateCcw size={13} />
-            Use original name
+            Cancel
           </button>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={busy}
-              className="inline-flex h-10 items-center rounded-lg border border-line px-4 text-[13.5px] text-ink transition-colors hover:bg-panel-2 disabled:opacity-60"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={busy}
-              className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-accent px-4 text-[13.5px] text-accent-ink transition-colors hover:bg-accent-hover disabled:opacity-60"
-            >
-              {busy ? <Loader2 size={14} className="animate-spin" /> : <Pencil size={14} />}
-              Save name
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-emerald-900/20 transition-all"
+          >
+            Save Changes
+          </button>
         </div>
       </form>
     </Modal>
   );
-}
+};

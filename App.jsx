@@ -2,9 +2,18 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { getSupabase } from '@/lib/supabase/browser';
 import AuthModule from './AuthModule';
 import LandingPage from './LandingPage';
-import SpatialAudioRoom from './SpatialAudioRoom';
+import { SpatialAudioCanvas } from './components/chat/SpatialAudioCanvas';
 import { ArcadePlayer, Leaderboard } from './arcade';
+import { ArcadeBatch } from './components/games/ArcadeBatch';
 import { queueScore, reassignQueueUser } from './lib/arcadeLeaderboard';
+import { enqueueOutboxMessage, processOutboxQueue, setupOutboxSync } from './lib/outbox';
+import { ChatHeader } from './components/chat/ChatHeader';
+import { BulletproofDropdown } from './components/chat/BulletproofDropdown';
+import { TelegramUltimateBotOS } from './components/chat/TelegramUltimateBotOS';
+import { StoryViewer } from './components/chat/StoryViewer';
+import { InstagramFeedView } from './components/chat/InstagramFeedView';
+import { useHotkeys } from './hooks/useHotkeys';
+import { TelegramStarsLedger } from './utils/telegramStars';
 import {
   MessageSquare, User, Gamepad2, Send, CheckCheck, X, Shield, Moon,
   Command, Radio, Workflow, Coins, Square, FileDown, Search, FolderOpen,
@@ -665,17 +674,13 @@ function MessageItem({ message, currentUserId, messageReactions, setMessageReact
         </div>
       )}
 
-      <div
-        className={`relative group ${isMe ? 'justify-end' : 'justify-start'}`}
-        onMouseEnter={() => setMessageActionsMenu({ id: message.id, x: 0, y: 0 })}
-        onMouseLeave={() => setMessageActionsMenu(null)}
-      >
-        <div className={`max-w-[80%] md:max-w-[65%] p-3 rounded-2xl shadow-sm ${
+      <div className={`relative group ${isMe ? 'justify-end' : 'justify-start'}`}>
+        <div className={`max-w-[80%] md:max-w-[65%] p-3 rounded-3xl shadow-lg ${
           isMe
-            ? 'rounded-tl-xl rounded-tr-xl rounded-bl-xl relay-bubble-tail-out bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
-            : 'rounded-tr-xl rounded-tl-xl rounded-br-xl relay-bubble-tail-in bg-[#1F2C34] text-white border border-[#2A3942]'
+            ? 'rounded-tr-xl rounded-tl-xl rounded-bl-xl relay-bubble-tail-out bg-gradient-to-br from-[#00f2fe] via-[#4facfe] to-[#10b981] text-white glow-cyan-active'
+            : 'rounded-tr-xl rounded-tl-xl rounded-br-xl relay-bubble-tail-in bg-[#17212b] text-[#f8fafc] border border-[#232e3c]/60 backdrop-blur-sm'
         }`}>
-          <p className="whitespace-pre-wrap break-words">{String(message.body || '')}</p>
+          <p className="whitespace-pre-wrap break-words leading-relaxed">{String(message.body || '')}</p>
 
         {/* Attachments */}
         {atts.length > 0 && (
@@ -771,13 +776,13 @@ function MessageItem({ message, currentUserId, messageReactions, setMessageReact
             </div>
           )}
 
-          <div className="flex justify-end items-center gap-1 text-[10px] text-zinc-500">
-            <span>{time}</span>
+          <div className="flex items-end gap-1 text-[10px]">
+            <span className={isMe ? 'text-cyan-400/70' : 'text-[#94a3b8]/70'}>{time}</span>
             {isMe && (
               <div className="flex items-center gap-1">
-                <CheckCheck className="w-2.5 h-2.5 text-cyan-400" />
+                <CheckCheck className="w-3 h-3 text-[#10b981]" />
                 <MoreVertical
-                  className="w-2.5 h-2.5 text-zinc-500 hover:text-white cursor-pointer"
+                  className="w-3 h-3 text-[#94a3b8]/60 hover:text-white cursor-pointer ml-1 transition-micro"
                   onClick={(e) => {
                     e.stopPropagation();
                     setMessageActionsMenu({ id: message.id, x: 0, y: 0 });
@@ -790,37 +795,34 @@ function MessageItem({ message, currentUserId, messageReactions, setMessageReact
 
         {/* Message Actions Menu */}
         {messageActionsMenu?.id === message.id && (
-          <div className="absolute right-0 top-full mt-1 w-48 bg-zinc-900 rounded-xl border border-zinc-800 shadow-2xl p-1 z-50">
-            <button
-              onClick={() => handleAction('reply')}
-              className="flex items-center gap-2 w-full p-2 text-sm text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
-            >
-              <CornerUpLeft className="w-4 h-4" />
-              Reply
-            </button>
-            <button
-              onClick={() => handleAction('copy')}
-              className="flex items-center gap-2 w-full p-2 text-sm text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
-            >
-              <Copy className="w-4 h-4" />
-              Copy
-            </button>
-            <button
-              onClick={() => handleAction('react')}
-              className="flex items-center gap-2 w-full p-2 text-sm text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
-            >
-              <Smile className="w-4 h-4" />
-              React
-            </button>
-            <hr className="my-1 border-zinc-700" />
-            <button
-              onClick={() => handleAction('delete')}
-              className="flex items-center gap-2 w-full p-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition"
-            >
-              <Trash2 className="w-4 h-4" />
-              Unsend
-            </button>
-          </div>
+          <BulletproofDropdown
+            isOpen={true}
+            onClose={() => setMessageActionsMenu(null)}
+            items={[
+              {
+                label: 'Reply',
+                icon: '↩️',
+                onClick: () => handleAction('reply'),
+              },
+              {
+                label: 'Copy',
+                icon: '📋',
+                onClick: () => handleAction('copy'),
+              },
+              {
+                label: 'React',
+                icon: '𘃡',
+                onClick: () => handleAction('react'),
+              },
+              {
+                label: 'Unsend',
+                icon: '𗁐',
+                danger: true,
+                onClick: () => handleAction('delete'),
+              },
+            ]}
+            align={isMe ? 'right' : 'left'}
+          />
         )}
 
         {/* Emoji Picker */}
@@ -1200,299 +1202,6 @@ function AttachmentButton({ icon, label, onClick }) {
 }
 
 // ============================================================
-// INSTAGRAM STORIES VIEWER COMPONENT
-// ============================================================
-function StoryViewer({ onClose }) {
-  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [replyText, setReplyText] = useState("");
-  const [liked, setLiked] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
-
-  const stories = [
-    {
-      id: "user_1",
-      username: "alex.dev",
-      userAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-      timeAgo: "2h",
-      isVerified: true,
-      slides: [
-        {
-          type: "image",
-          url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop&q=80",
-          caption: "Building the next-gen web UI 🚀",
-          song: "Synthwave Boy - Lofi Beats",
-          viewsCount: 1420
-        },
-        {
-          type: "image",
-          url: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1080&auto=format&fit=crop&q=80",
-          caption: "Late night debugging session.",
-          song: "Synthwave Boy - Lofi Beats",
-          viewsCount: 984
-        }
-      ]
-    },
-    {
-      id: "user_2",
-      username: "sarah_ui",
-      userAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
-      timeAgo: "4h",
-      isVerified: false,
-      slides: [
-        {
-          type: "image",
-          url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1080&auto=format&fit=crop&q=80",
-          caption: "Weekend getaway vibes 🌴",
-          song: "Summer Breeze - Tropical Edit",
-          viewsCount: 3210
-        },
-        {
-          type: "image",
-          url: "https://images.unsplash.com/photo-1469313637793-05989c480963?w=1080&auto=format&fit=crop&q=80",
-          caption: "Sunset vibes ✨",
-          song: "Summer Breeze - Tropical Edit",
-          viewsCount: 2105
-        }
-      ]
-    },
-    {
-      id: "user_3",
-      username: "whatsgram",
-      userAvatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80",
-      timeAgo: "6h",
-      isVerified: true,
-      slides: [
-        {
-          type: "image",
-          url: "https://images.unsplash.com/photo-1531297526732-2c0e1a6d241a?w=1080&auto=format&fit=crop&q=80",
-          caption: "New feature drop: Stories! 📱",
-          song: "Neon Dreams",
-          viewsCount: 5420
-        }
-      ]
-    }
-  ];
-
-  const slideDuration = 5000;
-  const activeUser = stories[currentStoryIndex];
-  const activeSlide = activeUser.slides[currentSlideIndex];
-
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = 50;
-    const step = (100 / (slideDuration / interval));
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          handleNextSlide();
-          return 0;
-        }
-        return prev + step;
-      });
-    }, interval);
-    return () => clearInterval(timer);
-  }, [currentStoryIndex, currentSlideIndex, isPaused]);
-
-  const handleNextSlide = () => {
-    setProgress(0);
-    setLiked(false);
-    if (currentSlideIndex < activeUser.slides.length - 1) {
-      setCurrentSlideIndex(currentSlideIndex + 1);
-    } else {
-      if (currentStoryIndex < stories.length - 1) {
-        setCurrentStoryIndex(currentStoryIndex + 1);
-        setCurrentSlideIndex(0);
-      } else {
-        setCurrentStoryIndex(0);
-        setCurrentSlideIndex(0);
-      }
-    }
-  };
-
-  const handlePrevSlide = () => {
-    setProgress(0);
-    setLiked(false);
-    if (currentSlideIndex > 0) {
-      setCurrentSlideIndex(currentSlideIndex - 1);
-    } else {
-      if (currentStoryIndex > 0) {
-        setCurrentStoryIndex(currentStoryIndex - 1);
-        setCurrentSlideIndex(stories[currentStoryIndex - 1].slides.length - 1);
-      }
-    }
-  };
-
-  const handleSendReply = (e) => {
-    e.preventDefault();
-    if (!replyText.trim()) return;
-    alert(`Reply sent to @${activeUser.username}: "${replyText}"`);
-    setReplyText("");
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center font-sans select-none z-[60]" onClick={onClose}>
-      <div
-        className="relative w-full h-full sm:w-[410px] sm:h-[880px] sm:rounded-2xl overflow-hidden bg-zinc-900 flex flex-col justify-between shadow-2xl"
-        onMouseDown={() => setIsPaused(true)}
-        onMouseUp={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-        onClick={(e) => e.stopPropagation()}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 left-4 z-20 text-white/60 hover:text-white transition"
-          title="Close Stories"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="absolute inset-0 z-0">
-          {activeSlide.url && (
-            <img
-              src={activeSlide.url}
-              alt="Story content"
-              className="w-full h-full object-cover filter brightness-90"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/80 pointer-events-none" />
-        </div>
-
-        <div className="relative z-10 p-3 pt-4 flex flex-col gap-2">
-          <div className="flex gap-1 w-full">
-            {activeUser.slides.map((_, idx) => (
-              <div key={idx} className="h-[2px] flex-1 bg-white/30 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-white transition-all duration-75 ease-linear"
-                  style={{
-                    width:
-                      idx < currentSlideIndex
-                        ? "100%"
-                        : idx === currentSlideIndex
-                        ? `${progress}%`
-                        : "0%",
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between text-white mt-1">
-            <div className="flex items-center space-x-3">
-              <img
-                src={activeUser.userAvatar}
-                alt={activeUser.username}
-                className="w-8 h-8 rounded-full border border-white/20 object-cover"
-              />
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold tracking-tight">
-                  {activeUser.username}
-                </span>
-                <span className="text-xs text-white/60">{activeUser.timeAgo}</span>
-              </div>
-              {activeUser.isVerified && (
-                <span className="text-[10px] text-blue-400 font-bold">✓</span>
-              )}
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className="text-white hover:text-white/80 transition"
-              >
-                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </button>
-              <button
-                onClick={() => setShowOptions(!showOptions)}
-                className="text-white hover:text-white/80 transition"
-              >
-                <MoreHorizontal size={20} />
-              </button>
-              <button onClick={onClose} className="text-white hover:text-white/80 transition">
-                <X size={22} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute inset-0 z-10 flex">
-          <div className="w-1/3 h-full cursor-pointer" onClick={handlePrevSlide} />
-          <div className="w-2/3 h-full cursor-pointer" onClick={handleNextSlide} />
-        </div>
-
-        <div className="relative z-10 px-4 mt-auto mb-16 pointer-events-none">
-          {activeSlide.song && (
-            <div className="inline-flex items-center space-x-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 mb-3">
-              <Music size={14} className="text-pink-400 animate-pulse" />
-              <span className="text-xs font-medium text-white">{activeSlide.song}</span>
-            </div>
-          )}
-          {activeSlide.caption && (
-            <p className="text-white text-sm font-normal drop-shadow-md bg-black/20 backdrop-blur-sm p-2.5 rounded-xl border border-white/5 inline-block">
-              {activeSlide.caption}
-            </p>
-          )}
-        </div>
-
-        <div className="relative z-20 p-3 pb-5 flex items-center space-x-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-          <form onSubmit={handleSendReply} className="flex-1 flex items-center bg-transparent border border-white/30 rounded-full px-4 py-2 backdrop-blur-md">
-            <input
-              type="text"
-              value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
-              placeholder={`Reply to ${activeUser.username}...`}
-              className="bg-transparent text-white text-sm focus:outline-none w-full placeholder-white/60"
-            />
-          </form>
-
-          <button
-            onClick={() => setLiked(!liked)}
-            className="p-2 transition transform active:scale-125"
-          >
-            <Heart size={26} className={liked ? "text-red-500 fill-red-500" : "text-white"} />
-          </button>
-
-          <button
-            onClick={handleSendReply}
-            className="p-2 transition transform active:scale-110"
-          >
-            <Send size={24} className="text-white -rotate-45 mb-1" />
-          </button>
-        </div>
-
-        {showOptions && (
-          <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-end p-4">
-            <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 text-center text-sm text-white">
-              <button
-                onClick={() => { alert("Reported story"); setShowOptions(false); }}
-                className="w-full py-3.5 text-red-500 font-semibold border-b border-zinc-800 active:bg-zinc-800"
-              >
-                Report
-              </button>
-              <button
-                onClick={() => { alert("Link copied to clipboard"); setShowOptions(false); }}
-                className="w-full py-3.5 border-b border-zinc-800 active:bg-zinc-800"
-              >
-                Copy link
-              </button>
-              <button
-                onClick={() => setShowOptions(false)}
-                className="w-full py-3.5 font-semibold text-zinc-400 active:bg-zinc-800"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 // ============================================================
 // MAIN APP
@@ -1527,6 +1236,21 @@ export default function App() {
   const [selectedGameId, setSelectedGameId] = useState(null);
   const [arcadeTab, setArcadeTab] = useState('games');
   const [soundEnabled, setSoundEnabled] = useState(() => safeJson(`${SCOPE}arcade_sound`, true));
+  const [xtrBalance, setXtrBalance] = useState(() => TelegramStarsLedger.getBalance());
+
+  // Global power-user hotkeys
+  useHotkeys({
+    "Ctrl+K": () => setShowCommandPalette(true),
+    "Escape": () => {
+      setShowGameVault(false);
+      setShowSpatialAudio(false);
+      setShowWorkflowModal(false);
+      setShowCommandPalette(false);
+      setShowContactSearch(false);
+    },
+    "Ctrl+Shift+A": () => setShowGameVault(true),
+    "Ctrl+B": () => setActiveTab('bot'),
+  });
   const [showSpatialAudio, setShowSpatialAudio] = useState(false);
   const [showWorkflowModal, setShowWorkflowModal] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
@@ -1574,7 +1298,6 @@ export default function App() {
   const [aiTyping, setAiTyping] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [attachments, setAttachments] = useState([]);
-  const [showStories, setShowStories] = useState(false);
   const [showContactSearch, setShowContactSearch] = useState(false);
   const [contactSearchQuery, setContactSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -1632,6 +1355,14 @@ export default function App() {
       });
       return changed ? next : prev;
     });
+  }, []);
+
+  // Set up offline outbox background sync (online → flush pending queue)
+  useEffect(() => {
+    const unsub = setupOutboxSync();
+    // Flush any pending outbox items on mount
+    processOutboxQueue();
+    return unsub;
   }, []);
   useEffect(() => {
     safeSet(LS_CONVERSATIONS, conversations);
@@ -1996,20 +1727,28 @@ export default function App() {
   };
 
   // ===== MESSAGE HANDLING =====
-  const handleSendMessage = useCallback(() => {
+  const handleSendMessage = useCallback(async () => {
     if (!inputText.trim() && attachments.length === 0) return;
     const text = inputText.trim();
-    const newMsg = {
-      id: uid(),
-      sender_id: currentUserId,
-      body: text,
-      attachments: attachments.length > 0 ? attachments : undefined,
-      created_at: nowISO()
-    };
+
+    // Offline-first: write optimistically to IndexedDB + outbox queue
+    const newMsg = await enqueueOutboxMessage(
+      activeConversationId,
+      text,
+      currentUserId,
+      attachments.length > 0 ? attachments : undefined
+    );
 
     setMessages((prev) => ({
       ...prev,
-      [activeConversationId]: [...(prev[activeConversationId] || []), newMsg]
+      [activeConversationId]: [...(prev[activeConversationId] || []), {
+        id: newMsg.id,
+        sender_id: currentUserId,
+        body: text,
+        attachments: attachments.length > 0 ? attachments : undefined,
+        created_at: newMsg.createdAt,
+        status: newMsg.status
+      }]
     }));
     setInputText('');
     setAttachments([]);
@@ -2479,15 +2218,15 @@ export default function App() {
         )
       ) : (
         <div
-          className={`flex h-screen w-screen overflow-hidden font-sans antialiased bg-[#000000] text-[#E9EDEF] selection:bg-cyan-500/30 ${monochromeMode ? 'grayscale' : ''}`}
+          className={`flex h-screen w-screen overflow-hidden font-sans antialiased bg-[#070b14] text-[#f8fafc] selection:bg-cyan-500/30 ${monochromeMode ? 'grayscale' : ''}`}
           style={{ transition: 'filter 0.3s ease' }}
         >
         {/* ===== LEFT NAVIGATION BAR ===== */}
-        <div className="w-16 border-r flex flex-col items-center py-4 justify-between z-30 flex-shrink-0 bg-[#090D16]/90 backdrop-blur-md border-[#1F2C34]/50">
+        <div className="w-16 border-r flex flex-col items-center py-4 justify-between z-30 flex-shrink-0 bg-[#17212b]/90 backdrop-blur-md border-[#232e3c]/50">
           <div className="flex flex-col items-center gap-2.5">
             <button
               onClick={() => setActiveTab('chats')}
-              className={`p-2.5 rounded-2xl transition-all duration-200 ${activeTab === 'chats' ? 'bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-rose-500/20 text-indigo-400 border border-indigo-500/30 shadow-lg shadow-indigo-500/20' : 'text-[#8696A0] hover:bg-[#111B21]/50 hover:text-white hover:border-transparent'}`}
+              className={`p-2.5 rounded-2xl transition-micro ${activeTab === 'chats' ? 'bg-gradient-to-r from-[#00f2fe]/20 to-[#10b981]/20 text-[#00f2fe] border border-[#00f2fe]/40 shadow-[0_0_20px_rgba(0,242,254,0.25)]' : 'text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-white border border-transparent hover:border-[#33454f]'}`}
               title="Chats"
             >
               <MessageSquare className="w-5 h-5" />
@@ -2495,31 +2234,31 @@ export default function App() {
 
             <button
               onClick={() => setShowSpatialAudio(true)}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-cyan-400 transition-all duration-200"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#00f2fe] transition-micro border border-transparent hover:border-[#33454f]"
               title="Spatial Audio Spaces"
             >
               <Radio className="w-5 h-5" />
             </button>
 
             <button
+              onClick={() => setActiveTab('feed')}
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#10b981] transition-micro border border-transparent hover:border-[#33454f]"
+              title="Instagram Feed"
+            >
+              <Layout className="w-5 h-5" />
+            </button>
+
+            <button
               onClick={() => setShowWorkflowModal(true)}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-emerald-400 transition-all duration-200"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#10b981] transition-micro border border-transparent hover:border-[#33454f]"
               title="AI Automation Recipes"
             >
               <Workflow className="w-5 h-5" />
             </button>
 
             <button
-              onClick={() => setShowStories(true)}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-white transition-all duration-200"
-              title="Status"
-            >
-              <Layout className="w-5 h-5" />
-            </button>
-
-            <button
               onClick={() => setShowCommandPalette(true)}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-indigo-400 transition-all duration-200"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#00f2fe] transition-micro border border-transparent hover:border-[#33454f]"
               title="Smart Command Palette (Cmd+K)"
             >
               <Command className="w-5 h-5" />
@@ -2527,7 +2266,7 @@ export default function App() {
 
             <button
               onClick={() => setShowTokenGateModal(true)}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-yellow-400 transition-all duration-200"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#f59e0b] transition-micro border border-transparent hover:border-[#33454f]"
               title="Token-Gated Channels"
             >
               <Coins className="w-5 h-5" />
@@ -2535,27 +2274,35 @@ export default function App() {
 
             <button
               onClick={() => setShowGameVault(true)}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-emerald-400 transition-all duration-200 relative"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#10b981] transition-micro border border-transparent hover:border-[#33454f] relative"
               title="50-Game Arcade Vault"
             >
               <Gamepad2 className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#10b981] rounded-full animate-pulse" />
+            </button>
+
+            <button
+              onClick={() => setActiveTab('bot')}
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#00f2fe] transition-micro border border-transparent hover:border-[#33454f] relative"
+              title="Telegram Ultimate Bot OS"
+            >
+              <Bot className="w-5 h-5" />
             </button>
 
             <button
               onClick={() => { setActiveTab('calls'); setShowCallLog(true); setCallFilter('all'); }}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-[#00a884] transition-all duration-200 relative"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-[#10b981] transition-micro border border-transparent hover:border-[#33454f] relative"
               title="Call Logs"
             >
               <Phone className="w-5 h-5" />
               {callLogs.filter(l => l.direction === 'missed').length > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-[#ef4444] rounded-full animate-pulse" />
               )}
             </button>
 
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className={`p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#111B21]/50 hover:text-gray-300 transition-all duration-200 ${showSettings ? 'text-white' : ''}`}
+              className={`p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#232e3c]/60 hover:text-white transition-micro ${showSettings ? 'text-[#00f2fe] bg-[#232e3c]/40 border border-[#00f2fe]/40' : ''}`}
               title="Settings"
             >
               <Settings className="w-5 h-5" />
@@ -2569,7 +2316,7 @@ export default function App() {
                 setShowAuthScreen(false);
                 window.location.reload();
               }}
-              className="p-2.5 rounded-2xl text-[#8696A0] hover:bg-[#1F2C34]/50 hover:text-red-400 transition-all duration-200"
+              className="p-2.5 rounded-2xl text-[#94a3b8] hover:bg-[#ef4444]/20 hover:text-[#ef4444] transition-micro"
               title="Sign Out"
             >
               <LogOut className="w-5 h-5" />
@@ -2579,7 +2326,7 @@ export default function App() {
           <div className="flex flex-col items-center gap-2.5">
             <button
               onClick={() => setQuantumEncryptionActive(!quantumEncryptionActive)}
-              className={`p-2 rounded-xl transition-all duration-200 ${quantumEncryptionActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-yellow-500/20 text-yellow-400'}`}
+              className={`p-2 rounded-xl transition-micro ${quantumEncryptionActive ? 'bg-[#00f2fe]/20 text-[#00f2fe] border border-[#00f2fe]/40' : 'bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/40'}`}
               title={quantumEncryptionActive ? 'Quantum-Resistant Encryption Active' : 'Standard Encryption'}
             >
               <Shield className="w-4 h-4" />
@@ -2587,7 +2334,7 @@ export default function App() {
 
             <button
               onClick={() => setMonochromeMode(!monochromeMode)}
-              className={`p-2 rounded-xl transition-all duration-200 ${monochromeMode ? 'bg-white text-black' : 'bg-[#111B21] text-gray-400'}`}
+              className={`p-2 rounded-xl transition-micro ${monochromeMode ? 'bg-[#00f2fe]/20 text-[#00f2fe]' : 'bg-[#232e3c]/40 text-[#94a3b8]'}`}
               title="Monochrome E-Ink Mode Toggle"
             >
               <Moon className="w-4 h-4" />
@@ -2596,27 +2343,27 @@ export default function App() {
         </div>
 
         {/* ===== CHATS SIDEBAR ===== */}
-        <div className="w-80 md:w-96 border-r flex flex-col z-20 flex-shrink-0 bg-[#0B141A] border-[#1F2C34]">
-          <div className="p-3 space-y-3 border-b border-[#1F2C34]">
+        <div className="w-80 md:w-96 border-r flex flex-col z-20 flex-shrink-0 bg-[#0e1621] border-[#232e3c]">
+          <div className="p-3 space-y-3 border-b border-[#232e3c] bg-[#17212b]/40 backdrop-blur-sm">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-xl font-bold text-white px-1 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                <h2 className="text-xl font-bold text-white px-1 bg-gradient-to-r from-[#00f2fe] via-[#4facfe] to-[#10b981] bg-clip-text text-transparent">
                   WhatsGram
                 </h2>
-                <p className="text-[10px] text-[#8696A0] px-1 font-mono flex items-center gap-1">
+                <p className="text-[10px] text-cyan-400/80 px-1 font-mono flex items-center gap-1">
                   <Shield className="w-3 h-3 text-cyan-400" /> OLED Dark Mode & 50-Game Vault
                 </p>
               </div>
               <button
                 onClick={() => setShowCommandPalette(true)}
-                className="flex items-center gap-1 px-2.5 py-1 bg-[#1F2C34] hover:bg-[#2A3942] text-cyan-400 rounded-lg text-xs font-medium transition"
+                className="flex items-center gap-1 px-2.5 py-1 bg-[#232e3c] hover:bg-[#2d3b4c] text-[#00f2fe] rounded-2xl text-xs font-medium transition-micro border border-transparent hover:border-[#00f2fe]/30"
                 title="Command Palette (Cmd+K)"
               >
                 <Command className="w-3.5 h-3.5" /> Cmd+K
               </button>
               <button
                 onClick={() => { setShowContactSearch(true); setContactSearchQuery(''); setSearchResults([]); }}
-                className="flex items-center gap-1 px-2.5 py-1 bg-[#1F2C34] hover:bg-[#2A3942] text-emerald-400 rounded-lg text-xs font-medium transition"
+                className="flex items-center gap-1 px-2.5 py-1 bg-[#232e3c] hover:bg-[#2d3b4c] text-[#10b981] rounded-2xl text-xs font-medium transition-micro border border-transparent hover:border-[#10b981]/30"
                 title="New Chat"
               >
                 <UserPlus className="w-3.5 h-3.5" /> New Chat
@@ -2636,8 +2383,8 @@ export default function App() {
                   <button
                     key={fld.id}
                     onClick={() => setSelectedFolderId(fld.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${
-                      isSelected ? 'bg-gradient-to-r from-[#833AB4] to-[#E1306C] text-white shadow-md' : 'bg-[#1F2C34] text-[#8696A0] hover:text-white'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium whitespace-nowrap transition-micro ${
+                      isSelected ? 'bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-white glow-cyan shadow-[0_0_16px_rgba(0,242,254,0.25)]' : 'bg-[#17212b]/50 text-[#94a3b8] hover:bg-[#232e3c]/80 hover:text-white border border-transparent hover:border-[#33454f]'
                     }`}
                   >
                     <FolderIconComponent className="w-3.5 h-3.5" />
@@ -2645,6 +2392,22 @@ export default function App() {
                   </button>
                 );
               })}
+            </div>
+
+            {/* Telegram Stars Balance Badge */}
+            <div className="flex items-center gap-2 px-2 py-1 rounded-xl bg-[#17212b] border border-[#232e3c] px-3 py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.4)] mx-1 mt-1 glow-cyan">
+              <span className="text-[#f59e0b] text-xs">⭐</span>
+              <span className="text-xs font-mono font-bold text-[#f8fafc]">{xtrBalance} XTR</span>
+              <button
+                onClick={() => {
+                  const newBal = TelegramStarsLedger.addStars(25);
+                  setXtrBalance(newBal);
+                }}
+                className="p-1 hover:bg-[#2d3b4c] rounded text-[#94a3b8] hover:text-[#f59e0b] transition-micro"
+                title="Add 25 XTR (demo)"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
             </div>
           </div>
 
@@ -2706,32 +2469,32 @@ export default function App() {
         </div>
 
         {/* ===== MAIN CONVERSATION PANEL ===== */}
-        <div className="flex-1 flex flex-col relative z-10 bg-[#000000]">
+        <div className="flex-1 flex flex-col relative z-10 bg-[#070b14]">
           {activeTab === 'calls' ? (
-            <div className="flex-1 flex flex-col bg-[#000000]">
+            <div className="flex-1 flex flex-col bg-[#0e1621]">
               {/* Call Log Header */}
-              <div className="p-3 bg-[#0B141A] border-b border-[#1F2C34] flex justify-between items-center">
+              <div className="p-3 bg-[#17212b] border-b border-[#232e3c] flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Phone className="w-5 h-5 text-[#00a884]" /> Calls
+                    <Phone className="w-5 h-5 text-[#10b981]" /> Calls
                   </h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCallFilter('all')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${callFilter === 'all' ? 'bg-[#00a884]/20 text-[#00a884]' : 'text-[#8696A0] hover:bg-[#111B21]'}`}
+                    className={`px-3 py-1.5 rounded-2xl text-xs font-medium transition-micro ${callFilter === 'all' ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40' : 'text-[#94a3b8] hover:bg-[#232e3c]/60 border border-transparent hover:border-[#33454f]'}`}
                   >
                     All
                   </button>
                   <button
                     onClick={() => setCallFilter('missed')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${callFilter === 'missed' ? 'bg-[#ea0038]/20 text-[#ea0038]' : 'text-[#8696A0] hover:bg-[#111B21]'}`}
+                    className={`px-3 py-1.5 rounded-2xl text-xs font-medium transition-micro ${callFilter === 'missed' ? 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/40' : 'text-[#94a3b8] hover:bg-[#232e3c]/60 border border-transparent hover:border-[#33454f]'}`}
                   >
                     Missed
                   </button>
                   <button
                     onClick={() => handleClearAllCallLogs()}
-                    className="text-xs text-[#ea0038] hover:text-red-400 transition"
+                    className="text-xs text-[#ef4444] hover:text-red-400 transition-micro"
                   >
                     Clear All
                   </button>
@@ -2756,10 +2519,10 @@ export default function App() {
                         const dirIcon = isMissed ? <PhoneMissed className="w-4 h-4 text-red-500" /> : isOutgoing ? <PhoneOutgoing className="w-4 h-4 text-[#00a884]" /> : <PhoneIncoming className="w-4 h-4 text-[#00a884]" />;
                         const mediaIcon = log.type === 'video' ? <Video className="w-3 h-3 text-[#00a884]" /> : <Phone className="w-3 h-3 text-[#00a884]" />;
                         return (
-                          <button
+                          <div
                             key={log.id}
                             onClick={() => { setSelectedCall(log); setShowCallDetails(true); }}
-                            className="flex items-center gap-3 p-4 hover:bg-[#111B21] transition group border-b border-[#0a0a0a]/50"
+                            className="flex items-center gap-3 p-4 hover:bg-[#111B21] transition group border-b border-[#0a0a0a]/50 cursor-pointer"
                           >
                             <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCB045]">
                               <img
@@ -2801,70 +2564,28 @@ export default function App() {
                                 <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
-                          </button>
+                          </div>
                         );
                       })}
                   </div>
                 )}
               </div>
             </div>
+          ) : activeTab === 'feed' ? (
+            <InstagramFeedView />
+          ) : activeTab === 'bot' ? (
+            <div className="flex-1 flex flex-col bg-[#000000]">
+              <TelegramUltimateBotOS />
+            </div>
           ) : currentConv ? (
             <>
-              {/* ===== INSTAGRAM DM HEADER ===== */}
-              <div className="p-3 bg-[#09090b] flex justify-between items-center border-b border-zinc-800">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('chats')}>
-                  <CornerUpLeft className="w-4 h-4 text-zinc-400 hover:text-white transition" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <img
-                      src={currentConv.participant?.avatar_url}
-                      alt="Avatar"
-                      className="w-9 h-9 rounded-full object-cover border border-zinc-800"
-                      onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(currentConv.participant?.display_name || 'User') + '&background=random'; }}
-                    />
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#09090b] ${currentConv.participant?.is_online ? 'bg-emerald-500' : 'bg-zinc-600'}`} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <h3 className="text-sm font-semibold text-white truncate">
-                        {String(currentConv.participant?.display_name || currentConv.name || 'Chat')}
-                      </h3>
-                      {currentConv.participant?.is_online && (
-                        <span className="text-[10px] text-emerald-500 font-medium flex items-center gap-1">
-                          <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" /> Active now
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[10px] text-zinc-500 truncate">
-                      @{String(currentConv.participant?.display_name || currentConv.name || 'user').toLowerCase().replace(/\s+/g, '.')}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => handleStartCall({ id: currentConv.participant?.id || 'unknown', display_name: currentConv.participant?.display_name || 'Contact', avatar_url: currentConv.participant?.avatar_url }, 'voice')}
-                    className="p-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
-                    title="Audio Call"
-                  >
-                    <Phone className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleStartCall({ id: currentConv.participant?.id || 'unknown', display_name: currentConv.participant?.display_name || 'Contact', avatar_url: currentConv.participant?.avatar_url }, 'video')}
-                    className="p-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
-                    title="Video Call"
-                  >
-                    <Video className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setShowChatSettings(true)}
-                    className="p-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
-                    title="Chat Settings"
-                  >
-                    <MoreVertical className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              {/* ===== CHAT HEADER (Reusable Component) ===== */}
+              <ChatHeader
+                activeChatId={activeConversationId}
+                onBack={() => setActiveTab('chats')}
+                chatName={String(currentConv.participant?.display_name || currentConv.name || 'Chat')}
+                isGroup={currentConv.is_group || false}
+              />
 
               <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
                 {currentMessages.map((m) => (
@@ -2900,11 +2621,11 @@ export default function App() {
                 )}
 
                 {/* Attachment + Input Row */}
-                <div className="flex items-end gap-2 bg-[#111B21]/80 backdrop-blur-md rounded-2xl p-2 border border-[#2A3942]/50 shadow-xl">
+                <div className="flex items-end gap-2 bg-[#17212b]/60 backdrop-blur-md rounded-3xl p-2 border border-[#232e3c]/60 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                   {/* Attachment Button (+) */}
                   <button
                     onClick={() => setShowAttachMenu(!showAttachMenu)}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-emerald-400 hover:bg-[#2A3942] transition-all duration-200 border border-transparent hover:border-emerald-500/30"
+                    className="w-9 h-9 rounded-2xl flex items-center justify-center text-[#00f2fe] hover:bg-[#232e3c]/80 transition-micro border border-transparent hover:border-[#00f2fe]/30 glow-cyan"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -2926,24 +2647,24 @@ export default function App() {
                           ? 'Ask the AI... or type @ai in any chat'
                           : 'Message...'
                       }
-                      className="w-full bg-transparent text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none pr-4"
+                      className="w-full bg-transparent text-sm text-[#f8fafc] placeholder-[#94a3b8]/50 focus:outline-none pr-4"
                     />
                     {currentConv?.is_ai && (
-                      <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-600 bg-[#111B21] px-1">
+                      <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-[#00f2fe]/60 bg-[#0e1621]/40 px-1 backdrop-blur-sm">
                         @ai
                       </div>
                     )}
                     <div className="absolute inset-y-0 right-2 flex items-center gap-1.5">
                       <button
                         onClick={() => setShowAttachMenu(!showAttachMenu)}
-                        className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-[#2A3942] transition-all"
+                        className="w-6 h-6 rounded-2xl flex items-center justify-center text-[#94a3b8]/60 hover:text-white hover:bg-[#232e3c]/60 transition-micro"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                       <button
                         onClick={handleSendMessage}
                         disabled={!inputText.trim() && attachments.length === 0}
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200 ${inputText.trim() || attachments.length > 0 ? 'bg-gradient-to-r from-indigo-500 to-rose-500 text-white shadow-lg shadow-indigo-500/30' : 'bg-zinc-800/50 text-zinc-500 hover:bg-zinc-700'}`}
+                        className={`w-6 h-6 rounded-2xl flex items-center justify-center transition-micro ${inputText.trim() || attachments.length > 0 ? 'bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-white glow-cyan-active' : 'bg-[#232e3c]/40 text-[#94a3b8]/50 hover:bg-[#2d3b4c]/60'}`}
                       >
                         <Send className="w-3 h-3" />
                       </button>
@@ -3018,7 +2739,7 @@ export default function App() {
               <div className="flex flex-wrap justify-between items-center gap-2">
                 <h3 className="text-base md:text-lg font-bold flex items-center gap-2">
                   <Gamepad2 className="w-6 h-6 text-emerald-400" /> Arcade Vault
-                  <span className="text-[10px] font-mono text-zinc-500">53 games</span>
+                  <span className="text-[10px] font-mono text-zinc-500">53 games + 3 batches</span>
                 </h3>
                 <div className="flex items-center gap-2">
                   <div className="flex bg-[#1F2C34] rounded-lg p-1 border border-[#2A3942]">
@@ -3027,6 +2748,12 @@ export default function App() {
                       className={`px-3 py-1 rounded-md text-[11px] font-bold transition ${arcadeTab === 'games' && !selectedGameId ? 'bg-emerald-500/20 text-emerald-300' : 'text-zinc-400 hover:text-white'}`}
                     >
                       Games
+                    </button>
+                    <button
+                      onClick={() => { setArcadeTab('batches'); setSelectedGameId(null); }}
+                      className={`px-3 py-1 rounded-md text-[11px] font-bold transition ${arcadeTab === 'batches' ? 'bg-cyan-500/20 text-cyan-300' : 'text-zinc-400 hover:text-white'}`}
+                    >
+                      Batches
                     </button>
                     <button
                       onClick={() => { setArcadeTab('leaderboard'); setSelectedGameId(null); }}
@@ -3097,6 +2824,29 @@ export default function App() {
                 <div className="flex-1 min-h-0 bg-[#1F2C34] p-3 md:p-4 rounded-xl border border-[#2A3942] flex flex-col">
                   <Leaderboard games={ALL_GAMES} currentUserId={currentUserId} />
                 </div>
+              ) : arcadeTab === 'batches' ? (
+                <div className="flex-1 min-h-0 bg-[#1F2C34] p-3 md:p-4 rounded-xl border border-[#2A3942] flex flex-col overflow-y-auto">
+                  <div className="space-y-4">
+                    <ArcadeBatch
+                      batch={1}
+                      title="Batch 1 — Board, Card & Puzzle"
+                      gameIds={[1, 2, 3, 4, 5, 6, 7, 8]}
+                      subtitle="FIDE Chess · Checkers · Gomoku · Othello · Minesweeper · Connect Four · Tetris · 2048"
+                    />
+                    <ArcadeBatch
+                      batch={2}
+                      title="Batch 2 — Arcade & Action"
+                      gameIds={[18, 19, 20, 21, 22]}
+                      subtitle="Snake Retro · Pong PvE · Flappy Bird · Breakout · Space Invaders"
+                    />
+                    <ArcadeBatch
+                      batch={3}
+                      title="Batch 3 — Sports, Simulation & Adventure"
+                      gameIds={[35, 36, 37, 38]}
+                      subtitle="Billiards 8-Ball · Air Hockey · Basketball · Zelda Dungeon"
+                    />
+                  </div>
+                </div>
               ) : (
                 <div className="flex-1 overflow-y-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 pr-2 scrollbar-hide">
                   {ALL_GAMES.map((game) => {
@@ -3144,7 +2894,7 @@ export default function App() {
                   <X className="w-5 h-5 text-gray-400 hover:text-white" />
                 </button>
               </div>
-              <SpatialAudioRoom onClose={() => setShowSpatialAudio(false)} />
+              <SpatialAudioCanvas />
             </div>
           </div>
         )}
@@ -3279,11 +3029,6 @@ export default function App() {
               </button>
             </div>
           </div>
-        )}
-
-        {/* ===== MODAL: INSTAGRAM STORIES ===== */}
-        {showStories && (
-          <StoryViewer onClose={() => setShowStories(false)} />
         )}
 
         {/* ===== MODAL: SETTINGS / IDENTITY PROFILES ===== */}

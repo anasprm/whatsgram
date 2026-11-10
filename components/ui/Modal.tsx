@@ -1,139 +1,48 @@
-'use client';
+"use client";
 
-import { useEffect, useId, useRef, type ReactNode } from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useEffect } from "react";
 
 interface ModalProps {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
-  title?: string;
-  description?: string;
-  children: ReactNode;
-  className?: string;
-  hideClose?: boolean;
+  title: string;
+  children: React.ReactNode;
 }
 
-const FOCUSABLE =
-  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-export function Modal({
-  open,
-  onClose,
-  title,
-  description,
-  children,
-  className,
-  hideClose,
-}: ModalProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const restoreRef = useRef<HTMLElement | null>(null);
-  const titleId = useId();
-  const descriptionId = useId();
-
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   useEffect(() => {
-    if (!open) return;
-
-    restoreRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.stopPropagation();
-        onClose();
-        return;
-      }
-      if (event.key !== 'Tab') return;
-
-      const panel = panelRef.current;
-      if (!panel) return;
-      const nodes = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (node) => node.offsetParent !== null,
-      );
-      if (nodes.length === 0) {
-        event.preventDefault();
-        panel.focus();
-        return;
-      }
-
-      const first = nodes[0];
-      const last = nodes[nodes.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
     };
-
-    document.addEventListener('keydown', onKeyDown);
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const timer = window.setTimeout(() => {
-      const panel = panelRef.current;
-      const target = panel?.querySelector<HTMLElement>(FOCUSABLE);
-      (target || panel)?.focus();
-    }, 30);
-
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    }
     return () => {
-      window.clearTimeout(timer);
-      document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previous;
-      restoreRef.current?.focus?.();
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose, open]);
+  }, [isOpen, onClose]);
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4">
-      <button
-        type="button"
-        aria-label="Close dialog"
-        onClick={onClose}
-        className="absolute inset-0 bg-slate-950/55 backdrop-blur-[3px]"
-      />
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? titleId : undefined}
-        aria-describedby={description ? descriptionId : undefined}
-        tabIndex={-1}
-        className={cn(
-          'relative z-10 flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-line bg-panel shadow-[0_40px_100px_-30px_rgba(2,6,23,0.65)] animate-pop-in sm:rounded-2xl',
-          className,
-        )}
-      >
-        {(title || !hideClose) && (
-          <div className="flex shrink-0 items-start justify-between gap-4 border-b border-line px-5 py-4">
-            <div className="min-w-0">
-              {title && (
-                <h2 id={titleId} className="text-[16px] font-normal leading-[22px] text-ink">
-                  {title}
-                </h2>
-              )}
-              {description && (
-                <p id={descriptionId} className="mt-1 text-[12.5px] leading-[18px] text-muted">
-                  {description}
-                </p>
-              )}
-            </div>
-            {!hideClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-faint transition-colors hover:bg-panel-2 hover:text-ink"
-                aria-label="Close"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
-        )}
-        <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="absolute inset-0" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-slate-200/60 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-6 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            {title}
+          </h3>
+          <button
+            onClick={onClose}
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="py-4">{children}</div>
       </div>
     </div>
   );
-}
+};

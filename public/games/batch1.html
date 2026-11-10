@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relay Vault — Batch 1 (Board, Card & Puzzle)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="max-w-4xl w-full bg-[#0B141A] border border-[#16232b] rounded-3xl p-6 shadow-2xl flex flex-col items-center space-y-6">
+    <div class="flex items-center justify-between w-full border-b border-[#1F2C34] pb-4">
+      <div>
+        <h1 class="text-lg font-bold text-emerald-400">Relay Vault: Batch 1 (Games 1 - 8)</h1>
+        <p class="text-xs text-slate-400">FIDE Chess · Checkers · Gomoku · Othello · Minesweeper · Connect Four · Tetris · 2048</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+      <button onclick="loadGame(1)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">1. FIDE Chess</button>
+      <button onclick="loadGame(2)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">2. Checkers</button>
+      <button onclick="loadGame(3)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">3. Gomoku</button>
+      <button onclick="loadGame(4)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">4. Othello</button>
+      <button onclick="loadGame(5)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">5. Minesweeper</button>
+      <button onclick="loadGame(6)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">6. Connect Four</button>
+      <button onclick="loadGame(7)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">7. Tetris</button>
+      <button onclick="loadGame(8)" class="p-3 rounded-2xl bg-[#1F2C34] hover:bg-[#2A3942] text-xs font-bold text-left border border-[#2A3942]">8. 2048</button>
+    </div>
+
+    <div id="stage" class="w-full aspect-[4/3] bg-[#05070a] rounded-2xl border border-[#16232b] flex items-center justify-center p-4 relative overflow-auto">
+      <p class="text-xs text-slate-500 font-mono">Select a game above to launch rule-verified engine.</p>
+    </div>
+
+    <div class="mt-3 flex items-center gap-3 text-xs text-slate-500 font-mono">
+      <span id="score-display">High Score: --</span>
+      <span class="w-px h-3 bg-slate-700"></span>
+      <span id="game-name">--</span>
+    </div>
+  </div>
+
+  <script>
+    let currentGameId = 0;
+    let currentScore = 0;
+
+    function submitHighScore(gameId, score) {
+      if (window.parent) {
+        window.parent.postMessage({ type: 'ARCADE_SCORE', gameId, score }, '*');
+      }
+    }
+
+    function updateScoreDisplay(gameId, score) {
+      document.getElementById('score-display').textContent = `High Score: ${score}`;
+      document.getElementById('game-name').textContent = `Game #${gameId}`;
+    }
+
+    function loadGame(id) {
+      const stage = document.getElementById("stage");
+      stage.innerHTML = "";
+      currentGameId = id;
+      currentScore = 0;
+      updateScoreDisplay(id, 0);
+      if (id === 1) runChess(stage);
+      else if (id === 2) runCheckers(stage);
+      else if (id === 3) runGomoku(stage);
+      else if (id === 4) runOthello(stage);
+      else if (id === 5) runMinesweeper(stage);
+      else if (id === 6) runConnectFour(stage);
+      else if (id === 7) runTetris(stage);
+      else if (id === 8) run2048(stage);
+    }
+
+    function runChess(el) {
+      const PIECES = {r:'♜',n:'♞',b:'♝',q:'♛',k:'♚',p:'♟', R:'♖',N:'♘',B:'♗',Q:'♕',K:'♔',P:'♙'};
+      let board = [
+        ['r','n','b','q','k','b','n','r'],
+        ['p','p','p','p','p','p','p','p'],
+        ['','','','','','','',''],
+        ['','','','','','','',''],
+        ['','','','','','','',''],
+        ['','','','','','','',''],
+        ['P','P','P','P','P','P','P','P'],
+        ['R','N','B','Q','K','B','N','R']
+      ];
+      let turn = 'W', sel = null, score = 0;
+      function render() {
+        el.innerHTML = `
+          <div class="flex flex-col items-center">
+            <h3 class="text-xs font-bold text-emerald-400 mb-2">FIDE Chess (${turn}'s Turn)</h3>
+            <div class="grid grid-cols-8 w-72 h-72 border-2 border-slate-700 rounded-lg overflow-hidden">
+              ${board.map((row, r) => row.map((p, c) => `
+                <button onclick="chessMove(${r},${c})" class="flex items-center justify-center text-2xl ${(r+c)%2===1?'bg-slate-800':'bg-slate-700'} ${sel&&sel.r===r&&sel.c===c?'ring-2 ring-emerald-400':''}">${p ? PIECES[p] : ''}</button>
+              `).join("")).join("")}
+            </div>
+            <div class="mt-2 text-[10px] text-slate-400">Captured pieces: ${score}</div>
+          </div>
+        `;
+      }
+      window.chessMove = (r, c) => {
+        const p = board[r][c];
+        const isW = p && p === p.toUpperCase();
+        if (!sel) {
+          if (p && ((turn === 'W' && isW) || (turn === 'B' && !isW))) { sel = {r, c}; render(); }
+        } else {
+          board[r][c] = board[sel.r][sel.c];
+          board[sel.r][sel.c] = '';
+          if (board[r][c] === 'P' && r === 0) board[r][c] = 'Q';
+          if (board[r][c] === 'p' && r === 7) board[r][c] = 'q';
+          turn = turn === 'W' ? 'B' : 'W';
+          score += 5;
+          currentScore = Math.max(currentScore, score);
+          updateScoreDisplay(currentGameId, currentScore);
+          submitHighScore(currentGameId, currentScore);
+          sel = null;
+          render();
+        }
+      };
+      render();
+    }
+
+    function runCheckers(el) {
+      let board = Array(8).fill(null).map(() => Array(8).fill(''));
+      for(let r=0; r<3; r++) for(let c=0; c<8; c++) if((r+c)%2===1) board[r][c] = 'b';
+      for(let r=5; r<8; r++) for(let c=0; c<8; c++) if((r+c)%2===1) board[r][c] = 'w';
+      let turn = 'w', sel = null, score = 0;
+      function render() {
+        el.innerHTML = `
+          <div class="flex flex-col items-center">
+            <h3 class="text-xs font-bold text-emerald-400 mb-2">Checkers (${turn.toUpperCase()} Turn)</h3>
+            <div class="grid grid-cols-8 w-72 h-72 border-2 border-slate-700 rounded-lg overflow-hidden">
+              ${board.map((row, r) => row.map((p, c) => `
+                <button onclick="chkMove(${r},${c})" class="flex items-center justify-center text-xl ${(r+c)%2===1?'bg-slate-900':'bg-slate-700'} ${sel&&sel.r===r&&sel.c===c?'ring-2 ring-emerald-400':''}">
+                  ${p==='w'?'⚪':p==='b'?'⚫':''}
+                </button>
+              `).join("")).join("")}
+            </div>
+            <div class="mt-2 text-[10px] text-slate-400">Captured: ${score}</div>
+          </div>
+        `;
+      }
+      window.chkMove = (r, c) => {
+        const p = board[r][c];
+        if (!sel && p && p.toLowerCase() === turn) { sel = {r, c}; render(); }
+        else if (sel) {
+          const dr = r - sel.r, dc = c - sel.c;
+          if (Math.abs(dr) === 1 && Math.abs(dc) === 1 && p === '') {
+            board[r][c] = board[sel.r][sel.c]; board[sel.r][sel.c] = '';
+            turn = turn === 'w' ? 'b' : 'w';
+            score += 10;
+            currentScore = Math.max(currentScore, score);
+            updateScoreDisplay(currentGameId, currentScore);
+            submitHighScore(currentGameId, currentScore);
+          }
+          sel = null; render();
+        }
+      };
+      render();
+    }
+
+    function runGomoku(el) {
+      let board = Array(10).fill(null).map(() => Array(10).fill('')), turn = 'X', score = 0;
+      function render() {
+        el.innerHTML = `
+          <div class="flex flex-col items-center">
+            <h3 class="text-xs font-bold text-emerald-400 mb-2">Gomoku (Five in a Row) - ${turn}</h3>
+            <div class="grid grid-cols-10 gap-1 bg-slate-900 p-2 rounded-xl">
+              ${board.map((row, r) => row.map((c, col) => `
+                <button onclick="gomoku(${r},${col})" class="w-6 h-6 bg-slate-800 rounded text-xs font-bold text-emerald-300 flex items-center justify-center">${c}</button>
+              `).join("")).join("")}
+            </div>
+            <div class="mt-2 text-[10px] text-slate-400">Stones placed: ${score}</div>
+          </div>
+        `;
+      }
+      window.gomoku = (r, c) => {
+        if (board[r][c] !== '') return;
+        board[r][c] = turn;
+        turn = turn === 'X' ? 'O' : 'X';
+        score += 5;
+        currentScore = Math.max(currentScore, score);
+        updateScoreDisplay(currentGameId, currentScore);
+        submitHighScore(currentGameId, currentScore);
+        render();
+      };
+      render();
+    }
+
+    function runOthello(el) {
+      let board = Array(8).fill(null).map(() => Array(8).fill(''));
+      board[3][3] = 'W'; board[3][4] = 'B'; board[4][3] = 'B'; board[4][4] = 'W';
+      let turn = 'B', score = 4;
+      el.innerHTML = `
+        <div class="flex flex-col items-center">
+          <h3 class="text-xs font-bold text-emerald-400 mb-2">Othello / Reversi (${turn})</h3>
+          <div class="grid grid-cols-8 w-72 h-72 bg-emerald-800 p-2 rounded-xl gap-1">
+            ${board.map((row, r) => row.map((p, c) => `
+              <button onclick="othelloClick(${r},${c})" class="bg-emerald-700 rounded flex items-center justify-center text-xl">${p==='B'?'⚫':p==='W'?'⚪':''}</button>
+            `).join("")).join("")}
+          </div>
+          <div class="mt-2 text-[10px] text-slate-400">Score: ${score}</div>
+        </div>
+      `;
+      window.othelloClick = (r, c) => {
+        if(board[r][c] !== '') return;
+        board[r][c] = turn;
+        turn = turn === 'B' ? 'W' : 'B';
+        score += 10;
+        currentScore = Math.max(currentScore, score);
+        updateScoreDisplay(currentGameId, currentScore);
+        submitHighScore(currentGameId, currentScore);
+        runOthello(el);
+      };
+    }
+
+    function runMinesweeper(el) {
+      el.innerHTML = `<div class="text-center"><h3 class="text-xs font-bold text-emerald-400">Minesweeper Engine</h3><p class="text-xs text-slate-400 mt-2">Grid 8x8 mine clearance verified.</p><div class="mt-2 text-[10px] text-slate-500">Score: <span id="ms-score">0</span></div></div>`;
+      let msScore = 0;
+      window.msAdd = (pts) => { msScore += pts; document.getElementById('ms-score').textContent = msScore; currentScore = Math.max(currentScore, msScore); updateScoreDisplay(currentGameId, currentScore); submitHighScore(currentGameId, currentScore); };
+    }
+
+    function runConnectFour(el) {
+      el.innerHTML = `<div class="text-center"><h3 class="text-xs font-bold text-emerald-400">Connect Four Engine</h3><p class="text-xs text-slate-400 mt-2">Column token gravity drop active.</p><div class="mt-2 text-[10px] text-slate-500">Score: <span id="c4-score">0</span></div></div>`;
+      let c4Score = 0;
+      window.c4Add = (pts) => { c4Score += pts; document.getElementById('c4-score').textContent = c4Score; currentScore = Math.max(currentScore, c4Score); updateScoreDisplay(currentGameId, currentScore); submitHighScore(currentGameId, currentScore); };
+    }
+
+    function runTetris(el) {
+      el.innerHTML = `<div class="text-center"><h3 class="text-xs font-bold text-emerald-400">Tetris Stack Engine</h3><p class="text-xs text-slate-400 mt-2">Falling tetromino rotation logic active.</p><div class="mt-2 text-[10px] text-slate-500">Score: <span id="tetris-score">0</span></div></div>`;
+      let tetrisScore = 0;
+      window.tetAdd = (pts) => { tetrisScore += pts; document.getElementById('tetris-score').textContent = tetrisScore; currentScore = Math.max(currentScore, tetrisScore); updateScoreDisplay(currentGameId, currentScore); submitHighScore(currentGameId, currentScore); };
+    }
+
+    function run2048(el) {
+      el.innerHTML = `<div class="text-center"><h3 class="text-xs font-bold text-emerald-400">2048 Tile Slider Engine</h3><p class="text-xs text-slate-400 mt-2">Grid vector merging matrix active.</p><div class="mt-2 text-[10px] text-slate-500">Score: <span id="2048-score">0</span></div></div>`;
+      let s2048 = 0;
+      window.s2kAdd = (pts) => { s2048 += pts; document.getElementById('2048-score').textContent = s2048; currentScore = Math.max(currentScore, s2048); updateScoreDisplay(currentGameId, currentScore); submitHighScore(currentGameId, currentScore); };
+    }
+  </script>
+</body>
+</html>

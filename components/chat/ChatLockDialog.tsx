@@ -1,156 +1,82 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { KeyRound, Loader2, Lock, LockOpen } from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
+import React, { useState } from "react";
+import { Modal } from "../ui/Modal";
 
 interface ChatLockDialogProps {
-  open: boolean;
-  mode: 'set' | 'remove';
-  otherName: string;
-  busy: boolean;
-  error: string | null;
+  isOpen: boolean;
   onClose: () => void;
-  onSubmit: (pin: string) => void;
+  isLocked: boolean;
+  onToggleLock: (pin: string) => void;
 }
 
-/** Set or remove the optional PIN lock for a single conversation. */
-export function ChatLockDialog({
-  open,
-  mode,
-  otherName,
-  busy,
-  error,
+export const ChatLockDialog: React.FC<ChatLockDialogProps> = ({
+  isOpen,
   onClose,
-  onSubmit,
-}: ChatLockDialogProps) {
-  const [pin, setPin] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [localError, setLocalError] = useState<string | null>(null);
+  isLocked,
+  onToggleLock,
+}) => {
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!open) return;
-    setPin('');
-    setConfirm('');
-    setLocalError(null);
-  }, [open, mode]);
-
-  const setting = mode === 'set';
-
-  function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (busy) return;
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (pin.length < 4) {
-      setLocalError('Use at least 4 digits.');
+      setError("Passcode must be at least 4 digits.");
       return;
     }
-    if (setting && pin !== confirm) {
-      setLocalError('The PINs do not match.');
-      return;
-    }
-    setLocalError(null);
-    onSubmit(pin);
-  }
+    setError("");
+    onToggleLock(pin);
+    setPin("");
+    onClose();
+  };
 
   return (
     <Modal
-      open={open}
-      onClose={onClose}
-      title={setting ? 'Lock this chat' : 'Remove chat lock'}
-      description={
-        setting
-          ? `Require a PIN before opening your conversation with ${otherName}. This only affects your account.`
-          : `Enter the PIN to remove the lock from your conversation with ${otherName}.`
-      }
-      className="max-w-sm"
+      isOpen={isOpen}
+      onClose={() => {
+        setPin("");
+        setError("");
+        onClose();
+      }}
+      title={isLocked ? "Unlock Chat" : "Lock Chat Thread"}
     >
-      <form onSubmit={submit} className="p-5 pt-0">
-        <label
-          htmlFor="chat-lock-new-pin"
-          className="mb-1.5 block text-[12px] text-muted"
-        >
-          {setting ? 'New PIN' : 'Current PIN'}
-        </label>
-        <div className="relative">
-          <KeyRound
-            size={14}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
-          />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {isLocked
+            ? "Enter your 4-digit passcode to view this conversation."
+            : "Locked chats are hidden from the main list and require a passcode to open."}
+        </p>
+
+        <div>
           <input
-            id="chat-lock-new-pin"
+            type="password"
             value={pin}
-            onChange={(event) => {
-              setPin(event.target.value.replace(/\D/g, '').slice(0, 8));
-              setLocalError(null);
-            }}
-            inputMode="numeric"
-            autoComplete="off"
-            autoFocus
-            placeholder="4–8 digits"
-            className="h-11 w-full rounded-lg border border-transparent bg-panel-2 pl-10 pr-3 text-[14px] tracking-[0.2em] text-ink outline-none transition-colors focus:border-accent focus:bg-panel"
+            onChange={(e) => setPin(e.target.value)}
+            maxLength={6}
+            placeholder="••••"
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 text-center text-lg tracking-widest text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+            required
           />
+          {error && <p className="mt-1 text-[11px] text-rose-500 font-medium">{error}</p>}
         </div>
 
-        {setting && (
-          <>
-            <label
-              htmlFor="chat-lock-confirm-pin"
-              className="mb-1.5 mt-3 block text-[12px] text-muted"
-            >
-              Confirm PIN
-            </label>
-            <div className="relative">
-              <KeyRound
-                size={14}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
-              />
-              <input
-                id="chat-lock-confirm-pin"
-                value={confirm}
-                onChange={(event) => {
-                  setConfirm(event.target.value.replace(/\D/g, '').slice(0, 8));
-                  setLocalError(null);
-                }}
-                inputMode="numeric"
-                autoComplete="off"
-                placeholder="Repeat PIN"
-                className="h-11 w-full rounded-lg border border-transparent bg-panel-2 pl-10 pr-3 text-[14px] tracking-[0.2em] text-ink outline-none transition-colors focus:border-accent focus:bg-panel"
-              />
-            </div>
-          </>
-        )}
-
-        {(localError || error) && (
-          <p role="alert" className="mt-2 text-[12px] text-danger">
-            {localError || error}
-          </p>
-        )}
-
-        <div className="mt-4 flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end space-x-2 pt-2">
           <button
             type="button"
             onClick={onClose}
-            disabled={busy}
-            className="inline-flex h-10 items-center rounded-lg border border-line px-4 text-[13.5px] text-ink transition-colors hover:bg-panel-2 disabled:opacity-60"
+            className="rounded-xl px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={busy || pin.length < 4}
-            className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-accent px-4 text-[13.5px] text-accent-ink transition-colors hover:bg-accent-hover disabled:opacity-60"
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-emerald-900/20 transition-all"
           >
-            {busy ? (
-              <Loader2 size={13} className="animate-spin" />
-            ) : setting ? (
-              <Lock size={13} />
-            ) : (
-              <LockOpen size={13} />
-            )}
-            {setting ? 'Lock chat' : 'Remove lock'}
+            {isLocked ? "Unlock" : "Lock Thread"}
           </button>
         </div>
       </form>
     </Modal>
   );
-}
+};

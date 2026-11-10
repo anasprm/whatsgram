@@ -1,222 +1,104 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Image as ImageIcon,
-  FileText,
-  Headphones,
-  Link,
-  ExternalLink,
-  Download,
-  Play,
-  Pause,
-  X,
-} from 'lucide-react';
-import { Modal } from '@/components/ui/Modal';
-import { Avatar } from '@/components/ui/Avatar';
-import { cn } from '@/lib/utils';
-import { getConversationMediaVault, type VaultItem } from '@/lib/mediaVault';
+import React, { useState } from "react";
 
-type VaultTab = 'media' | 'docs' | 'audio' | 'links';
+interface SharedItem {
+  id: string;
+  type: "image" | "video" | "doc" | "link";
+  url: string;
+  name: string;
+  date: string;
+}
 
 interface MediaVaultDrawerProps {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
-  conversationId: string;
-  /** Fired when a user selects an item, to jump back to the source message. */
-  onSelect: (messageId: string) => void;
+  chatName: string;
+  items?: SharedItem[];
 }
 
-function formatBytes(bytes: number | undefined): string {
-  if (!bytes) return '0 B';
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
-}
+export const MediaVaultDrawer: React.FC<MediaVaultDrawerProps> = ({
+  isOpen,
+  onClose,
+  chatName,
+  items = [],
+}) => {
+  const [activeTab, setActiveTab] = useState<"media" | "docs" | "links">("media");
 
-function formatTime(dateString: string) {
-  return new Date(dateString).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
+  if (!isOpen) return null;
+
+  const filteredItems = items.filter((item) => {
+    if (activeTab === "media") return item.type === "image" || item.type === "video";
+    if (activeTab === "docs") return item.type === "doc";
+    return item.type === "link";
   });
-}
-
-export function MediaVaultDrawer({ open, onClose, conversationId, onSelect }: MediaVaultDrawerProps) {
-  const [tabs, setTabs] = useState<{
-    media: VaultItem[];
-    docs: VaultItem[];
-    audio: VaultItem[];
-    links: VaultItem[];
-  } | null>(null);
-  const [activeTab, setActiveTab] = useState<VaultTab>('media');
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    let active = true;
-    const run = async () => {
-      setLoading(true);
-      try {
-        const data = await getConversationMediaVault(conversationId);
-        if (active) setTabs(data);
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
-    run();
-    return () => {
-      active = false;
-    };
-  }, [open, conversationId]);
-
-  const items = tabs?.[activeTab] ?? [];
 
   return (
-    <Modal open={open} onClose={onClose} title="Shared media" hideClose>
-      <div className="flex flex-col gap-3 p-4">
-        {/* Tab bar */}
-        <div className="flex gap-1 rounded-lg bg-[#121214] border border-[#2A2A2C] p-0.5">
-          {[
-            { id: 'media' as VaultTab, label: 'Media', icon: <ImageIcon size={14} /> },
-            { id: 'docs' as VaultTab, label: 'Docs', icon: <FileText size={14} /> },
-            { id: 'audio' as VaultTab, label: 'Audio', icon: <Headphones size={14} /> },
-            { id: 'links' as VaultTab, label: 'Links', icon: <Link size={14} /> },
-          ].map((tab) => (
+    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/50 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="absolute inset-0" onClick={onClose} />
+      <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
+        <div className="w-screen max-w-md bg-white/95 dark:bg-slate-900/95 border-l border-slate-200/60 dark:border-slate-800 shadow-2xl backdrop-blur-xl flex flex-col">
+          <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                Media & Vault
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{chatName}</p>
+            </div>
             <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                'flex items-center gap-2 rounded-md px-3 py-1.5 text-[12px] transition-colors',
-                activeTab === tab.id
-                  ? 'bg-[#2A2A2C] text-[#25D366] shadow-sm'
-                  : 'text-[#8E8E93] hover:bg-[#2A2A2C]/50 hover:text-[#FFFFFF]',
-              )}
+              onClick={onClose}
+              className="rounded-full p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
-              {tab.icon}
-              <span className="font-medium">{tab.label}</span>
-              <span className="ml-auto px-1.5 py-0.5 rounded text-[10px] font-bold text-[#8E8E93]">
-                {tabs?.[tab.id]?.length ?? 0}
-              </span>
+              ✕
             </button>
-          ))}
-        </div>
-
-        {loading && (
-          <div className="flex flex-col items-center gap-2 py-12 text-center">
-            <span className="text-[12px] text-faint">Loading vault…</span>
           </div>
-        )}
 
-        {!loading && items.length === 0 && (
-          <div className="flex flex-col items-center gap-2 py-12 text-center">
-            <X size={20} className="text-faint" />
-            <span className="text-[12.5px] text-faint">No {activeTab} found in this conversation</span>
+          <div className="flex border-b border-slate-100 dark:border-slate-800 px-4 pt-2">
+            {(["media", "docs", "links"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 py-2 text-xs font-semibold capitalize border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
+                    : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
-        )}
 
-        {!loading && items.length > 0 && (
-          <div className="max-h-[70vh] overflow-y-auto pr-1 space-y-2">
-            {activeTab === 'media' && (
+          <div className="flex-1 overflow-y-auto p-4">
+            {filteredItems.length === 0 ? (
+              <div className="flex h-full flex-col items-center justify-center text-center p-6 text-slate-400">
+                <span className="text-3xl mb-2">📁</span>
+                <p className="text-xs">No {activeTab} shared in this chat yet.</p>
+              </div>
+            ) : (
               <div className="grid grid-cols-3 gap-2">
-                {items.map((item) => (
-                  <button
+                {filteredItems.map((item) => (
+                  <a
                     key={item.id}
-                    type="button"
-                    onClick={() => {
-                      onSelect(item.messageId);
-                      onClose();
-                    }}
-                    className="aspect-square rounded-lg bg-panel-2 overflow-hidden"
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center p-2 text-center hover:opacity-90 transition-opacity"
                   >
-                    <img
-                      src={item.url}
-                      alt={item.name}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'audio' && (
-              <div className="space-y-2">
-                {items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      onSelect(item.messageId);
-                      onClose();
-                    }}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-panel-2"
-                  >
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent">
-                      <Play size={13} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start gap-1.5 text-[12.5px]">
-                        <span className="font-medium text-ink truncate">{item.name}</span>
-                        <span className="text-[11px] text-faint">{formatTime(item.createdAt)}</span>
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-muted">
-                        {formatBytes(item.size)} · {item.mimeType}
-                      </div>
-                    </div>
-                    <audio
-                      src={item.url}
-                      className="w-[120px]"
-                      controls
-                      preload="metadata"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {(activeTab === 'docs' || activeTab === 'links') && (
-              <div className="space-y-2">
-                {items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      if (activeTab === 'links') {
-                        window.open(item.url, '_blank');
-                      } else {
-                        onSelect(item.messageId);
-                        onClose();
-                      }
-                    }}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-panel-2"
-                  >
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-panel-2 text-muted">
-                      {activeTab === 'links' ? (
-                        <ExternalLink size={13} />
-                      ) : (
-                        <FileText size={13} />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start gap-1.5 text-[12.5px]">
-                        <span className="font-medium text-ink truncate">{item.name}</span>
-                        <span className="text-[11px] text-faint">{formatTime(item.createdAt)}</span>
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-muted">
-                        {activeTab === 'docs' ? formatBytes(item.size) : item.url}
-                      </div>
-                    </div>
-                    {activeTab === 'docs' && (
-                      <Download size={12} className="shrink-0 text-[#25D366]" />
+                    {item.type === "image" ? (
+                      <img src={item.url} alt={item.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-xs truncate font-medium text-slate-700 dark:text-slate-200">
+                        {item.name}
+                      </span>
                     )}
-                  </button>
+                  </a>
                 ))}
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
-    </Modal>
+    </div>
   );
-}
+};
