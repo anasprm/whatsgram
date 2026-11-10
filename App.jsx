@@ -4244,7 +4244,7 @@ function StoryViewer({ onClose }) {
           </button>
 
           <button
-            onClick={() => alert("Story shared successfully!")}
+            onClick={handleSendReply}
             className="p-2 transition transform active:scale-110"
           >
             <Send size={24} className="text-white -rotate-45 mb-1" />
