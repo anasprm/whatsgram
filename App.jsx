@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { getSupabase } from '@/lib/supabase/browser';
 import AuthModule from './AuthModule';
 import LandingPage from './LandingPage';
+import SpatialAudioRoom from './SpatialAudioRoom';
 import {
   MessageSquare, User, Gamepad2, Send, CheckCheck, X, Shield, Moon,
   Command, Radio, Workflow, Coins, Square, FileDown, Search, FolderOpen,
@@ -3632,6 +3633,8 @@ function MessageItem({ message, currentUserId, messageReactions, setMessageReact
   );
 }
 
+// ============================================================
+// SPATIAL AUDIO ROOM - Real-time Web Audio + WebRTC
 function TypingIndicator() {
   return (
     <div className="flex justify-start">
@@ -5850,10 +5853,10 @@ export default function App() {
           </div>
         )}
 
-        {/* ===== MODAL: SPATIAL AUDIO SPACES ===== */}
+        {/* ===== MODAL: SPATIAL AUDIO SPACE ===== */}
         {showSpatialAudio && (
-          <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setShowSpatialAudio(false)}>
-            <div className="bg-[#0B141A] rounded-2xl p-6 space-y-5 max-w-lg w-full text-white shadow-2xl border border-[#1F2C34]" onClick={(e) => e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setShowSpatialAudio(false)}>
+            <div className="bg-[#0B141A] rounded-2xl p-6 space-y-4 max-w-4xl w-full text-white shadow-2xl border border-[#1F2C34] flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold flex items-center gap-2">
                   <Radio className="w-5 h-5 text-cyan-400" /> Spatial Audio Room Canvas
@@ -5862,21 +5865,7 @@ export default function App() {
                   <X className="w-5 h-5 text-gray-400 hover:text-white" />
                 </button>
               </div>
-              <p className="text-xs text-[#8696A0]">Virtual room canvas with 3D binaural spatial panning.</p>
-              <div className="w-full h-64 bg-[#1F2C34] rounded-xl relative border border-[#2A3942] flex items-center justify-center overflow-hidden">
-                <div className="absolute top-10 left-10 p-3 bg-cyan-500/20 text-cyan-400 rounded-full text-xs font-bold flex flex-col items-center">
-                  <span>Alex (You)</span>
-                </div>
-                <div className="absolute bottom-12 right-16 p-3 bg-fuchsia-500/20 text-fuchsia-400 rounded-full text-xs font-bold flex flex-col items-center">
-                  <span>Elena</span>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowSpatialAudio(false)}
-                className="w-full py-2.5 bg-[#1F2C34] text-gray-300 font-bold rounded-xl text-xs hover:bg-[#2A3942]"
-              >
-                Close Spatial Lounge
-              </button>
+              <SpatialAudioRoom onClose={() => setShowSpatialAudio(false)} />
             </div>
           </div>
         )}
@@ -6653,6 +6642,8 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+
+
 
 
 
