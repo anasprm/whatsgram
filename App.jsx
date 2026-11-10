@@ -6020,21 +6020,21 @@ export default function App() {
         {/* ===== MODAL: SETTINGS / IDENTITY PROFILES ===== */}
         {showSettings && (
           <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setShowSettings(false)}>
-            <div className="bg-[#0B141A] rounded-2xl p-6 space-y-4 max-w-2xl w-full text-white shadow-2xl border border-[#1F2C34] flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <div className="glass-card p-6 max-w-2xl w-full text-white shadow-2xl flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
               {/* Header */}
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold flex items-center gap-2">
                   <User className="w-5 h-5 text-cyan-400" />
                   {editingProfileId ? 'Edit Profile' : 'Settings'}
                 </h3>
-                <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-[#1F2C34] rounded-lg transition">
+                <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-[#1F2C34] rounded-lg transition hover-scale">
                   <X className="w-5 h-5 text-gray-400 hover:text-white" />
                 </button>
               </div>
 
               {/* ===== API KEY CONFIGURATION ===== */}
               {!editingProfileId && (
-                <div className="bg-[#1F2C34] border border-[#2A3942] rounded-2xl p-4 mb-4 space-y-3">
+                <div className="glass-card p-4 mb-4 space-y-3">
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="w-4 h-4 text-emerald-400" />
                     <h4 className="text-sm font-semibold text-white">Gemini API Key</h4>
@@ -6049,7 +6049,7 @@ export default function App() {
                       value={geminiApiKey}
                       onChange={(e) => setGeminiApiKey(e.target.value)}
                       placeholder="sk-... or AIza..."
-                      className="flex-1 bg-[#0B141A] border border-[#2A3942] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-400 transition placeholder-zinc-600"
+                      className="glass-input px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-400 transition placeholder-zinc-600 flex-1"
                     />
                     <button
                       onClick={() => {
@@ -6064,7 +6064,7 @@ export default function App() {
                           setApiKeyError('Failed to save API key to localStorage.');
                         }
                       }}
-                      className="px-4 py-2 bg-gradient-to-r from-[#833AB4] to-[#E1306C] hover:from-[#7e69af] hover:to-[#c50f5b] text-white text-xs font-bold rounded-lg transition shadow-lg shadow-emerald-500/30"
+                      className="px-4 py-2 bg-gradient-to-r from-[#833AB4] to-[#E1306C] hover:from-[#7e69af] hover:to-[#c50f5b] text-white text-xs font-bold rounded-lg transition shadow-lg shadow-emerald-500/30 hover-shadow-lg hover-shadow-[0_0_20px_rgba(131,58,180,0.4)]"
                     >
                       Save
                     </button>
