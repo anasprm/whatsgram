@@ -4120,13 +4120,14 @@ function StoryViewer({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center font-sans select-none z-[60]">
+    <div className="fixed inset-0 bg-black flex items-center justify-center font-sans select-none z-[60]" onClick={onClose}>
       <div
         className="relative w-full h-full sm:w-[410px] sm:h-[880px] sm:rounded-2xl overflow-hidden bg-zinc-900 flex flex-col justify-between shadow-2xl"
         onMouseDown={() => setIsPaused(true)}
         onMouseUp={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => setIsPaused(false)}
+        onClick={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
         <button
