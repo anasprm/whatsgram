@@ -396,15 +396,16 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
   const score = passwordScore(password);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white font-sans">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white font-sans antialiased">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0,transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
 
-      <div className="relative w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl">
+      <div className="relative w-full max-w-md glass-card p-8 shadow-2xl border border-[#2A3942]/50">
         {onBack && (
           <button
             type="button"
             onClick={onBack}
-            className="absolute top-5 left-5 flex items-center space-x-1 text-xs font-medium text-zinc-400 hover:text-white transition"
+            className="absolute top-4 left-4 flex items-center space-x-1 text-xs font-medium text-zinc-400 hover:text-white transition-all duration-200 hover:bg-[#111B21] hover:bg-[#111B21] rounded-lg px-2 py-1"
           >
             <ArrowLeft size={14} />
             <span>Home</span>
@@ -413,23 +414,25 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
 
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-fuchsia-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 hover-scale">
             <Sparkles className="w-7 h-7 text-white animate-pulse" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">WhatsGram Workspace</h1>
-          <p className="text-sm text-zinc-400 mt-1">Secure authentication & account management</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+            WhatsGram Workspace
+          </h1>
+          <p className="text-sm text-zinc-500 mt-1">Secure authentication & account management</p>
         </div>
 
         {/* Error / Success Banners */}
         {errorMsg && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-xs flex items-center space-x-2 animate-shake">
+          <div className="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-xs flex items-center space-x-2 animate-shake glass-input">
             <AlertCircle size={16} className="shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-6 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-xl text-xs flex items-center space-x-2">
+          <div className="mb-6 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-xl text-xs flex items-center space-x-2 glass-input">
             <CheckCircle size={16} className="shrink-0" />
             <span>{successMsg}</span>
           </div>
@@ -449,7 +452,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="your username (or email)"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
@@ -474,7 +477,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
                 <button
                   type="button"
@@ -490,7 +493,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] transition font-medium py-2.5 rounded-xl text-sm text-white shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 disabled:opacity-60"
+              className="w-full mt-2 px-3 py-2.5 rounded-xl text-sm text-white shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 disabled:opacity-60 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] hover:from-[#7e69af] hover:to-[#c50f5b] transition-all duration-200 hover:shadow-lg hover:shadow-[0_0_20px_rgba(131,58,180,0.4)]"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -526,7 +529,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="johndoe"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
               <p className="mt-1 text-[10px] text-zinc-600">3–24 characters: letters, numbers, _ or .</p>
@@ -543,7 +546,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
@@ -559,7 +562,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={optionalEmail}
                   onChange={(e) => setOptionalEmail(e.target.value)}
                   placeholder="recovery@example.com (optional)"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-700 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-700 focus:outline-none focus:border-indigo-500 transition"
                 />
               </div>
             </div>
@@ -575,7 +578,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
                 <button
                   type="button"
@@ -616,7 +619,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
@@ -665,7 +668,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
@@ -744,7 +747,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={resetToken}
                   onChange={(e) => setResetToken(e.target.value)}
                   placeholder="tok_xxxxxxxxxxxx"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
@@ -760,7 +763,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
                 <button
                   type="button"
@@ -784,7 +787,7 @@ export default function AuthModule({ onLoginSuccess, onBack }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-10 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition"
+                  className="w-full glass-input px-10 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
