@@ -12,7 +12,7 @@ import {
   Circle, Triangle, Star, MapPin, CreditCard, Heart, Eye, Music, MessageCircle,
   MoreHorizontal, Volume2, VolumeX, RotateCcw, LogOut, Power, UserPlus,
   Phone, PhoneIncoming, PhoneOutgoing, PhoneMissed, Video, Info, Speaker as SpeakerIcon,
-  MoreVertical, Smile, CornerUpLeft, ShieldAlert, Volume2 as VolumeIcon, BellOff
+  MoreVertical, Smile, CornerUpLeft, ShieldAlert, Volume2 as VolumeIcon, BellOff, Copy
 } from 'lucide-react';
 
 // ============================================================
