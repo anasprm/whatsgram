@@ -3460,8 +3460,8 @@ function MessageItem({ message, currentUserId, messageReactions, setMessageReact
       >
         <div className={`max-w-[80%] md:max-w-[65%] p-3 rounded-2xl shadow-sm ${
           isMe
-            ? 'rounded-tl-xl rounded-tr-xl rounded-bl-xl bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
-            : 'rounded-tr-xl rounded-tl-xl rounded-br-xl bg-[#1F2C34] text-white border border-[#2A3942]'
+            ? 'rounded-tl-xl rounded-tr-xl rounded-bl-xl relay-bubble-tail-out bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#E1306C] text-white'
+            : 'rounded-tr-xl rounded-tl-xl rounded-br-xl relay-bubble-tail-in bg-[#1F2C34] text-white border border-[#2A3942]'
         }`}>
           <p className="whitespace-pre-wrap break-words">{String(message.body || '')}</p>
 
