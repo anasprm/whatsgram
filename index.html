@@ -281,8 +281,9 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <div class="flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-[#10121b]/90 pl-1.5 pr-1.5 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_40px_-14px_rgba(0,0,0,.85)] focus-within:border-white/25 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_0_30px_-10px_rgb(var(--ac-rgb)/.3)] transition-all">
               <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="compose" aria-haspopup="menu" aria-expanded="false" title="Attach and quick replies" aria-label="Attach and quick replies"><i data-lucide="plus" class="w-4 h-4"></i></button>
               <input type="file" id="file" class="hidden">
-              <input id="msg" data-enter="send" data-input="sentiment" class="flex-1 min-w-0 bg-transparent px-1 text-[13.5px] text-white focus:outline-none placeholder:text-zinc-500" placeholder="Message…" autocomplete="off">
+              <input id="msg" data-enter="send" data-input="sentiment" class="flex-1 min-w-0 bg-transparent px-1 text-[13.5px] text-white focus:outline-none placeholder:text-zinc-500" placeholder="Message or @ai…" autocomplete="off">
               <span id="sent" class="hidden text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0"></span>
+              <button id="ai-assist-btn" class="w-9 h-9 rounded-full grid place-items-center text-accent hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="aiAssist" aria-haspopup="menu" aria-expanded="false" title="AI Reply &amp; Writing Copilot" aria-label="AI Reply and Writing Copilot"><i data-lucide="sparkles" class="w-4 h-4"></i></button>
               <button id="mic" class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="mic" title="Voice note" aria-label="Record voice note"><i data-lucide="mic" class="w-4 h-4"></i></button>
               <button class="btn-primary inline-flex items-center justify-center gap-1.5 h-9 px-3.5 sm:px-4 rounded-full text-xs font-semibold shrink-0" data-act="send">
                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
@@ -346,7 +347,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
               <h1 class="text-base md:text-lg font-bold tracking-tight text-white truncate">AI Assistant</h1>
               <span id="ai-status" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10px] font-semibold text-zinc-300 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span><span>Local</span></span>
             </div>
-            <p id="ai-sub" class="text-[11px] text-zinc-400 truncate">On-device simulation · indexed strictly from your local threads</p>
+            <p id="ai-sub" class="text-[11px] text-zinc-400 truncate">General knowledge, writing, translations &amp; smart chat copilot</p>
           </div>
         </div>
         <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-semibold text-white shrink-0" data-act="menu" data-arg="aiTools" aria-haspopup="menu" aria-expanded="false">
@@ -356,18 +357,31 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </button>
       </header>
 
+      <div id="ai-warn" class="hidden border-b border-amber-500/25 bg-amber-500/10 px-4 md:px-8 py-2.5 text-xs items-center justify-between gap-3 shrink-0">
+        <span class="flex items-center gap-2 min-w-0 text-amber-200">
+          <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 shrink-0"></i>
+          <span id="ai-warn-t" class="truncate"></span>
+        </span>
+        <span class="flex items-center gap-2 shrink-0">
+          <a id="ai-warn-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden h-7 px-3 rounded-full bg-amber-400 text-black text-[11px] font-bold items-center gap-1 hover:brightness-105 transition">Enable API</a>
+          <button data-act="aiWarnClose" class="w-6 h-6 rounded-full grid place-items-center text-amber-200 hover:bg-white/10" aria-label="Dismiss"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        </span>
+      </div>
+
       <div id="ai-log" class="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4 max-w-3xl w-full mx-auto"></div>
 
       <div class="border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-2xl px-4 md:px-8 py-4 safe-b">
         <div class="max-w-3xl mx-auto space-y-3">
           <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="What is the scientific name of a lizard and 3 quick facts?">Ask GK</button>
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Summarize all conversations">Summarize all</button>
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Find action items">Action items</button>
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Draft a reply to the active conversation">Draft reply</button>
-            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Search project documents">Search “project documents”</button>
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Explain how end-to-end encryption works simply">Explain E2EE</button>
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Search project documents in my chats">Search chats</button>
           </div>
           <div class="flex items-center gap-2 rounded-full bg-[#10121b]/90 border border-white/[0.12] focus-within:border-accent/60 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.1),0_0_28px_-10px_rgb(var(--ac-rgb)/.35)] p-1.5 pl-4 shadow-[inset_0_1px_0_rgba(255,255,255,.07),0_18px_40px_-14px_rgba(0,0,0,.85)] transition-all">
-            <input id="ai-in" data-enter="aiSend" class="flex-1 min-w-0 bg-transparent text-[13.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Ask about your conversations, or search by meaning…" autocomplete="off">
+            <input id="ai-in" data-enter="aiSend" class="flex-1 min-w-0 bg-transparent text-[13.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Ask anything — general knowledge, math, coding, or chat replies…" autocomplete="off">
             <button id="ai-send" class="btn-primary h-9 px-4 rounded-full text-xs font-semibold shrink-0" data-act="aiSend">Send</button>
             <button id="ai-stop" class="btn-ghost hidden h-9 px-3.5 rounded-full text-xs font-semibold text-white items-center gap-1.5 shrink-0" data-act="aiStop"><i data-lucide="square" class="w-3 h-3 fill-current"></i>Stop</button>
           </div>
@@ -894,8 +908,9 @@ const show=(el,on,disp='flex')=>{if(typeof el==='string')el=$(el);if(!el)return;
 function toast(msg,kind){const t=document.createElement('div');t.className=`px-4 py-2.5 rounded-full text-xs font-semibold backdrop-blur-2xl shadow-[0_16px_36px_-8px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.16)] border ${kind==='err'?'bg-rose-600/90 border-rose-400/35 text-white':'bg-[#12141e]/95 border-white/[0.14] text-white'}`;t.textContent=msg;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2800)}
 let AC=null;function tone(f=620,d=.03,pan=0,v=.03){try{const c=AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(c.state==='suspended')c.resume();const o=c.createOscillator(),g=c.createGain();g.gain.value=v;o.frequency.value=f;o.connect(g);if(c.createStereoPanner){const p=c.createStereoPanner();p.pan.value=pan;g.connect(p);p.connect(c.destination)}else g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
 async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return 'x'+h}}
+const STOP_W=new Set(['a','an','the','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','can','may','might','of','in','on','at','to','for','with','by','from','as','into','like','through','after','over','between','out','against','during','without','before','under','around','among','what','which','who','whom','whose','where','when','why','how','this','that','these','those','it','its','i','me','my','you','your','we','they','them','and','or','but','if','not','no','yes','so','than','too','very','just','about']);
 const tok=s=>(String(s).toLowerCase().match(/[a-z0-9]+/g)||[]).map(w=>w.replace(/(ing|ed|es|s)$/,''));
-function sim(q,text){const A=tok(q);if(!A.length)return 0;if(String(text).toLowerCase().includes(q.toLowerCase().trim()))return .95;const B=[...new Set(tok(text))];let h=0;A.forEach(w=>{if(B.includes(w))h++;else if(B.some(x=>x.length>3&&w.length>3&&(x.startsWith(w)||w.startsWith(x))))h+=.6});return h/A.length*.9}
+function sim(q,text){const raw=tok(q),sig=raw.filter(w=>w.length>1&&!STOP_W.has(w)),A=sig.length?sig:raw;if(!A.length)return 0;if(String(text).toLowerCase().includes(q.toLowerCase().trim()))return .95;const B=[...new Set(tok(text))];let h=0;A.forEach(w=>{if(B.includes(w))h++;else if(B.some(x=>x.length>3&&w.length>3&&(x.startsWith(w)||w.startsWith(x))))h+=.6});return h/A.length*.9}
 const fileSize=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 
 /* ---------- data ---------- */
@@ -921,10 +936,10 @@ let LOG=store.get('log',[]);
 let CUSTOM_REELS=store.get('custom_reels',[]);
 const getReels=()=>[...R,...CUSTOM_REELS];
 const RS=Object.assign({liked:[],saved:[],follow:['alex.rivera'],filter:0,extra:{}},store.get('reels',{}));
-const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{})};
+const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',aiLastErr:null,aiThread:store.get('ai_threads',{}),draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{})};
 const BLOBS={};const MEDIA_LOADING=new Set();let KEY=null,FP='';
 function notifyDesktop(title,body){if(!cfg.notify||typeof Notification==='undefined'||Notification.permission!=='granted'||!document.hidden)return;try{new Notification(title,{body:String(body||'').slice(0,120),icon:'/icon.svg'})}catch(e){}}
-const saveD=()=>store.set('chats',D),saveCfg=()=>{store.set('cfg',cfg);if(S.user&&!S.bootstrapping)sbPost({action:'saveSettings',cfg})},saveR=()=>{store.set('reels',RS);if(S.user&&!S.bootstrapping)sbPost({action:'saveReelsPrefs',reels:{liked:RS.liked,saved:RS.saved,follow:RS.follow,filter:RS.filter}})},saveS=()=>store.set('stories',ST);
+const saveD=()=>store.set('chats',D),saveAiThread=()=>store.set('ai_threads',S.aiThread),saveCfg=()=>{store.set('cfg',cfg);if(S.user&&!S.bootstrapping)sbPost({action:'saveSettings',cfg})},saveR=()=>{store.set('reels',RS);if(S.user&&!S.bootstrapping)sbPost({action:'saveReelsPrefs',reels:{liked:RS.liked,saved:RS.saved,follow:RS.follow,filter:RS.filter}})},saveS=()=>store.set('stories',ST);
 const cur=()=>D.find(c=>c.id===S.chat);
 function audit(m){const entry={t:new Date().toLocaleString(),m};LOG.unshift(entry);LOG=LOG.slice(0,40);store.set('log',LOG);renderAudit();if(S.user&&!S.bootstrapping)sbPost({action:'logAudit',t:entry.t,m})}
 
@@ -1716,6 +1731,31 @@ function renderTypingRow(){
 
 function msgHTML(m,c){
   if(m.from==='sys')return `<div class="text-center text-[11px] font-medium text-zinc-500 py-2">${esc(m.text)}</div>`;
+  if(m._aiLocal){
+    if(m.aiRole==='user'){
+      return `<div class="grp group/msg flex flex-col items-end gap-1" id="${m.id}">
+        <div class="flex items-center gap-1.5 max-w-[88%] md:max-w-md flex-row-reverse">
+          <div class="rounded-[20px] rounded-br-[6px] bg-gradient-to-br from-indigo-500/25 to-accent/25 border border-accent/35 text-zinc-100 px-4 py-2.5 text-[13.5px] leading-relaxed break-words min-w-0">${linkSeg(m.text)}</div>
+          <button data-act="delAiNote" data-arg="${m.id}" class="msgmenu w-7 h-7 shrink-0 rounded-full grid place-items-center text-zinc-500 hover:text-white hover:bg-white/[0.08] opacity-70 md:opacity-0 group-hover/msg:opacity-100 transition" aria-label="Dismiss AI prompt">${ic('x','w-3.5 h-3.5')}</button>
+        </div>
+        <span class="text-[10px] font-mono text-accent/80 px-1 inline-flex items-center gap-1">${ic('sparkles','w-2.5 h-2.5')}Private @AI · ${esc(m.t)}</span>
+      </div>`;
+    }
+    return `<div class="grp group/msg flex flex-col items-start gap-1" id="${m.id}">
+      <div class="flex items-start gap-2 max-w-[92%] md:max-w-lg">
+        <span class="w-7 h-7 mt-1 rounded-xl border border-accent/35 bg-gradient-to-br from-accent/25 to-indigo-500/20 grid place-items-center text-accent shrink-0 shadow-[0_0_16px_-4px_rgb(var(--ac-rgb)/.45)]">${ic('sparkles','w-3.5 h-3.5')}</span>
+        <div class="lux-card border-accent/25 rounded-[20px] rounded-tl-[6px] px-4 py-3 text-[13.5px] leading-relaxed text-zinc-100 break-words min-w-0">
+          <div class="flex items-center justify-between gap-3 mb-1.5">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-accent">WhatsGram AI · Private to you</span>
+            <button data-act="delAiNote" data-arg="${m.id}" class="w-5 h-5 rounded-full grid place-items-center text-zinc-500 hover:text-white hover:bg-white/10 transition" aria-label="Dismiss AI note">${ic('x','w-3 h-3')}</button>
+          </div>
+          <div class="whitespace-pre-wrap">${linkSeg(m.text)}</div>
+          ${m.draft?`<div class="mt-2.5 pt-2 border-t border-white/[0.07] flex items-center gap-2"><button data-act="useInlineDraft" data-arg="${m.id}" class="btn-primary h-7 px-3 rounded-full text-[11px] font-semibold inline-flex items-center gap-1">${ic('corner-up-left','w-3 h-3')}Insert into message</button></div>`:''}
+        </div>
+      </div>
+      <span class="text-[10px] font-mono text-zinc-500 pl-9">${esc(m.t)}${m.src==='wiki'?' · Wikipedia backup':''}</span>
+    </div>`;
+  }
   const me=m.from==='me';
   const q=S.thSearch?S.thQ.trim():'';
   let body;
@@ -1773,7 +1813,8 @@ function renderThread(preserveScroll=false){
     show('#pinned',false);show('#key-warn',false);show('#jump-bottom',false);renderSmartChips();icons();return;
   }
   let html='',lastDay='';
-  for(const m of c.msgs){
+  const timeline=[...c.msgs,...(S.aiThread[c.id]||[])].sort((a,b)=>(a.ts||0)-(b.ts||0));
+  for(const m of timeline){
     const dl=dayLabel(m.ts);
     if(dl&&dl!==lastDay){
       lastDay=dl;
@@ -1781,7 +1822,7 @@ function renderThread(preserveScroll=false){
     }
     html+=msgHTML(m,c);
   }
-  if(!c.msgs.length)html='<div class="h-full grid place-items-center text-xs text-zinc-500">No messages yet. Say hello.</div>';
+  if(!timeline.length)html='<div class="h-full grid place-items-center text-xs text-zinc-500">No messages yet. Say hello or type @ai to ask anything.</div>';
   if(S.typing[c.id])html+=typingBubbleHTML(S.typing[c.id]);
   s.innerHTML=html;
   const p=c.msgs.find(m=>m.id===c.pin);
@@ -2326,14 +2367,43 @@ function renderStory(){
 }
 
 /* ---------- gemini & assistant ---------- */
-function setAIStatus(live,label){
-  S.aiMode=live?'gemini':'local';
+function setAIStatus(live,label,errObj=null){
+  S.aiMode=live?'gemini':(errObj?'error':'local');
   const b=$('#ai-status');
   if(b){
-    b.className=`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-semibold shrink-0 ${live?'bg-emerald-500/15 border-emerald-500/30 text-emerald-300':'bg-white/[0.06] border-white/[0.08] text-zinc-300'}`;
-    b.innerHTML=`<span class="w-1.5 h-1.5 rounded-full ${live?'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]':'bg-zinc-400'}"></span><span>${esc(label||(live?'Gemini Live':'Local'))}</span>`;
+    const toneCls=live
+      ?'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+      :errObj
+        ?'bg-amber-500/15 border-amber-500/35 text-amber-200'
+        :'bg-white/[0.06] border-white/[0.08] text-zinc-300';
+    const dotCls=live
+      ?'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]'
+      :errObj
+        ?'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)]'
+        :'bg-zinc-400';
+    b.className=`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-semibold shrink-0 ${toneCls}`;
+    b.innerHTML=`<span class="w-1.5 h-1.5 rounded-full ${dotCls}"></span><span>${esc(label||(live?'Gemini Live':'Local'))}</span>`;
   }
-  setTxt('#ai-sub',live?'Connected to Gemini via Vercel serverless function · grounded in your local threads':'On-device simulation · indexed strictly from your local threads');
+  if(live){
+    S.aiLastErr=null;
+    setTxt('#ai-sub','Connected to Gemini · General knowledge, writing & chat copilot');
+    show('#ai-warn',false,'flex');
+  }else if(errObj){
+    const shortMsg=errObj.code==='API_DISABLED'
+      ?'Vertex / Agent Platform API is disabled on your Google Cloud project — backup GK active.'
+      :(errObj.error||'Gemini API error — backup mode active.');
+    setTxt('#ai-sub',shortMsg);
+    setTxt('#ai-warn-t',shortMsg);
+    const lnk=$('#ai-warn-link');
+    if(lnk){
+      if(errObj.actionUrl){lnk.href=errObj.actionUrl;show(lnk,true,'inline-flex')}
+      else show(lnk,false,'inline-flex');
+    }
+    show('#ai-warn',true,'flex');
+  }else{
+    setTxt('#ai-sub','Local mode · built-in math, encyclopedia backup & inbox search');
+    show('#ai-warn',false,'flex');
+  }
 }
 async function checkAIStatus(){
   if(!location.protocol.startsWith('http')||!navigator.onLine){setAIStatus(false,'Local');return}
@@ -2350,14 +2420,22 @@ async function callGemini(payload,signal){
   if(!location.protocol.startsWith('http')||!navigator.onLine)return null;
   try{
     const res=await fetch('/api/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal});
-    if(!res.ok)return null;
-    const data=await res.json();
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      const errObj={status:res.status,error:data?.error||`Gemini request failed (${res.status})`,code:data?.code||'UPSTREAM_ERROR',actionUrl:data?.actionUrl||null};
+      S.aiLastErr=errObj;
+      setAIStatus(false,errObj.code==='API_DISABLED'?'API Setup Needed':'API Error',errObj);
+      return null;
+    }
     if(data&&data.text){setAIStatus(true,'Gemini Live');return data}
     return null;
   }catch(e){
     if(e&&e.name==='AbortError')throw e;
     return null;
   }
+}
+function buildAiConversations(){
+  return D.map(c=>({name:c.name,folder:c.folder,status:c.status,msgs:c.msgs.filter(m=>m.from!=='sys').slice(-15).map(m=>({from:m.from,type:m.type,text:m.text||m.name||'',t:m.t}))}));
 }
 function aiBubble(role,html){
   const d=document.createElement('div');
@@ -2367,15 +2445,83 @@ function aiBubble(role,html){
     :`<span class="w-8 h-8 rounded-xl border border-accent/35 bg-gradient-to-br from-accent/25 to-indigo-500/20 grid place-items-center text-accent shrink-0 shadow-[0_0_16px_-4px_rgb(var(--ac-rgb)/.45)]">${ic('bot','w-4 h-4')}</span><div class="lux-card rounded-[20px] rounded-tl-[6px] px-4 py-3 text-[13.5px] leading-relaxed text-zinc-100 max-w-[90%] whitespace-pre-wrap break-words"></div>`;
   $('#ai-log').appendChild(d);icons();$('#ai-log').scrollTop=1e9;return role==='me'?d:d.lastElementChild;
 }
-function aiWelcome(){aiBubble('bot','').textContent='Hi. I can summarize your conversations, extract action items, draft replies and search by meaning across your stored messages.'}
+function aiWelcome(){aiBubble('bot','').textContent="Hi! I'm WhatsGram AI. Ask me any general knowledge question (science, history, coding, math, translations), or ask me to summarize conversations, find action items, and draft replies."}
+function trySafeMath(expr){
+  const s=expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/\s+/g,'');
+  if(!s||!/^[0-9+\-*/().%^]+$/.test(s)||!/\d/.test(s))return null;
+  let pos=0;
+  const peek=()=>s[pos],eat=c=>s[pos]===c?(pos++,true):false;
+  const parseNum=()=>{const m=s.slice(pos).match(/^(?:\d+\.?\d*|\.\d+)/);if(!m)return NaN;pos+=m[0].length;return Number(m[0])};
+  const parseFactor=()=>{if(eat('+'))return parseFactor();if(eat('-'))return -parseFactor();if(eat('(')){const v=parseExpr();if(!eat(')'))return NaN;return v}return parseNum()};
+  const parsePow=()=>{let v=parseFactor();while(eat('^'))v=Math.pow(v,parseFactor());return v};
+  const parseTerm=()=>{let v=parsePow();while(pos<s.length&&(peek()==='*'||peek()==='/'||peek()==='%')){const op=s[pos++];const r=parsePow();v=op==='*'?v*r:op==='/'?(r===0?NaN:v/r):(r===0?NaN:v%r)}return v};
+  const parseExpr=()=>{let v=parseTerm();while(pos<s.length&&(peek()==='+'||peek()==='-')){const op=s[pos++];const r=parseTerm();v=op==='+'?v+r:v-r}return v};
+  const val=parseExpr();
+  return Number.isFinite(val)&&pos===s.length?val:null;
+}
+function tryLocalMathOrClock(p){
+  const l=p.trim().toLowerCase().replace(/[?!.]+$/,'');
+  if(/\b(what time is it|current time|time now)\b/.test(l))return{t:`Current local time: ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`};
+  if(/\b(what (?:date|day) is (?:today|it)|today'?s date)\b/.test(l))return{t:`Today is ${new Date().toLocaleDateString([],{weekday:'long',year:'numeric',month:'long',day:'numeric'})}.`};
+  const pct=l.match(/(?:what is\s+)?(-?\d+(?:\.\d+)?)\s*%\s*of\s+(-?\d+(?:\.\d+)?)/);
+  if(pct){const v=(Number(pct[1])/100)*Number(pct[2]);return{t:`${pct[1]}% of ${pct[2]} = ${Number(v.toFixed(6))}`}}
+  const cleaned=l.replace(/^(?:what is|calculate|compute|evaluate|solve)\s+/,'');
+  const val=trySafeMath(cleaned);
+  if(val!==null)return{t:`${cleaned} = ${Number(val.toFixed(8))}`};
+  return null;
+}
+async function tryWikipediaGk(p,signal){
+  if(!navigator.onLine)return null;
+  let q=p.trim().replace(/[?!.]+$/,'').replace(/^(?:@?(?:ai|meta(?:\s+ai)?)\s*[,:]?\s*)/i,'');
+  q=q.replace(/^(?:please\s+|can you\s+|could you\s+)?(?:tell me|explain|define|describe)\s+(?:what\s+(?:is|are)\s+)?/i,'')
+     .replace(/^(?:what|who|where|when|why|how)\s+(?:is|are|was|were|did|do|does)\s+(?:the|a|an)?\s*/i,'')
+     .replace(/^(?:scient[ie]fic|biological|zoological|botanical|latin)\s+name\s+(?:of|for)\s+(?:a|an|the)?\s*/i,'')
+     .replace(/^(?:meaning|definition)\s+of\s+(?:the\s+)?/i,'')
+     .trim();
+  if(!q||q.length<2)return null;
+  try{
+    const u='https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(q)+'&utf8=&format=json&origin=*&srlimit=2';
+    const sr=await fetch(u,{signal}).then(r=>r.ok?r.json():null);
+    const title=sr?.query?.search?.[0]?.title;
+    if(!title)return null;
+    const sum=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(title.replace(/ /g,'_')),{signal}).then(r=>r.ok?r.json():null);
+    if(!sum?.extract)return null;
+    return{t:`${sum.title}\n${sum.extract}`,src:'wiki'};
+  }catch(e){
+    if(e&&e.name==='AbortError')throw e;
+    return null;
+  }
+}
 function aiAnswer(p){
   const all=D.flatMap(c=>c.msgs.filter(m=>m.text&&m.from!=='sys').map(m=>({c,m})));const l=p.toLowerCase();
-  if(/summar/.test(l))return{t:D.length?D.map(c=>{const ms=c.msgs.filter(m=>m.text);return `• ${c.name} (${ms.length} messages): ${ms.length?'latest — “'+ms[ms.length-1].text.slice(0,90)+'”':'no text messages'}`}).join('\n'):'There are no conversations to summarize.'};
-  if(/action|todo|task/.test(l)){const h=all.filter(x=>/\b(please|need|send|review|schedule|confirm|share|update|can you)\b/i.test(x.m.text));return{t:h.length?'Possible action items:\n'+h.map(x=>`• [${x.c.name}] ${x.m.text}`).join('\n'):'No action items found in your messages.'}}
-  if(/hashtag|caption/.test(l)){const stop=new Set(['about','their','there','which','would','could','please','thanks','before','after']);const f={};all.map(x=>x.m.text).concat(p).join(' ').toLowerCase().match(/[a-z]{5,}/g)?.forEach(w=>{if(!stop.has(w))f[w]=(f[w]||0)+1});const t=Object.entries(f).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([w])=>'#'+w[0].toUpperCase()+w.slice(1));return{t:(t.length?t.join(' '):'#WhatsGramOS')+'\n\nDraft caption: Working in the open, shipping every week.'}}
-  if(/draft|reply/.test(l)){const c=cur();const last=c&&[...c.msgs].reverse().find(m=>m.from==='them'&&m.text);if(!last)return{t:'Open a conversation with an incoming message first, then ask for a draft.'};const d=`Thanks for the update on “${last.text.slice(0,50)}”. I will review it and follow up today.`;return{t:`Draft for ${c.name}:\n\n${d}`,draft:d}}
-  const r=all.map(x=>({...x,s:sim(p,x.m.text+' '+x.c.name)})).filter(x=>x.s>.15).sort((a,b)=>b.s-a.s).slice(0,4);
-  return{t:r.length?`Top matches for “${p}”:\n`+r.map(x=>`• ${Math.round(x.s*100)}% · ${x.c.name}: ${x.m.text.slice(0,100)}`).join('\n'):`Nothing in your conversations matches “${p}”. Try a topic word, or ask me to summarize or list action items.`};
+  if(/\bsummar/.test(l))return{t:D.length?D.map(c=>{const ms=c.msgs.filter(m=>m.text);return `• ${c.name} (${ms.length} messages): ${ms.length?'latest — “'+ms[ms.length-1].text.slice(0,90)+'”':'no text messages'}`}).join('\n'):'There are no conversations to summarize.'};
+  if(/\b(action items?|todos?|tasks?)\b/.test(l)){const h=all.filter(x=>/\b(please|need|send|review|schedule|confirm|share|update|can you)\b/i.test(x.m.text));return{t:h.length?'Possible action items:\n'+h.map(x=>`• [${x.c.name}] ${x.m.text}`).join('\n'):'No action items found in your messages.'}}
+  if(/\b(hashtag|caption)\b/.test(l)){const f={};all.map(x=>x.m.text).concat(p).join(' ').toLowerCase().match(/[a-z]{5,}/g)?.forEach(w=>{if(!STOP_W.has(w))f[w]=(f[w]||0)+1});const t=Object.entries(f).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([w])=>'#'+w[0].toUpperCase()+w.slice(1));return{t:(t.length?t.join(' '):'#WhatsGramOS')+'\n\nDraft caption: Shipping clean software every day.'}}
+  if(/\b(draft|write\s+(?:a\s+)?reply|reply\s+to)\b/.test(l)){const c=cur();const last=c&&[...c.msgs].reverse().find(m=>m.from==='them'&&m.text);if(!last)return{t:'Open a conversation with an incoming message first, then ask for a draft.'};const d=`Thanks for the update on “${last.text.slice(0,50)}”. I will review it and follow up shortly.`;return{t:`Draft for ${c.name}:\n\n${d}`,draft:d}}
+  const mathAns=tryLocalMathOrClock(p);
+  if(mathAns)return mathAns;
+  const r=all.map(x=>({...x,s:sim(p,x.m.text+' '+x.c.name)})).filter(x=>x.s>=.34).sort((a,b)=>b.s-a.s).slice(0,4);
+  if(r.length)return{t:`Inbox matches for “${p}”:\n`+r.map(x=>`• ${Math.round(x.s*100)}% · ${x.c.name}: ${x.m.text.slice(0,100)}`).join('\n')};
+  return null;
+}
+async function aiFallbackAnswer(p,errObj,signal){
+  const local=aiAnswer(p);
+  const explicitInbox=/\b(inbox|conversations?|threads?|messages?|chats?|summar|action item|draft|reply to)\b/i.test(p);
+  if(local&&explicitInbox)return local;
+  if(!explicitInbox){
+    const mathAns=tryLocalMathOrClock(p);
+    if(mathAns)return mathAns;
+    const wiki=await tryWikipediaGk(p,signal);
+    if(wiki){
+      const note=errObj?(errObj.code==='API_DISABLED'?'Note: Activate the Vertex / Agent Platform API via the banner above for full Gemini reasoning, coding & drafting.':'Note: Gemini API unavailable ('+errObj.error+').'):'Offline backup via Wikipedia.';
+      return{t:`${wiki.t}\n\n— ${note}`,src:'wiki'};
+    }
+  }
+  if(local)return local;
+  if(errObj){
+    return{t:`Could not reach Gemini AI right now.\n\nReason: ${errObj.error}${errObj.actionUrl?'\nEnable link: '+errObj.actionUrl:''}`};
+  }
+  return{t:`I couldn't find an answer offline for “${p}”. Connect Gemini API on /api/gemini for full general knowledge, coding, translations & inbox Q&A.`};
 }
 async function aiRun(p){
   p=p.trim();if(!p||S.aiBusy||S.aiAbort)return;
@@ -2387,27 +2533,103 @@ async function aiRun(p){
   show('#ai-stop',true,'inline-flex');
   const ctrl=new AbortController();
   S.aiAbort=ctrl;
-  let res=null;
+  S.aiLastErr=null;
+  let res=null,a={t:'Could not process request right now.'};
   try{
     res=await callGemini({
       mode:'assistant',
       prompt:p,
       activeChatName:cur()?.name||null,
-      conversations:D.map(c=>({name:c.name,folder:c.folder,status:c.status,msgs:c.msgs.filter(m=>m.from!=='sys').slice(-15).map(m=>({from:m.from,type:m.type,text:m.text||m.name||'',t:m.t}))})),
-      history:S.aiHist.slice(-6)
+      conversations:buildAiConversations(),
+      history:S.aiHist.slice(-10)
     },ctrl.signal);
+    if(ctrl.signal.aborted){S.aiAbort=null;return}
+    a=res&&res.text?{t:res.text,draft:res.draft||null}:await aiFallbackAnswer(p,S.aiLastErr,ctrl.signal);
   }catch(e){
     if(e&&e.name==='AbortError'){S.aiAbort=null;el.classList.remove('text-zinc-400','italic');el.textContent='Stopped.';$('#ai-send').classList.remove('hidden');show('#ai-stop',false,'inline-flex');return}
   }
   if(ctrl.signal.aborted){S.aiAbort=null;return}
   S.aiAbort=null;
   el.classList.remove('text-zinc-400','italic');
-  const a=res&&res.text?{t:res.text,draft:res.draft||null}:aiAnswer(p);
-  if(res&&res.text){S.aiHist.push({role:'user',text:p},{role:'model',text:res.text});if(S.aiHist.length>12)S.aiHist=S.aiHist.slice(-12)}
+  if(res&&res.text){S.aiHist.push({role:'user',text:p},{role:'model',text:res.text});if(S.aiHist.length>20)S.aiHist=S.aiHist.slice(-20)}
   let i=0;
-  S.aiBusy=setInterval(()=>{i+=4;el.textContent=a.t.slice(0,i);$('#ai-log').scrollTop=1e9;if(i>=a.t.length)aiDone(el,a)},14);
+  S.aiBusy=setInterval(()=>{i+=6;el.textContent=a.t.slice(0,i);$('#ai-log').scrollTop=1e9;if(i>=a.t.length)aiDone(el,a)},12);
 }
 function aiDone(el,a){clearInterval(S.aiBusy);S.aiBusy=null;el.textContent=a.t;if(a.draft){S.draft=a.draft;el.insertAdjacentHTML('beforeend',`<div class="mt-3"><button class="btn-primary h-8 px-4 rounded-full text-xs font-semibold" data-act="useDraft">Insert into conversation</button></div>`)}$('#ai-send').classList.remove('hidden');show('#ai-stop',false,'inline-flex')}
+
+async function askThreadAI(query,wantDraft=false){
+  const c=cur();if(!c)return;
+  const cid=c.id,cname=c.name;
+  const q=String(query||'').trim();if(!q)return;
+  const list=S.aiThread[cid]=S.aiThread[cid]||[];
+  list.push({id:uid('ai'),_aiLocal:true,aiRole:'user',text:'@ai '+q,t:now(),ts:Date.now()});
+  saveAiThread();renderThread();
+  S.typing[cid]='WhatsGram AI';renderHead();renderTypingRow();
+  S.aiLastErr=null;
+  let ans={t:'Could not reach AI right now.',draft:null,src:null};
+  try{
+    const res=await callGemini({
+      mode:'assistant',
+      prompt:q,
+      wantDraft,
+      activeChatName:cname,
+      conversations:buildAiConversations(),
+      history:[]
+    });
+    if(res&&res.text)ans={t:res.text,draft:res.draft||null,src:'gemini'};
+    else ans=await aiFallbackAnswer(q,S.aiLastErr);
+  }finally{
+    delete S.typing[cid];
+    list.push({id:uid('ai'),_aiLocal:true,aiRole:'bot',text:ans.t,draft:ans.draft||null,src:ans.src||null,t:now(),ts:Date.now()});
+    saveAiThread();
+    if(S.chat===cid){renderThread();tone(740,.04)}else renderHead();
+  }
+}
+async function draftChatReply(replyTarget=null){
+  const c=cur();if(!c)return toast('Open a conversation first','err');
+  const inp=$('#msg');
+  const targetNote=replyTarget?` specifically replying to: "${replyTarget.text}"`:' based on recent messages';
+  toast('Drafting reply with AI…');
+  S.aiLastErr=null;
+  const res=await callGemini({
+    mode:'assistant',
+    wantDraft:true,
+    prompt:`Draft one concise, natural chat reply to ${c.name}${targetNote}.`,
+    activeChatName:c.name,
+    conversations:buildAiConversations()
+  });
+  let draft=res?.draft||res?.text;
+  if(!draft){
+    const last=replyTarget||[...c.msgs].reverse().find(m=>m.from==='them'&&m.text);
+    draft=last?`Thanks for sharing “${last.text.slice(0,45)}”. Let me review and follow up shortly.`:'Sounds good, thanks for reaching out!';
+    if(S.aiLastErr)toast(S.aiLastErr.code==='API_DISABLED'?'Using local draft (enable Gemini API for smart drafts)':'Using offline draft','err');
+  }
+  if(inp){inp.value=draft;inp.focus();inp.dispatchEvent(new Event('input',{bubbles:true}))}
+}
+async function rewriteComposerDraft(tone){
+  const inp=$('#msg'),c=cur();if(!inp)return;
+  const raw=inp.value.trim();if(!raw)return toast('Type a draft message first','err');
+  toast('Polishing draft…');
+  S.aiLastErr=null;
+  const res=await callGemini({
+    mode:'rewrite',
+    tone:tone==='es'?'translate':tone,
+    targetLang:'Spanish',
+    text:raw,
+    contactName:c?.name||'',
+    messages:c?c.msgs.filter(m=>m.from!=='sys'&&m.text).slice(-6).map(m=>({from:m.from==='me'?'Me':c.name,text:m.text})):[]
+  });
+  const out=res?.draft||res?.text;
+  if(out){
+    inp.value=out.trim();inp.focus();inp.dispatchEvent(new Event('input',{bubbles:true}));
+    toast('Draft updated');
+    return;
+  }
+  if(tone==='polite')inp.value=raw.replace(/\bi\b/g,'I')+(raw.endsWith('.')||raw.endsWith('!')||raw.endsWith('?')?'':'.')+' Thank you!';
+  else if(tone==='fix')inp.value=raw.charAt(0).toUpperCase()+raw.slice(1).replace(/\s{2,}/g,' ');
+  else return toast(S.aiLastErr?.error||'AI rewrite requires Gemini connection','err');
+  inp.focus();inp.dispatchEvent(new Event('input',{bubbles:true}));
+}
 
 /* ---------- vault / settings ---------- */
 function renderAudit(){
@@ -2457,11 +2679,21 @@ function renderCmdPalette(q=''){
 const PREF={account:'right'};
 const MENUS={
  chatsNew:()=>[{l:'New conversation',i:'user-plus',act:'open',arg:'m-contact'},{l:'New E2EE Group',i:'users',act:'newGroup'},{l:'New story / reel',i:'camera',act:'storyNew'}],
- chatMore:()=>{const c=cur()||{};return[{l:'Search in thread',i:'search',act:'toggleThreadSearch'},{l:'Summarize thread',i:'sparkles',act:'summarize'},{l:'Thread tools',i:'panel-right',act:'info'},{sep:1},{label:'Move to folder'},{l:'Work',i:'briefcase',act:'setFolder',arg:'work',radio:1,on:c.folder==='work'},{l:'Personal',i:'user',act:'setFolder',arg:'personal',radio:1,on:c.folder==='personal'},{sep:1},{l:'Clear history',i:'eraser',act:'clearChat',danger:1},{l:'Delete conversation',i:'trash-2',act:'deleteChat',danger:1}]},
- compose:()=>[{l:'Attach file',i:'paperclip',act:'attach'},{sep:1},{label:'Quick replies'},{l:'Sounds good',i:'message-square',act:'quick',arg:"Sounds good. Let's schedule a sync."},{l:'Request files',i:'file-text',act:'quick',arg:'Can you send over the updated files?'},{l:'Confirmed',i:'check',act:'quick',arg:'Confirmed. Moving forward with this plan.'}],
- msg:id=>{const m=cur()?.msgs.find(x=>x.id===id);return[{emojis:['❤️','👍','😂'],id},{sep:1},{l:'Reply',i:'corner-up-left',act:'reply',arg:id},...(m?.from==='me'&&m.type==='text'?[{l:'Edit message',i:'pencil',act:'editMsg',arg:id}]:[]),{l:cur()&&cur().pin===id?'Unpin message':'Pin message',i:'pin',act:'pin',arg:id},{l:'Copy text',i:'copy',act:'copy',arg:id},{sep:1},{l:'Delete message',i:'trash-2',act:'delMsg',arg:id,danger:1}]},
+ chatMore:()=>{const c=cur()||{};const aiCnt=(S.aiThread[c.id]||[]).length;return[{l:'Search in thread',i:'search',act:'toggleThreadSearch'},{l:'Summarize thread',i:'sparkles',act:'summarize'},{l:'Ask @AI in chat',i:'bot',act:'prefillAi'},...(aiCnt?[{l:'Clear private AI notes',i:'eraser',act:'clearAiNotes'}]:[]),{l:'Thread tools',i:'panel-right',act:'info'},{sep:1},{label:'Move to folder'},{l:'Work',i:'briefcase',act:'setFolder',arg:'work',radio:1,on:c.folder==='work'},{l:'Personal',i:'user',act:'setFolder',arg:'personal',radio:1,on:c.folder==='personal'},{sep:1},{l:'Clear history',i:'eraser',act:'clearChat',danger:1},{l:'Delete conversation',i:'trash-2',act:'deleteChat',danger:1}]},
+ compose:()=>[{l:'Attach file',i:'paperclip',act:'attach'},{l:'Draft reply with AI',i:'sparkles',act:'aiDraftReply'},{sep:1},{label:'Quick replies'},{l:'Sounds good',i:'message-square',act:'quick',arg:"Sounds good. Let's schedule a sync."},{l:'Request files',i:'file-text',act:'quick',arg:'Can you send over the updated files?'},{l:'Confirmed',i:'check',act:'quick',arg:'Confirmed. Moving forward with this plan.'}],
+ aiAssist:()=>{const hasDraft=Boolean($('#msg')?.value.trim()&&!/^@(?:ai|meta)\b/i.test($('#msg').value));const c=cur(),hasNotes=Boolean(c&&(S.aiThread[c.id]||[]).length);return[
+   ...(hasDraft?[{label:'Polish current draft'},{l:'Fix grammar & spelling',i:'check',act:'aiRewrite',arg:'fix'},{l:'Make polite & warm',i:'heart',act:'aiRewrite',arg:'polite'},{l:'Make concise',i:'scissors',act:'aiRewrite',arg:'concise'},{l:'Professional tone',i:'briefcase',act:'aiRewrite',arg:'professional'},{l:'Translate to Spanish',i:'languages',act:'aiRewrite',arg:'es'},{sep:1}]:[]),
+   {label:'Meta-style AI Copilot'},
+   {l:'Draft reply for this chat',i:'sparkles',act:'aiDraftReply'},
+   {l:'Ask @AI any question',i:'bot',act:'prefillAi'},
+   {l:'Summarize thread',i:'file-text',act:'summarize'},
+   ...(hasNotes?[{l:'Clear AI notes in chat',i:'eraser',act:'clearAiNotes'}]:[]),
+   {sep:1},
+   {l:'Open full AI Assistant',i:'external-link',act:'nav',arg:'ai'}
+ ]},
+ msg:id=>{const m=cur()?.msgs.find(x=>x.id===id);return[{emojis:['❤️','👍','😂'],id},{sep:1},{l:'Reply',i:'corner-up-left',act:'reply',arg:id},...(m?.text?[{l:'Reply with AI',i:'sparkles',act:'aiReplyToMsg',arg:id},{l:'Explain / translate',i:'bot',act:'aiExplainMsg',arg:id}]:[]),...(m?.from==='me'&&m.type==='text'?[{l:'Edit message',i:'pencil',act:'editMsg',arg:id}]:[]),{l:cur()&&cur().pin===id?'Unpin message':'Pin message',i:'pin',act:'pin',arg:id},{l:'Copy text',i:'copy',act:'copy',arg:id},{sep:1},{l:'Delete message',i:'trash-2',act:'delMsg',arg:id,danger:1}]},
  reelFilter:()=>[{label:'AR filter'},...FILTERS.map(([n],i)=>({l:n,act:'setFilter',arg:String(i),radio:1,on:RS.filter===i}))],
- aiTools:()=>[{l:'Generate hashtags',i:'hash',act:'aiRun',arg:'Generate hashtags'},{l:'Summarize all conversations',i:'sparkles',act:'aiRun',arg:'Summarize all conversations'},{sep:1},{l:'Clear conversation',i:'trash-2',act:'aiClear',danger:1}],
+ aiTools:()=>[{l:'Ask general knowledge',i:'globe',act:'aiRun',arg:'What is the scientific name of a lizard and 3 quick facts?'},{l:'Summarize all conversations',i:'sparkles',act:'aiRun',arg:'Summarize all conversations'},{l:'Find action items',i:'list-checks',act:'aiRun',arg:'Find action items'},{l:'Generate hashtags',i:'hash',act:'aiRun',arg:'Generate hashtags'},{sep:1},{l:'Clear conversation',i:'trash-2',act:'aiClear',danger:1}],
  account:()=>[{l:S.user?`Account · ${S.user.displayName||S.user.email}`:'Sign in / Cloud sync',i:S.user?'user-check':'cloud',act:'open',arg:'m-auth'},{l:'Command palette',i:'command',act:'openCmd'},{sep:1},{l:'Settings',i:'settings',act:'nav',arg:'settings'},{l:'Security vault',i:'shield-check',act:'nav',arg:'vault'},{sep:1},{l:'Create story / reel',i:'plus-circle',act:'storyNew'},{l:'Lock now',i:'lock',act:'lock'}]
 };
 function menuHTML(items){return items.map(it=>{
@@ -2558,6 +2790,12 @@ const A={
      }
      S.editId=null;i.value='';show('#sent',false,null);show('#mention-box',false);renderThread(true);renderList();return;
    }
+   const aiMatch=t.match(/^@(?:ai|meta(?:\s+ai)?)\b\s*(.*)$/i);
+   if(aiMatch){
+     i.value='';show('#sent',false,null);show('#mention-box',false);
+     askThreadAI(aiMatch[1]||'Summarize this conversation and suggest a smart reply');
+     return;
+   }
    i.value='';show('#sent',false,null);show('#mention-box',false);send(t);
  },
  editMsg(id){const m=cur()?.msgs.find(x=>x.id===id);if(!m||m.type!=='text')return;S.editId=id;S.reply=null;$('#msg').value=m.text||'';renderThread(true);$('#msg').focus()},
@@ -2571,8 +2809,8 @@ const A={
  unpin(){const c=cur();if(c){c.pin=null;saveD();renderThread(true);if(S.user)sbPost({action:'updateChat',id:c.id,pin:null})}},
  copy(id){const m=cur()?.msgs.find(x=>x.id===id);if(m)navigator.clipboard?.writeText(m.text||m.name||'').then(()=>toast('Copied'),()=>toast('Copy blocked by browser','err'))},
  delMsg(id){const c=cur();if(c){c.msgs=c.msgs.filter(m=>m.id!==id);if(c.pin===id)c.pin=null;saveD();renderThread(true);renderList();if(S.user)sbPost({action:'deleteMessage',conversationId:c.id,messageId:id})}},
- clearChat(){const c=cur();if(c)ask('Clear history?',`All messages with ${c.name} will be removed from this device.`,()=>{c.msgs=[];c.pin=null;saveD();renderThread();renderList();renderInfo();if(S.user)sbPost({action:'clearChat',id:c.id})})},
- deleteChat(){const c=cur();if(c)ask('Delete conversation?',`${c.name} and its messages will be removed.`,()=>{D=D.filter(x=>x.id!==c.id);S.chat=null;saveD();$('#v-chats').dataset.open='0';renderList();renderThread();renderInfo();audit('Conversation deleted');if(S.user)sbPost({action:'deleteChat',id:c.id})})},
+ clearChat(){const c=cur();if(c)ask('Clear history?',`All messages with ${c.name} will be removed from this device.`,()=>{c.msgs=[];c.pin=null;delete S.aiThread[c.id];saveAiThread();saveD();renderThread();renderList();renderInfo();if(S.user)sbPost({action:'clearChat',id:c.id})})},
+ deleteChat(){const c=cur();if(c)ask('Delete conversation?',`${c.name} and its messages will be removed.`,()=>{D=D.filter(x=>x.id!==c.id);delete S.aiThread[c.id];saveAiThread();S.chat=null;saveD();$('#v-chats').dataset.open='0';renderList();renderThread();renderInfo();audit('Conversation deleted');if(S.user)sbPost({action:'deleteChat',id:c.id})})},
  contactTab(tab){S.contactTab=tab==='group'?'group':'dm';const isG=S.contactTab==='group';const td=$('#ctab-dm'),tg=$('#ctab-grp');if(td&&tg){td.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isG?'lux-tab-off':'lux-tab-on');tg.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isG?'lux-tab-on':'lux-tab-off')}show('#dm-panel',!isG,'space-y-3.5');show('#grp-panel',isG,'space-y-3.5');if(isG)renderGroupMembers()},
  newGroup(){S.contactTab='group';A.open('m-contact')},
  async createGroup(){
@@ -2653,6 +2891,15 @@ const A={
  aiRun:p=>aiRun(p),aiSend(){const i=$('#ai-in'),v=i.value;i.value='';aiRun(v)},
  aiStop(){if(S.aiAbort){S.aiAbort.abort();S.aiAbort=null}if(S.aiBusy){clearInterval(S.aiBusy);S.aiBusy=null}$('#ai-send').classList.remove('hidden');show('#ai-stop',false,'inline-flex')},
  aiClear(){A.aiStop();S.aiHist=[];$('#ai-log').innerHTML='';aiWelcome()},
+ aiWarnClose(){show('#ai-warn',false,'flex')},
+ prefillAi(){const i=$('#msg');if(!i)return;if(!cur())return toast('Open a conversation first','err');i.value=i.value.trim().startsWith('@ai')?i.value:'@ai '+i.value.replace(/^@/,'');i.focus();i.dispatchEvent(new Event('input',{bubbles:true}))},
+ aiDraftReply(){draftChatReply()},
+ aiRewrite:tone=>rewriteComposerDraft(tone),
+ aiReplyToMsg(id){const m=cur()?.msgs.find(x=>x.id===id);if(!m)return;S.editId=null;S.reply={id,text:prev(m).slice(0,80)};renderThread(true);draftChatReply(m)},
+ aiExplainMsg(id){const m=cur()?.msgs.find(x=>x.id===id);if(!m)return;askThreadAI(`Explain and, if non-English, translate this message in brief plain language: "${m.text||m.name||''}"`)},
+ useInlineDraft(id){const c=cur(),m=(S.aiThread[c?.id]||[]).find(x=>x.id===id);const i=$('#msg');if(!m?.draft||!i)return;i.value=m.draft;i.focus();i.dispatchEvent(new Event('input',{bubbles:true}));toast('Inserted into composer')},
+ delAiNote(id){const c=cur();if(!c||!S.aiThread[c.id])return;S.aiThread[c.id]=S.aiThread[c.id].filter(x=>x.id!==id);saveAiThread();renderThread(true)},
+ clearAiNotes(){const c=cur();if(!c)return;delete S.aiThread[c.id];saveAiThread();renderThread(true);toast('Cleared private AI notes')},
  useDraft(){setView('chats');$('#msg').value=S.draft;$('#msg').focus();toast('Draft inserted')},
  dWiring(){const els=$$('[data-act]'),acts=new Set(els.map(e=>e.dataset.act)),badMenus=[...new Set(els.filter(e=>e.dataset.act==='menu').map(e=>e.dataset.arg.split(':')[0]))].filter(k=>!MENUS[k]);let items=0;Object.values(MENUS).forEach(f=>{try{f('x').forEach(i=>{if(i.act){acts.add(i.act);items++}if(i.emojis){acts.add('react');items++}})}catch(e){}});const miss=[...acts].filter(a=>!A[a]);diag(`${els.length} controls · ${items} menu items · ${acts.size} actions · ${miss.length||badMenus.length?'UNWIRED: '+[...miss,...badMenus.map(m=>'menu:'+m)].join(', '):'0 unwired'}`)},
  dSignal(){let v=0,seen=null;const subs=[n=>seen=n];const set=n=>{v=n;subs.forEach(f=>f(n))};set(42);diag(`Reactive signal propagation: ${seen===42&&v===42?'PASS':'FAIL'}`)},
@@ -2716,13 +2963,18 @@ document.addEventListener('input',e=>{
         signalConvPeers(c,'typing',{fromUserId:S.user.id,conversationId:c.id,active:false});
       }
     }
-    const mb=$('#mention-box'),mm=c?.isGroup?rawVal.match(/@([a-z0-9._-]*)$/i):null;
-    if(mm&&Array.isArray(c.members)){
-      const hits=c.members.filter(m=>m.id!==S.user?.id&&m.displayName.toLowerCase().includes(mm[1].toLowerCase()));
-      if(hits.length){
-        mb.innerHTML=hits.map(m=>`<button data-act="pickMention" data-arg="${esc(m.displayName)}" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-white/[0.08] text-xs text-white text-left">${av(m.displayName,'w-6 h-6')}<span class="truncate">${esc(m.displayName)}</span></button>`).join('');
-        show(mb,true);
-      }else show(mb,false);
+    const mb=$('#mention-box'),mm=c?rawVal.match(/@([a-z0-9._-]*)$/i):null;
+    if(mm){
+      const mq=mm[1].toLowerCase(),items=[];
+      if('ai'.includes(mq)||'meta'.includes(mq)||!mq){
+        items.push(`<button data-act="pickMention" data-arg="ai" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-white/[0.08] text-xs text-white text-left"><span class="w-6 h-6 rounded-full bg-gradient-to-br from-accent/35 to-indigo-500/35 border border-accent/40 grid place-items-center text-accent shrink-0">${ic('sparkles','w-3.5 h-3.5')}</span><span class="min-w-0 flex-1 truncate font-medium">@ai <span class="text-zinc-400 font-normal">· Ask anything or draft reply</span></span></button>`);
+      }
+      if(c?.isGroup&&Array.isArray(c.members)){
+        c.members.filter(m=>m.id!==S.user?.id&&m.displayName.toLowerCase().includes(mq)).forEach(m=>{
+          items.push(`<button data-act="pickMention" data-arg="${esc(m.displayName)}" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-white/[0.08] text-xs text-white text-left">${av(m.displayName,'w-6 h-6')}<span class="truncate">${esc(m.displayName)}</span></button>`);
+        });
+      }
+      if(items.length){mb.innerHTML=items.join('');show(mb,true);icons()}else show(mb,false);
     }else if(mb)show(mb,false);
     if(!v.trim()){b.classList.add('hidden');return}
     b.classList.remove('hidden');

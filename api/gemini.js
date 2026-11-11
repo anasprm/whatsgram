@@ -99,20 +99,58 @@ function buildPayload(body) {
     };
   }
 
+  if (mode === 'rewrite') {
+    const draftText = String(body.text || body.prompt || '').trim().slice(0, 2000);
+    const tone = String(body.tone || 'polish').slice(0, 40);
+    const targetLang = String(body.targetLang || 'Spanish').slice(0, 40);
+    const contact = body.contactName ? String(body.contactName).slice(0, 80) : '';
+    const msgs = Array.isArray(body.messages) ? body.messages.slice(-6) : [];
+    const transcript = msgs.map(m => `${m.from}: ${m.text}`).join('\n');
+    const ruleMap = {
+      fix: 'Fix spelling, grammar, and punctuation while keeping the exact meaning and tone.',
+      polite: 'Rewrite to sound warm, polite, and respectful while keeping the core message clear.',
+      concise: 'Rewrite to be short, direct, and crisp (1-2 brief sentences max) without losing meaning.',
+      professional: 'Rewrite in a clear, polished, professional tone suitable for workplace messaging.',
+      translate: `Translate accurately into ${targetLang}, preserving natural conversational phrasing.`
+    };
+    const rule = ruleMap[tone] || 'Improve clarity and natural phrasing while preserving intent.';
+    return {
+      wantsJson: false,
+      isRewrite: true,
+      systemInstruction: {
+        parts: [{
+          text: `You are WhatsGram AI writing assistant (similar to Meta AI in WhatsApp). ${rule} Return ONLY the rewritten message text with no surrounding quotes, explanations, or markdown formatting.`
+        }]
+      },
+      contents: [{
+        role: 'user',
+        parts: [{
+          text: `${contact ? `Recipient: ${contact}\n` : ''}${transcript ? `Recent chat context:\n${transcript}\n\n` : ''}Draft message to process:\n${draftText}`
+        }]
+      }],
+      generationConfig: { temperature: 0.35, maxOutputTokens: 320 }
+    };
+  }
+
   const prompt = String(body.prompt || '').trim().slice(0, 4000);
   const activeChat = body.activeChatName ? String(body.activeChatName).slice(0, 80) : null;
   const contextText = formatConversations(body.conversations);
-  const wantsDraft = /\b(draft|reply|respond|write back)\b/i.test(prompt);
-  const history = Array.isArray(body.history) ? body.history.slice(-6) : [];
+  const wantsDraft = Boolean(body.wantDraft) ||
+    /\b(draft|compose)\b/i.test(prompt) ||
+    /\b(write|suggest|give me|prepare|craft)\s+(a\s+)?(quick\s+|short\s+|polite\s+|friendly\s+|formal\s+|casual\s+|professional\s+)?(reply|response|message|text|note)\b/i.test(prompt) ||
+    /\breply\s+(to|back|for)\b/i.test(prompt) ||
+    /\b(respond\s+to\s+(them|him|her|this|the\s+message|chat|conversation)|write\s+back)\b/i.test(prompt) ||
+    /\b(rewrite|rephrase|polish|shorten|proofread)\s+(this|my\s+(draft|message|reply|text)|it)\b/i.test(prompt);
+  const history = Array.isArray(body.history) ? body.history.slice(-10) : [];
 
   const contents = [
     ...history
       .filter(h => h && (h.role === 'user' || h.role === 'model') && h.text)
-      .map(h => ({ role: h.role, parts: [{ text: String(h.text).slice(0, 2000) }] })),
+      .map(h => ({ role: h.role, parts: [{ text: String(h.text).slice(0, 3000) }] })),
     {
       role: 'user',
       parts: [{
-        text: `${activeChat ? `Active open conversation: ${activeChat}\n\n` : ''}Local conversations:\n${contextText}\n\nUser request: ${prompt}`
+        text: `[WhatsGram Inbox Context — use ONLY when the user asks about their chats, contacts, or drafting replies]\n${activeChat ? `Active open conversation: ${activeChat}\n\n` : ''}${contextText}\n\n[User Request]\n${prompt}`
       }]
     }
   ];
@@ -122,13 +160,13 @@ function buildPayload(body) {
       wantsJson: true,
       systemInstruction: {
         parts: [{
-          text: 'You are WhatsGram OS AI Assistant. Use only the provided local conversations. When the user asks to draft a reply, respond strictly with JSON: {"answer": "<helpful explanation or preview>", "draft": "<ready-to-send reply text>"}. Do not wrap JSON in markdown fences if possible.'
+          text: 'You are WhatsGram AI, an intelligent general-purpose assistant and chat copilot inside WhatsGram OS (similar to Meta AI in WhatsApp). Help the user draft, reply, rewrite, translate, or write messages—grounded in their active conversation when replying to a contact, or using your full general knowledge for standalone requests. Respond strictly with valid JSON: {"answer": "<brief helpful note or summary>", "draft": "<ready-to-send message text, or null if no sendable draft was requested>"}. Do not wrap JSON in markdown fences.'
         }]
       },
       contents,
       generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 600,
+        temperature: 0.45,
+        maxOutputTokens: 700,
         responseMimeType: 'application/json'
       }
     };
@@ -138,11 +176,11 @@ function buildPayload(body) {
     wantsJson: false,
     systemInstruction: {
       parts: [{
-        text: 'You are WhatsGram OS AI Assistant. Answer concisely and accurately using the provided local conversations. Reference contact names and facts directly without inventing messages.'
+        text: 'You are WhatsGram AI, an all-purpose intelligent assistant inside WhatsGram OS (just like Meta AI in WhatsApp). Answer ALL general knowledge questions (science, biology, history, geography, technology, trivia, definitions), math, coding, explanations, translations, brainstorming, and writing tasks directly, accurately, and concisely using your full knowledge—never refuse general questions or force unrelated local chat messages into the answer. When the user asks about their WhatsGram chats, contacts, summaries, action items, or drafting replies, use the provided inbox context accurately without inventing messages. Keep responses clear, conversational, and formatted with plain text or simple bullet points (•) instead of cluttered raw markdown asterisks.'
       }]
     },
     contents,
-    generationConfig: { temperature: 0.4, maxOutputTokens: 900 }
+    generationConfig: { temperature: 0.5, maxOutputTokens: 1024 }
   };
 }
 
@@ -216,7 +254,20 @@ module.exports = async function handler(req, res) {
 
     if (!result.ok) {
       const errMsg = result.data?.error?.message || `Gemini upstream error (${result.status})`;
-      return res.status(result.status >= 400 && result.status < 600 ? result.status : 502).json({ error: errMsg });
+      const urlMatch = errMsg.match(/https:\/\/console\.[^\s"'<>]+/);
+      const actionUrl = urlMatch ? urlMatch[0] : null;
+      const code = result.status === 403 && /disabled|not been used/i.test(errMsg)
+        ? 'API_DISABLED'
+        : result.status === 401 || /api key not valid|invalid.*key/i.test(errMsg)
+          ? 'INVALID_KEY'
+          : result.status === 429
+            ? 'RATE_LIMITED'
+            : 'UPSTREAM_ERROR';
+      return res.status(result.status >= 400 && result.status < 600 ? result.status : 502).json({
+        error: errMsg,
+        code,
+        ...(actionUrl ? { actionUrl } : {})
+      });
     }
 
     const rawText = (result.data?.candidates?.[0]?.content?.parts || [])
@@ -239,9 +290,12 @@ module.exports = async function handler(req, res) {
             : [];
           return res.status(200).json({ text: suggestions[0] || rawText, suggestions, model, provider });
         }
+        const cleanDraft = parsed.draft && String(parsed.draft).trim().toLowerCase() !== 'null'
+          ? String(parsed.draft).trim()
+          : null;
         return res.status(200).json({
-          text: String(parsed.answer || parsed.draft || rawText),
-          draft: parsed.draft ? String(parsed.draft) : null,
+          text: String(parsed.answer || cleanDraft || rawText),
+          draft: cleanDraft,
           model,
           provider
         });
@@ -258,7 +312,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       text: rawText,
-      draft: null,
+      draft: payload.isRewrite ? rawText : null,
       model,
       provider: apiKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio'
     });
