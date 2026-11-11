@@ -60,7 +60,41 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 .tdot i{display:inline-block;width:5px;height:5px;border-radius:9999px;background:#a1a1aa;animation:tdot 1.1s infinite ease-in-out}
 .tdot i:nth-child(2){animation-delay:.16s}
 .tdot i:nth-child(3){animation-delay:.32s}
-.chat-bg{background-image:radial-gradient(circle at 18% 15%,rgb(var(--ac-rgb)/.09),transparent 44%),radial-gradient(circle at 82% 80%,rgba(221,42,123,.07),transparent 46%),radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:100% 100%,100% 100%,24px 24px}
+.chat-bg{background-color:#05060b;background-image:radial-gradient(circle at 14% 12%,rgb(var(--ac-rgb)/.11),transparent 42%),radial-gradient(circle at 86% 84%,rgba(221,42,123,.085),transparent 45%),radial-gradient(circle at 50% 50%,rgba(99,102,241,.04),transparent 65%),radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:100% 100%,100% 100%,100% 100%,24px 24px}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.11);border-radius:9999px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.24)}
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+.lux-card{background:linear-gradient(180deg,rgba(18,20,29,.88) 0%,rgba(11,12,18,.94) 100%);border:1px solid rgba(255,255,255,.085);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 18px 42px -20px rgba(0,0,0,.85)}
+.lux-panel{background:linear-gradient(180deg,rgba(14,16,24,.94) 0%,rgba(8,9,15,.98) 100%);border-color:rgba(255,255,255,.08)}
+.lux-modal{background:linear-gradient(180deg,rgba(19,21,31,.96) 0%,rgba(10,11,17,.99) 100%);border:1px solid rgba(255,255,255,.11);box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 32px 96px -18px rgba(0,0,0,.95),0 0 60px -30px rgb(var(--ac-rgb)/.25);backdrop-filter:blur(28px)}
+.modal.open>div{animation:msgIn .22s cubic-bezier(.16,1,.3,1)}
+.lux-input{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);transition:border-color .18s,background-color .18s,box-shadow .18s}
+.lux-input:hover{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.15)}
+.lux-input:focus{background:rgba(255,255,255,.065);border-color:rgb(var(--ac-rgb)/.7);box-shadow:0 0 0 3px rgb(var(--ac-rgb)/.16)}
+.lux-tab-on{background:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.08) 100%);color:#fff;border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 14px -6px rgba(0,0,0,.7)}
+.lux-tab-off{color:#9ca3af;border:1px solid transparent}
+.lux-tab-off:hover{color:#fff;background:rgba(255,255,255,.04)}
+.btn-primary{background:linear-gradient(135deg,var(--ac) 0%,rgb(var(--ac-rgb)/.74) 100%);color:#fff;border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 10px 26px -8px rgb(var(--ac-rgb)/.65);transition:filter .18s,transform .14s,box-shadow .18s}
+.btn-primary:hover{filter:brightness(1.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 14px 30px -8px rgb(var(--ac-rgb)/.78)}
+.btn-primary:active{transform:scale(.98)}
+.btn-ghost{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:background-color .16s,border-color .16s,transform .14s}
+.btn-ghost:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18)}
+.bubble-me{background:linear-gradient(135deg,var(--ac) 0%,rgb(var(--ac-rgb)/.76) 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 10px 24px -10px rgb(var(--ac-rgb)/.55);border:1px solid rgba(255,255,255,.14)}
+.bubble-me-zk{background:linear-gradient(135deg,#059669 0%,#0d9488 55%,#0284c7 115%);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 10px 24px -10px rgba(16,185,129,.45);border:1px solid rgba(255,255,255,.16)}
+.bubble-them{background:linear-gradient(180deg,rgba(31,34,45,.92) 0%,rgba(20,22,30,.96) 100%);border:1px solid rgba(255,255,255,.085);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 20px -10px rgba(0,0,0,.65)}
+.lock-backdrop{background:radial-gradient(circle at 28% 22%,rgb(var(--ac-rgb)/.20),transparent 42%),radial-gradient(circle at 74% 78%,rgba(221,42,123,.14),transparent 45%),rgba(3,4,8,.92)}
+.lux-sw[role="switch"]{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 2px 4px rgba(0,0,0,.45)}
+.lux-sw[role="switch"][aria-checked="true"]{background:linear-gradient(135deg,var(--ac) 0%,rgb(var(--ac-rgb)/.75) 100%);border-color:rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 18px -3px rgb(var(--ac-rgb)/.75)}
+.eq-bar{display:inline-block;width:2px;border-radius:2px;background:currentColor;animation:tdot 1s infinite ease-in-out}
+.reel-aura{background:radial-gradient(circle at 50% 45%,rgb(var(--ac-rgb)/.15),transparent 55%),radial-gradient(circle at 35% 75%,rgba(221,42,123,.10),transparent 45%),#040509}
+.ai-aura{background:radial-gradient(circle at 50% 0%,rgb(var(--ac-rgb)/.12),transparent 48%),radial-gradient(circle at 80% 90%,rgba(168,85,247,.07),transparent 45%),#05060b}
+.vault-aura{background:radial-gradient(circle at 50% 0%,rgba(16,185,129,.10),transparent 45%),radial-gradient(circle at 85% 30%,rgb(var(--ac-rgb)/.06),transparent 40%),#05060b}
+.settings-aura{background:radial-gradient(circle at 50% 0%,rgb(var(--ac-rgb)/.10),transparent 45%),radial-gradient(circle at 15% 65%,rgba(99,102,241,.07),transparent 42%),#05060b}
+.nav-btn[aria-current="page"]::before{content:'';position:absolute;left:0;top:11px;bottom:11px;width:3px;border-radius:9999px;background:var(--ac);box-shadow:0 0 12px var(--ac)}
+.dock-btn[aria-current="page"]::after{content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:16px;height:3px;border-radius:9999px;background:var(--ac);box-shadow:0 0 10px var(--ac)}
 #stream mark.hl{background:rgb(var(--ac-rgb)/.45);color:#fff;border-radius:4px;padding:0 2px}
 .msg-focus>div>div:first-child{outline:2px solid var(--ac);outline-offset:2px}
 .burst{animation:burst .9s cubic-bezier(.16,1,.3,1) forwards;pointer-events:none}
@@ -82,79 +116,79 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
 <div id="toasts" class="fixed z-[70] right-4 bottom-20 md:bottom-5 flex flex-col gap-2 items-end pointer-events-none"></div>
 
-<div id="app" class="flex flex-col md:flex-row bg-black" style="height:100dvh">
+<div id="app" class="flex flex-col md:flex-row bg-[#040509] selection:bg-accent/30 selection:text-white" style="height:100dvh">
   <!-- LEFT NAVIGATION RAIL (Instagram Web inspired) -->
-  <aside class="hidden md:flex md:w-[76px] xl:w-[248px] shrink-0 flex-col justify-between py-6 px-3.5 border-r border-white/[0.08] bg-black">
+  <aside class="hidden md:flex md:w-[76px] xl:w-[252px] shrink-0 flex-col justify-between py-6 px-3.5 border-r border-white/[0.07] bg-gradient-to-b from-[#080a12] via-[#06070c] to-[#05060a]">
     <div class="flex flex-col gap-2">
-      <button data-act="nav" data-arg="chats" class="group h-12 px-2.5 mb-5 flex items-center gap-3 rounded-2xl hover:bg-white/[0.05] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" aria-label="WhatsGram home">
-        <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shrink-0 shadow-lg shadow-pink-500/20 group-hover:scale-105 transition-transform">
+      <button data-act="nav" data-arg="chats" class="group h-12 px-2.5 mb-5 flex items-center gap-3 rounded-2xl hover:bg-white/[0.05] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" aria-label="WhatsGram home">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shrink-0 shadow-[0_8px_22px_-4px_rgba(221,42,123,.55),inset_0_1px_0_rgba(255,255,255,.35)] group-hover:scale-105 transition-transform">
           <i data-lucide="hexagon" class="w-4 h-4 stroke-[2.4]"></i>
         </span>
         <span class="hidden xl:flex items-center gap-2">
           <span class="text-[20px] font-extrabold tracking-tight text-white">WhatsGram</span>
-          <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/[0.08] text-zinc-300 border border-white/[0.08]">OS</span>
+          <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/[0.07] text-zinc-200 border border-white/[0.11] shadow-[inset_0_1px_0_rgba(255,255,255,.1)]">OS</span>
         </span>
       </button>
-      <nav id="rail" class="flex flex-col gap-1" aria-label="Primary"></nav>
+      <nav id="rail" class="flex flex-col gap-1.5" aria-label="Primary"></nav>
     </div>
-    <div class="flex flex-col gap-1">
-      <button data-act="openCmd" class="nav-btn relative group flex items-center gap-3.5 h-11 w-12 xl:w-full px-3 rounded-xl text-[13.5px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="Command Palette (Ctrl+K)" aria-label="Command Palette">
+    <div class="flex flex-col gap-1 pt-3 border-t border-white/[0.06]">
+      <button data-act="openCmd" class="nav-btn relative group flex items-center gap-3.5 h-11 w-12 xl:w-full px-3 rounded-xl text-[13.5px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.055] border border-transparent hover:border-white/[0.06] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="Command Palette (Ctrl+K)" aria-label="Command Palette">
         <i data-lucide="command" class="w-5 h-5 shrink-0 group-hover:scale-105 transition-transform"></i>
         <span class="hidden xl:flex items-center justify-between flex-1 min-w-0">
           <span>Quick jump</span>
-          <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.09] text-zinc-400">Ctrl K</kbd>
+          <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-white/[0.06] border border-white/[0.10] text-zinc-400">Ctrl K</kbd>
         </span>
       </button>
-      <button id="nav-auth" data-act="open" data-arg="m-auth" class="nav-btn relative group flex items-center gap-3.5 h-12 w-12 xl:w-full px-3 rounded-xl text-[15px] font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="Account &amp; Cloud Sync" aria-label="Account &amp; Cloud Sync">
+      <button id="nav-auth" data-act="open" data-arg="m-auth" class="nav-btn relative group flex items-center gap-3.5 h-12 w-12 xl:w-full px-3 rounded-xl text-[15px] font-medium text-zinc-300 hover:text-white hover:bg-white/[0.055] border border-transparent hover:border-white/[0.06] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="Account &amp; Cloud Sync" aria-label="Account &amp; Cloud Sync">
         <span id="nav-auth-dot" class="w-6 h-6 rounded-full bg-white/[0.08] border border-white/[0.12] grid place-items-center shrink-0 text-[10px] font-bold text-zinc-300"><i data-lucide="cloud" class="w-3.5 h-3.5"></i></span>
         <span id="nav-auth-lbl" class="hidden xl:inline truncate text-[13px]">Local mode</span>
       </button>
-      <button data-act="menu" data-arg="account" aria-haspopup="menu" aria-expanded="false" class="nav-btn relative group flex items-center gap-3.5 h-12 w-12 xl:w-full px-3 rounded-xl text-[15px] font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="More" aria-label="More">
-        <i data-lucide="menu" class="w-6 h-6 shrink-0 group-hover:scale-105 transition-transform"></i>
+      <button data-act="menu" data-arg="account" aria-haspopup="menu" aria-expanded="false" class="nav-btn relative group flex items-center gap-3.5 h-12 w-12 xl:w-full px-3 rounded-xl text-[15px] font-medium text-zinc-300 hover:text-white hover:bg-white/[0.055] border border-transparent hover:border-white/[0.06] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="More" aria-label="More">
+        <i data-lucide="menu" class="w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform"></i>
         <span class="hidden xl:inline">More</span>
       </button>
     </div>
   </aside>
 
-  <main class="flex-1 min-w-0 min-h-0 relative bg-zinc-950">
+  <main class="flex-1 min-w-0 min-h-0 relative bg-[#05060b]">
 
     <!-- MESSAGES VIEW -->
-    <section id="v-chats" data-open="0" class="view group/chats absolute inset-0 hidden flex bg-black">
+    <section id="v-chats" data-open="0" class="view group/chats absolute inset-0 hidden flex bg-[#05060b]">
       <!-- Inbox Column -->
-      <div id="list" class="w-full md:w-[340px] lg:w-[376px] shrink-0 flex flex-col min-h-0 border-r border-white/[0.08] bg-black max-md:group-data-[open='1']/chats:hidden">
-        <header class="h-16 px-5 flex items-center justify-between border-b border-white/[0.07] shrink-0">
+      <div id="list" class="w-full md:w-[340px] lg:w-[376px] shrink-0 flex flex-col min-h-0 border-r border-white/[0.07] bg-gradient-to-b from-[#080a12] to-[#05060b] max-md:group-data-[open='1']/chats:hidden">
+        <header class="h-16 px-5 flex items-center justify-between border-b border-white/[0.06] shrink-0 bg-white/[0.01]">
           <div class="flex items-center gap-2.5 min-w-0">
             <h1 class="text-xl font-extrabold tracking-tight text-white">Messages</h1>
-            <button id="sb-pill" data-act="open" data-arg="m-auth" class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.11] border border-white/[0.08] text-[11px] font-medium text-zinc-300 transition shrink-0" title="Account &amp; Supabase Cloud Sync">
+            <button id="sb-pill" data-act="open" data-arg="m-auth" class="btn-ghost inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-[11px] font-medium text-zinc-200 shrink-0" title="Account &amp; Supabase Cloud Sync">
               <span id="sb-dot" class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]"></span>
               <span id="sb-label" class="truncate max-w-[110px]">Local</span>
             </button>
           </div>
-          <button class="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.08] text-xs font-semibold text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatsNew" aria-haspopup="menu" aria-expanded="false">
-            <i data-lucide="square-pen" class="w-3.5 h-3.5"></i>
+          <button class="btn-ghost inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatsNew" aria-haspopup="menu" aria-expanded="false">
+            <i data-lucide="square-pen" class="w-3.5 h-3.5 text-accent"></i>
             <span>New</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
           </button>
         </header>
 
-        <div class="px-4 py-3 space-y-2.5 border-b border-white/[0.07] shrink-0">
+        <div class="px-4 py-3 space-y-2.5 border-b border-white/[0.06] shrink-0">
           <label class="relative block">
-            <i data-lucide="search" class="absolute left-3.5 top-3 w-4 h-4 text-zinc-500 pointer-events-none"></i>
-            <input id="q" data-input="search" class="w-full h-10 rounded-xl bg-white/[0.06] border border-white/[0.06] pl-10 pr-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:bg-white/[0.09] focus:border-white/25 transition-colors" placeholder="Search conversations…" autocomplete="off">
+            <i data-lucide="search" class="absolute left-3.5 top-3 w-4 h-4 text-zinc-400 pointer-events-none"></i>
+            <input id="q" data-input="search" class="lux-input w-full h-10 rounded-xl pl-10 pr-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Search conversations…" autocomplete="off">
           </label>
-          <div id="folders" role="tablist" aria-label="Conversation filter" class="grid grid-cols-4 gap-1 p-1 rounded-xl bg-white/[0.04] border border-white/[0.06]"></div>
+          <div id="folders" role="tablist" aria-label="Conversation filter" class="grid grid-cols-4 gap-1 p-1 rounded-2xl bg-white/[0.035] border border-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,.04)]"></div>
         </div>
 
-        <div id="stories" class="flex gap-3.5 px-4 py-3.5 overflow-x-auto border-b border-white/[0.07] shrink-0"></div>
-        <div id="list-body" class="flex-1 overflow-y-auto p-2.5 space-y-0.5"></div>
+        <div id="stories" class="flex gap-3.5 px-4 py-3.5 overflow-x-auto no-scrollbar border-b border-white/[0.06] shrink-0"></div>
+        <div id="list-body" class="flex-1 overflow-y-auto p-2.5 space-y-1"></div>
       </div>
 
       <!-- Active Thread Pane -->
-      <div id="thread" class="hidden md:flex group-data-[open='1']/chats:flex flex-1 min-w-0 min-h-0 relative isolate bg-[#070709]">
+      <div id="thread" class="hidden md:flex group-data-[open='1']/chats:flex flex-1 min-w-0 min-h-0 relative isolate bg-[#05060b]">
         <div class="flex-1 min-w-0 min-h-0 flex flex-col">
-          <header class="h-16 px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/[0.08] shrink-0 bg-black/75 backdrop-blur-xl">
-            <div class="flex items-center gap-3 min-w-0">
-              <button class="inline-flex md:hidden items-center justify-center w-9 h-9 rounded-full bg-white/[0.07] hover:bg-white/[0.14] text-zinc-200 transition-colors shrink-0" data-act="back" aria-label="Back to conversations">
+          <header class="h-16 px-3 sm:px-5 flex items-center justify-between gap-2 sm:gap-3 border-b border-white/[0.07] shrink-0 bg-[#080910]/80 backdrop-blur-2xl shadow-[0_8px_30px_-15px_rgba(0,0,0,.7)]">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+              <button class="inline-flex md:hidden items-center justify-center w-8 h-8 rounded-full bg-white/[0.07] hover:bg-white/[0.14] text-zinc-200 transition-colors shrink-0" data-act="back" aria-label="Back to conversations">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
               </button>
               <div id="th-av" class="shrink-0"></div>
@@ -163,27 +197,27 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
                 <p id="th-status" class="text-[11px] text-zinc-400 truncate"></p>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button id="th-search-btn" class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="toggleThreadSearch" aria-pressed="false" title="Search in thread" aria-label="Search in conversation"><i data-lucide="search" class="w-4 h-4"></i></button>
-              <div class="inline-flex items-center rounded-full bg-white/[0.05] border border-white/[0.07] p-0.5" role="group" aria-label="Calls">
-                <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.1] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="call" data-arg="video" title="Video call" aria-label="Video call"><i data-lucide="video" class="w-4 h-4"></i></button>
-                <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.1] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="call" data-arg="voice" title="Voice call" aria-label="Voice call"><i data-lucide="phone" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+              <button id="th-search-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="toggleThreadSearch" aria-pressed="false" title="Search in thread" aria-label="Search in conversation"><i data-lucide="search" class="w-4 h-4"></i></button>
+              <div class="inline-flex items-center rounded-full bg-white/[0.05] border border-white/[0.08] p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]" role="group" aria-label="Calls">
+                <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.1] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="call" data-arg="video" title="Video call" aria-label="Video call"><i data-lucide="video" class="w-4 h-4"></i></button>
+                <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.1] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="call" data-arg="voice" title="Voice call" aria-label="Voice call"><i data-lucide="phone" class="w-4 h-4"></i></button>
               </div>
-              <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatMore" aria-haspopup="menu" aria-expanded="false" title="More options" aria-label="More options"><i data-lucide="ellipsis" class="w-4 h-4"></i></button>
-              <button class="w-9 h-9 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="info" aria-pressed="false" title="Conversation details" aria-label="Toggle thread tools"><i data-lucide="info" class="w-4 h-4"></i></button>
+              <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatMore" aria-haspopup="menu" aria-expanded="false" title="More options" aria-label="More options"><i data-lucide="ellipsis" class="w-4 h-4"></i></button>
+              <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="info" aria-pressed="false" title="Conversation details" aria-label="Toggle thread tools"><i data-lucide="info" class="w-4 h-4"></i></button>
             </div>
           </header>
 
-          <div id="pinned" class="hidden px-4 md:px-6 py-2.5 border-b border-white/[0.07] bg-zinc-900/75 backdrop-blur-md text-xs items-center justify-between gap-3">
+          <div id="pinned" class="hidden px-4 md:px-6 py-2.5 border-b border-white/[0.07] bg-[#0c0e17]/80 backdrop-blur-md text-xs items-center justify-between gap-3">
             <span class="flex items-center gap-2 min-w-0">
-              <span class="w-5 h-5 rounded-full bg-accent/15 text-accent grid place-items-center shrink-0"><i data-lucide="pin" class="w-3 h-3"></i></span>
+              <span class="w-5 h-5 rounded-full bg-accent/15 border border-accent/25 text-accent grid place-items-center shrink-0"><i data-lucide="pin" class="w-3 h-3"></i></span>
               <span class="font-semibold text-zinc-200 shrink-0">Pinned</span>
               <span id="pinned-t" class="truncate text-zinc-400"></span>
             </span>
             <button class="w-6 h-6 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" data-act="unpin" aria-label="Unpin"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
           </div>
 
-          <div id="th-search-bar" class="hidden px-4 md:px-6 py-2 border-b border-white/[0.07] bg-zinc-900/90 backdrop-blur-md items-center gap-2">
+          <div id="th-search-bar" class="hidden px-4 md:px-6 py-2 border-b border-white/[0.07] bg-[#0c0e17]/95 backdrop-blur-md items-center gap-2">
             <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-400 shrink-0"></i>
             <input id="th-search-in" data-input="threadSearch" class="flex-1 min-w-0 h-8 bg-transparent text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Find messages in this thread…" autocomplete="off">
             <span id="th-search-cnt" class="font-mono text-[10px] text-zinc-400 shrink-0">0/0</span>
@@ -201,8 +235,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
           </div>
 
           <div id="stream-wrap" class="relative flex-1 min-h-0 flex flex-col">
-            <div id="stream" class="flex-1 overflow-y-auto px-4 md:px-8 py-5 space-y-3 scroll-smooth"></div>
-            <button id="jump-bottom" data-act="scrollBottom" class="hidden absolute bottom-3 right-5 z-20 h-8 px-3 rounded-full bg-zinc-900/95 border border-white/[0.14] text-[11px] font-semibold text-zinc-100 shadow-xl items-center gap-1.5 hover:bg-zinc-800 transition" aria-label="Scroll to latest"><i data-lucide="arrow-down" class="w-3.5 h-3.5 text-accent"></i><span>Latest</span></button>
+            <div id="stream" class="flex-1 overflow-y-auto px-3.5 md:px-8 py-5 space-y-3 scroll-smooth"></div>
+            <button id="jump-bottom" data-act="scrollBottom" class="hidden lux-modal absolute bottom-3 right-5 z-20 h-8 px-3 rounded-full text-[11px] font-semibold text-zinc-100 items-center gap-1.5 hover:bg-white/10 transition" aria-label="Scroll to latest"><i data-lucide="arrow-down" class="w-3.5 h-3.5 text-accent"></i><span>Latest</span></button>
             <div id="drop-overlay" class="hidden pointer-events-none absolute inset-3 z-20 rounded-3xl border-2 border-dashed border-accent bg-black/75 backdrop-blur-md items-center justify-center text-center p-6">
               <div class="space-y-1.5">
                 <span class="w-12 h-12 mx-auto rounded-2xl bg-accent/20 text-accent grid place-items-center"><i data-lucide="upload-cloud" class="w-6 h-6"></i></span>
@@ -212,8 +246,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </div>
           </div>
 
-          <div id="smart-chips" class="hidden mx-4 md:mx-8 mb-2 flex-wrap items-center gap-1.5"></div>
-          <div id="mention-box" class="hidden mx-4 md:mx-8 mb-2 p-1.5 rounded-2xl bg-zinc-900/95 border border-white/[0.12] shadow-2xl max-h-40 overflow-y-auto flex-col gap-0.5"></div>
+          <div id="smart-chips" class="hidden px-3.5 md:px-8 pb-2 pt-1 overflow-x-auto no-scrollbar items-center gap-1.5 whitespace-nowrap"></div>
+          <div id="mention-box" class="hidden mx-4 md:mx-8 mb-2 p-1.5 rounded-2xl lux-modal max-h-40 overflow-y-auto flex-col gap-0.5"></div>
 
           <div id="edit-pill" class="hidden mx-4 md:mx-8 mb-2 px-3.5 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs items-center justify-between gap-3 shadow-lg">
             <span class="flex items-center gap-2.5 min-w-0">
@@ -223,7 +257,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <button class="w-6 h-6 rounded-full grid place-items-center text-amber-200 hover:text-white hover:bg-white/10" data-act="cancelEdit" aria-label="Cancel edit"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
           </div>
 
-          <div id="reply-pill" class="hidden mx-4 md:mx-8 mb-2 px-3.5 py-2 rounded-2xl bg-zinc-900/90 border border-white/[0.09] text-xs items-center justify-between gap-3 shadow-lg">
+          <div id="reply-pill" class="hidden mx-4 md:mx-8 mb-2 px-3.5 py-2 rounded-2xl bg-[#10121b]/90 border border-white/[0.10] text-xs items-center justify-between gap-3 shadow-lg">
             <span class="flex items-center gap-2.5 min-w-0">
               <i data-lucide="corner-up-left" class="w-3.5 h-3.5 text-accent shrink-0"></i>
               <span id="reply-t" class="truncate text-zinc-300"></span>
@@ -231,7 +265,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <button class="w-6 h-6 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/10" data-act="cancelReply" aria-label="Cancel reply"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
           </div>
 
-          <div class="px-4 md:px-8 pb-4 pt-2 border-t border-white/[0.06] bg-black/50 backdrop-blur-lg safe-b">
+          <div class="px-3.5 md:px-8 pb-4 pt-2 border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-xl safe-b">
             <div id="rec-bar" class="hidden mb-2.5 rounded-2xl bg-rose-950/50 border border-rose-500/30 px-3.5 py-2.5 items-center justify-between gap-3 text-xs">
               <span class="flex items-center gap-3 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0"></span>
@@ -240,17 +274,17 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
               </span>
               <span class="flex items-center gap-1.5 shrink-0">
                 <button class="h-8 px-3 rounded-full bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-zinc-200 transition-colors" data-act="recCancel">Cancel</button>
-                <button class="h-8 px-3.5 rounded-full bg-accent hover:brightness-110 text-xs font-semibold text-white transition" data-act="recSend">Send voice</button>
+                <button class="btn-primary h-8 px-3.5 rounded-full text-xs font-semibold" data-act="recSend">Send voice</button>
               </span>
             </div>
 
-            <div class="flex items-center gap-1.5 rounded-full border border-white/[0.11] bg-zinc-900/90 pl-1.5 pr-1.5 py-1.5 shadow-xl shadow-black/40 focus-within:border-white/25 transition-colors">
+            <div class="flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-[#10121b]/90 pl-1.5 pr-1.5 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_40px_-14px_rgba(0,0,0,.85)] focus-within:border-white/25 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_0_30px_-10px_rgb(var(--ac-rgb)/.3)] transition-all">
               <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="compose" aria-haspopup="menu" aria-expanded="false" title="Attach and quick replies" aria-label="Attach and quick replies"><i data-lucide="plus" class="w-4 h-4"></i></button>
               <input type="file" id="file" class="hidden">
               <input id="msg" data-enter="send" data-input="sentiment" class="flex-1 min-w-0 bg-transparent px-1 text-[13.5px] text-white focus:outline-none placeholder:text-zinc-500" placeholder="Message…" autocomplete="off">
               <span id="sent" class="hidden text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0"></span>
               <button id="mic" class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="mic" title="Voice note" aria-label="Record voice note"><i data-lucide="mic" class="w-4 h-4"></i></button>
-              <button class="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-full bg-accent hover:brightness-110 text-xs font-semibold text-white shadow-md shadow-accent/25 transition shrink-0" data-act="send">
+              <button class="btn-primary inline-flex items-center justify-center gap-1.5 h-9 px-3.5 sm:px-4 rounded-full text-xs font-semibold shrink-0" data-act="send">
                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
                 <span class="hidden sm:inline">Send</span>
               </button>
@@ -259,14 +293,14 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </div>
 
         <!-- Right Conversation Details Drawer -->
-        <aside id="info" class="hidden [&.open]:flex flex-col w-80 max-w-[88vw] shrink-0 border-l border-white/[0.08] bg-black/95 backdrop-blur-2xl overflow-y-auto absolute inset-y-0 right-0 z-30 lg:static lg:z-auto shadow-2xl lg:shadow-none"></aside>
+        <aside id="info" class="hidden [&.open]:flex flex-col w-80 max-w-[88vw] shrink-0 border-l border-white/[0.08] bg-[#07080f]/95 backdrop-blur-2xl overflow-y-auto absolute inset-y-0 right-0 z-30 lg:static lg:z-auto shadow-2xl lg:shadow-none"></aside>
       </div>
     </section>
 
     <!-- REELS VIEW -->
-    <section id="v-reels" class="view absolute inset-0 hidden flex items-center justify-center p-0 md:p-6 bg-black overflow-hidden">
-      <div class="pointer-events-none absolute inset-0 opacity-35" style="background:radial-gradient(circle at 50% 35%, rgba(221,42,123,.18), transparent 55%), radial-gradient(circle at 60% 70%, rgba(0,149,246,.15), transparent 50%)"></div>
-      <div id="reel-stage" class="relative isolate w-full md:w-[390px] h-full md:h-[min(86vh,780px)] overflow-hidden md:rounded-[28px] md:border md:border-white/[0.12] bg-zinc-950 select-none touch-pan-x shadow-[0_25px_70px_-15px_rgba(0,0,0,0.9)]">
+    <section id="v-reels" class="reel-aura view absolute inset-0 hidden flex items-center justify-center p-0 md:p-6 overflow-hidden">
+      <div class="pointer-events-none absolute inset-0 opacity-50" style="background:radial-gradient(circle at 50% 35%, rgba(221,42,123,.22), transparent 52%), radial-gradient(circle at 60% 70%, rgba(0,149,246,.18), transparent 48%)"></div>
+      <div id="reel-stage" class="relative isolate w-full md:w-[396px] h-full md:h-[min(86vh,790px)] overflow-hidden md:rounded-[32px] md:border md:border-white/[0.14] bg-[#06070c] select-none touch-pan-x shadow-[0_34px_95px_-18px_rgba(0,0,0,.95),0_0_80px_-28px_rgb(var(--ac-rgb)/.35)]">
         <div id="reel-bg" class="absolute inset-0 transition-[filter] duration-300">
           <video id="reel-vid" class="hidden absolute inset-0 w-full h-full object-cover" loop playsinline muted></video>
           <img id="reel-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
@@ -275,18 +309,18 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
           <div class="absolute inset-0 grid place-items-center font-mono text-8xl font-semibold tracking-tighter text-white/[0.12]" id="reel-n"></div>
         </div>
 
-        <div class="absolute inset-x-0 top-0 z-10 p-3.5 bg-gradient-to-b from-black/80 via-black/30 to-transparent">
-          <div class="h-0.5 rounded-full bg-white/25 mb-3 overflow-hidden"><div id="reel-bar" class="h-full bg-white origin-left"></div></div>
+        <div class="absolute inset-x-0 top-0 z-10 p-4 bg-gradient-to-b from-black/80 via-black/35 to-transparent">
+          <div class="h-0.5 rounded-full bg-white/25 mb-3.5 overflow-hidden"><div id="reel-bar" class="h-full bg-white origin-left shadow-[0_0_10px_#fff]"></div></div>
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm font-bold tracking-tight text-white drop-shadow">Reels</span>
             <div class="flex items-center gap-2">
-              <button class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-md border border-white/15 grid place-items-center text-white hover:bg-black/70 transition" data-act="reelNew" title="Upload reel" aria-label="Upload reel"><i data-lucide="plus" class="w-4 h-4"></i></button>
-              <button class="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-xs font-semibold text-white hover:bg-black/70 transition" data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false" aria-label="AR filter">
+              <button class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 grid place-items-center text-white hover:bg-white/15 transition" data-act="reelNew" title="Upload reel" aria-label="Upload reel"><i data-lucide="plus" class="w-4 h-4"></i></button>
+              <button class="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 text-xs font-semibold text-white hover:bg-white/15 transition" data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false" aria-label="AR filter">
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i>
                 <span id="filter-lbl">Normal</span>
                 <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
               </button>
-              <div class="inline-flex items-center rounded-full bg-black/50 backdrop-blur-md border border-white/15 p-0.5" role="group" aria-label="Navigate reels">
+              <div class="inline-flex items-center rounded-full bg-black/45 backdrop-blur-xl border border-white/15 p-0.5" role="group" aria-label="Navigate reels">
                 <button class="w-7 h-7 rounded-full grid place-items-center text-white hover:bg-white/15 transition" data-act="reelPrev" title="Previous reel" aria-label="Previous reel"><i data-lucide="chevron-up" class="w-4 h-4"></i></button>
                 <button class="w-7 h-7 rounded-full grid place-items-center text-white hover:bg-white/15 transition" data-act="reelNext" title="Next reel" aria-label="Next reel"><i data-lucide="chevron-down" class="w-4 h-4"></i></button>
               </div>
@@ -295,27 +329,27 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </div>
 
         <div id="reel-pause" class="hidden absolute inset-0 z-10 grid place-items-center pointer-events-none">
-          <span class="w-16 h-16 rounded-full bg-black/60 backdrop-blur-md border border-white/15 grid place-items-center text-white shadow-xl"><i data-lucide="pause" class="w-6 h-6"></i></span>
+          <span class="w-16 h-16 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 grid place-items-center text-white shadow-2xl"><i data-lucide="pause" class="w-6 h-6"></i></span>
         </div>
 
-        <div class="absolute inset-x-0 bottom-0 z-10 p-5 pt-20 bg-gradient-to-t from-black/90 via-black/45 to-transparent flex items-end justify-between gap-4" id="reel-ui"></div>
+        <div class="absolute inset-x-0 bottom-0 z-10 p-5 pt-24 bg-gradient-to-t from-black/95 via-black/50 to-transparent flex items-end justify-between gap-4" id="reel-ui"></div>
       </div>
     </section>
 
     <!-- AI ASSISTANT VIEW -->
-    <section id="v-ai" class="view absolute inset-0 hidden flex flex-col bg-zinc-950">
-      <header class="h-16 px-4 md:px-8 flex items-center justify-between gap-3 border-b border-white/[0.08] shrink-0 bg-black/80 backdrop-blur-xl">
+    <section id="v-ai" class="ai-aura view absolute inset-0 hidden flex flex-col">
+      <header class="h-16 px-4 md:px-8 flex items-center justify-between gap-3 border-b border-white/[0.07] shrink-0 bg-[#07080f]/80 backdrop-blur-2xl">
         <div class="flex items-center gap-3 min-w-0">
-          <span class="w-9 h-9 rounded-xl bg-accent/15 border border-accent/30 text-accent grid place-items-center shrink-0"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
+          <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent/25 to-indigo-500/20 border border-accent/30 text-accent grid place-items-center shrink-0 shadow-[0_0_20px_-6px_rgb(var(--ac-rgb)/.6)]"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
           <div class="min-w-0">
             <div class="flex items-center gap-2">
               <h1 class="text-base md:text-lg font-bold tracking-tight text-white truncate">AI Assistant</h1>
-              <span id="ai-status" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-[10px] font-semibold text-zinc-300 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span><span>Local</span></span>
+              <span id="ai-status" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10px] font-semibold text-zinc-300 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span><span>Local</span></span>
             </div>
             <p id="ai-sub" class="text-[11px] text-zinc-400 truncate">On-device simulation · indexed strictly from your local threads</p>
           </div>
         </div>
-        <button class="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white/[0.07] hover:bg-white/[0.13] border border-white/[0.08] text-xs font-semibold text-white transition shrink-0" data-act="menu" data-arg="aiTools" aria-haspopup="menu" aria-expanded="false">
+        <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-semibold text-white shrink-0" data-act="menu" data-arg="aiTools" aria-haspopup="menu" aria-expanded="false">
           <i data-lucide="wand-sparkles" class="w-3.5 h-3.5 text-accent"></i>
           <span>Tools</span>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
@@ -324,139 +358,151 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
       <div id="ai-log" class="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4 max-w-3xl w-full mx-auto"></div>
 
-      <div class="border-t border-white/[0.08] bg-black/75 backdrop-blur-xl px-4 md:px-8 py-4 safe-b">
+      <div class="border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-2xl px-4 md:px-8 py-4 safe-b">
         <div class="max-w-3xl mx-auto space-y-3">
-          <div class="flex flex-wrap gap-1.5">
-            <button class="h-8 px-3.5 rounded-full bg-white/[0.06] hover:bg-white/[0.13] border border-white/[0.07] text-xs font-medium text-zinc-200 transition" data-act="aiRun" data-arg="Summarize all conversations">Summarize all</button>
-            <button class="h-8 px-3.5 rounded-full bg-white/[0.06] hover:bg-white/[0.13] border border-white/[0.07] text-xs font-medium text-zinc-200 transition" data-act="aiRun" data-arg="Find action items">Action items</button>
-            <button class="h-8 px-3.5 rounded-full bg-white/[0.06] hover:bg-white/[0.13] border border-white/[0.07] text-xs font-medium text-zinc-200 transition" data-act="aiRun" data-arg="Draft a reply to the active conversation">Draft reply</button>
-            <button class="h-8 px-3.5 rounded-full bg-white/[0.06] hover:bg-white/[0.13] border border-white/[0.07] text-xs font-medium text-zinc-200 transition" data-act="aiRun" data-arg="Search project documents">Search “project documents”</button>
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Summarize all conversations">Summarize all</button>
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Find action items">Action items</button>
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Draft a reply to the active conversation">Draft reply</button>
+            <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Search project documents">Search “project documents”</button>
           </div>
-          <div class="flex items-center gap-2 rounded-2xl bg-zinc-900 border border-white/[0.1] focus-within:border-accent/60 p-1.5 pl-4 shadow-xl shadow-black/40 transition-colors">
+          <div class="flex items-center gap-2 rounded-full bg-[#10121b]/90 border border-white/[0.12] focus-within:border-accent/60 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.1),0_0_28px_-10px_rgb(var(--ac-rgb)/.35)] p-1.5 pl-4 shadow-[inset_0_1px_0_rgba(255,255,255,.07),0_18px_40px_-14px_rgba(0,0,0,.85)] transition-all">
             <input id="ai-in" data-enter="aiSend" class="flex-1 min-w-0 bg-transparent text-[13.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Ask about your conversations, or search by meaning…" autocomplete="off">
-            <button id="ai-send" class="h-9 px-4 rounded-xl bg-accent hover:brightness-110 text-xs font-semibold text-white transition shrink-0" data-act="aiSend">Send</button>
-            <button id="ai-stop" class="hidden h-9 px-3.5 rounded-xl bg-white/[0.1] hover:bg-white/[0.18] text-xs font-semibold text-white items-center gap-1.5 transition shrink-0" data-act="aiStop"><i data-lucide="square" class="w-3 h-3 fill-current"></i>Stop</button>
+            <button id="ai-send" class="btn-primary h-9 px-4 rounded-full text-xs font-semibold shrink-0" data-act="aiSend">Send</button>
+            <button id="ai-stop" class="btn-ghost hidden h-9 px-3.5 rounded-full text-xs font-semibold text-white items-center gap-1.5 shrink-0" data-act="aiStop"><i data-lucide="square" class="w-3 h-3 fill-current"></i>Stop</button>
           </div>
         </div>
       </div>
     </section>
 
     <!-- SECURITY VAULT VIEW -->
-    <section id="v-vault" class="view absolute inset-0 hidden overflow-y-auto bg-zinc-950">
+    <section id="v-vault" class="vault-aura view absolute inset-0 hidden overflow-y-auto">
       <div class="max-w-3xl mx-auto p-5 md:p-8 space-y-5 pb-12">
         <div>
           <h1 class="text-2xl font-extrabold tracking-tight text-white">Security Vault</h1>
           <p class="text-xs text-zinc-400 mt-1">Locks, keys, ephemeral timers and privacy controls for this enclave.</p>
         </div>
 
-        <div class="rounded-2xl bg-gradient-to-br from-emerald-500/10 via-zinc-900/90 to-zinc-900 border border-emerald-500/25 p-5 flex flex-wrap items-center justify-between gap-4 shadow-xl shadow-black/30">
+        <div class="lux-card rounded-[22px] bg-gradient-to-br from-emerald-500/15 via-emerald-950/20 to-[#0b0d14] border border-emerald-400/25 p-5 flex flex-wrap items-center justify-between gap-4 shadow-[inset_0_1px_0_rgba(52,211,153,.2),0_20px_50px_-20px_rgba(16,185,129,.25)]">
           <div class="flex items-center gap-3.5 min-w-0">
-            <span class="w-11 h-11 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 text-emerald-400 grid place-items-center shrink-0">
+            <span class="w-11 h-11 rounded-2xl border border-emerald-400/35 bg-emerald-500/15 text-emerald-300 grid place-items-center shrink-0 shadow-[0_0_24px_-4px_rgba(52,211,153,.5)]">
               <i data-lucide="shield-check" class="w-5 h-5"></i>
             </span>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-white">Vault unlocked</div>
+              <div class="text-sm font-bold text-white flex items-center gap-2"><span>Vault unlocked</span><span class="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/25 text-[10px] font-semibold text-emerald-300">Active</span></div>
               <div class="text-xs text-zinc-400 mt-0.5">Lock immediately to require your passkey or passcode again.</div>
             </div>
           </div>
-          <button class="inline-flex items-center gap-2 h-9 px-4 rounded-full bg-accent hover:brightness-110 text-xs font-semibold text-white shadow-lg shadow-accent/25 transition" data-act="lock">
+          <button class="btn-primary inline-flex items-center gap-2 h-9 px-4 rounded-full text-xs font-semibold shrink-0" data-act="lock">
             <i data-lucide="lock" class="w-3.5 h-3.5"></i>
             <span>Lock now</span>
           </button>
         </div>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-access">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Access control</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Launch lock, idle timeout and passcode</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-accent/15 border border-accent/25 text-accent grid place-items-center shrink-0"><i data-lucide="key-round" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Access control</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Launch lock, idle timeout and passcode</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-access" class="px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Lock on launch</div><div class="text-xs text-zinc-400 mt-0.5">Show the lock screen whenever the app opens.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="lockLaunch" data-k="lockLaunch" aria-label="Lock on launch"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="lockLaunch" data-k="lockLaunch" aria-label="Lock on launch"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Auto-lock when idle</div><div class="text-xs text-zinc-400 mt-0.5">Lock after no input for the chosen duration.</div></div>
-              <select data-change="idle" id="idle" class="h-9 w-28 rounded-xl bg-zinc-800 border border-white/[0.08] px-3 text-xs font-medium text-white focus:outline-none focus:border-accent"><option value="0">Never</option><option value="1">1 min</option><option value="5">5 min</option><option value="15">15 min</option></select>
+              <select data-change="idle" id="idle" class="lux-input h-9 w-28 rounded-xl px-3 text-xs font-medium text-white focus:outline-none"><option value="0" class="bg-zinc-900">Never</option><option value="1" class="bg-zinc-900">1 min</option><option value="5" class="bg-zinc-900">5 min</option><option value="15" class="bg-zinc-900">15 min</option></select>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Passcode</div><div id="pin-state" class="text-xs text-zinc-400 mt-0.5"></div></div>
               <div class="flex flex-wrap items-center gap-2">
-                <input id="pin-in" type="password" inputmode="numeric" class="h-9 w-28 rounded-xl bg-zinc-800 border border-white/[0.08] px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="New code" autocomplete="off">
-                <button class="h-9 px-3.5 rounded-xl bg-white/[0.09] hover:bg-white/[0.16] text-xs font-semibold text-white transition" data-act="savePin">Save</button>
-                <button class="h-9 px-3.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.12] text-xs font-semibold text-zinc-300 transition" data-act="removePin">Remove</button>
+                <input id="pin-in" type="password" inputmode="numeric" class="lux-input h-9 w-28 rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="New code" autocomplete="off">
+                <button class="btn-ghost h-9 px-3.5 rounded-xl text-xs font-semibold text-white" data-act="savePin">Save</button>
+                <button class="h-9 px-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.10] border border-white/[0.07] text-xs font-semibold text-zinc-300 transition" data-act="removePin">Remove</button>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-crypto">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Encryption &amp; privacy</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Message encryption, vanish mode and session key</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 text-emerald-300 grid place-items-center shrink-0"><i data-lucide="lock" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Encryption &amp; privacy</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Message encryption, vanish mode and session key</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-crypto" class="hidden px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">End-to-end encryption</div><div class="text-xs text-zinc-400 mt-0.5">Encrypt peer DMs with ECDH P-256 + AES-GCM 256 zero-knowledge ciphertexts.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="e2ee" data-k="e2ee" aria-label="End-to-end encryption"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="e2ee" data-k="e2ee" aria-label="End-to-end encryption"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Read receipts</div><div class="text-xs text-zinc-400 mt-0.5">Share double-check seen status with peer DM contacts.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="receipts" data-k="receipts" aria-label="Read receipts"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="receipts" data-k="receipts" aria-label="Read receipts"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Vanish mode</div><div class="text-xs text-zinc-400 mt-0.5">Auto-expire new outgoing messages after the selected timer.</div></div>
               <div class="flex items-center gap-2 shrink-0">
-                <select id="vanish-sec" data-change="vanishSec" class="h-8 rounded-xl bg-zinc-800 border border-white/[0.08] px-2.5 text-xs font-medium text-white focus:outline-none focus:border-accent" aria-label="Vanish duration">
-                  <option value="6">6 sec</option>
-                  <option value="60">1 min</option>
-                  <option value="3600">1 hour</option>
+                <select id="vanish-sec" data-change="vanishSec" class="lux-input h-8 rounded-xl px-2.5 text-xs font-medium text-white focus:outline-none" aria-label="Vanish duration">
+                  <option value="6" class="bg-zinc-900">6 sec</option>
+                  <option value="60" class="bg-zinc-900">1 min</option>
+                  <option value="3600" class="bg-zinc-900">1 hour</option>
                 </select>
-                <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="vanish" data-k="vanish" aria-label="Vanish mode"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+                <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="vanish" data-k="vanish" aria-label="Vanish mode"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
               </div>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">ECDH identity &amp; session key</div><div id="key-fp" class="text-xs font-mono text-zinc-400 mt-0.5 truncate">Generating…</div></div>
+              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">ECDH identity &amp; session key</div><div id="key-fp" class="text-xs font-mono text-emerald-300/90 mt-0.5 truncate">Generating…</div></div>
               <div class="flex items-center gap-2 shrink-0">
-                <button class="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-white transition" data-act="copyFp"><i data-lucide="copy" class="w-3.5 h-3.5"></i>Copy</button>
-                <button class="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-white transition" data-act="rotateKey"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>Rotate</button>
+                <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl text-xs font-semibold text-white" data-act="copyFp"><i data-lucide="copy" class="w-3.5 h-3.5"></i>Copy</button>
+                <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl text-xs font-semibold text-white" data-act="rotateKey"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>Rotate</button>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-audit">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Audit log</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Recent security events recorded on this device</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-400/25 text-indigo-300 grid place-items-center shrink-0"><i data-lucide="scroll-text" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Audit log</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Recent security events recorded on this device</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-audit" class="hidden border-t border-white/[0.07]">
-            <div class="flex justify-end px-5 py-2.5 bg-black/30"><button class="h-8 px-3 rounded-lg bg-white/[0.07] hover:bg-white/[0.14] text-xs font-semibold text-zinc-200 transition" data-act="auditClear">Clear log</button></div>
+            <div class="flex justify-end px-5 py-2.5 bg-black/35"><button class="btn-ghost h-8 px-3 rounded-lg text-xs font-semibold text-zinc-200" data-act="auditClear">Clear log</button></div>
             <ul id="audit" class="divide-y divide-white/[0.06] border-t border-white/[0.07] font-mono text-[11px] text-zinc-400 max-h-64 overflow-y-auto"></ul>
           </div>
         </section>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-rose-500/20 overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-rose-500/[0.04] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-danger">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-rose-400">Danger zone</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Irreversible local data actions</span>
+        <section class="lux-card rounded-[22px] border border-rose-500/25 overflow-hidden">
+          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-rose-500/[0.05] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-danger">
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-400/25 text-rose-400 grid place-items-center shrink-0"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-rose-400">Danger zone</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Irreversible local data actions</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-danger" class="hidden px-5 border-t border-white/[0.07]">
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-rose-400">Purge enclave</div><div class="text-xs text-zinc-400 mt-0.5">Erase all conversations, stories, settings and logs on this device.</div></div>
-              <button class="h-9 px-4 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-xs font-semibold text-rose-300 transition shrink-0" data-act="purge">Purge</button>
+              <button class="h-9 px-4 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/35 text-xs font-semibold text-rose-200 transition shrink-0" data-act="purge">Purge</button>
             </div>
           </div>
         </section>
@@ -464,18 +510,21 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     </section>
 
     <!-- SETTINGS VIEW -->
-    <section id="v-settings" class="view absolute inset-0 hidden overflow-y-auto bg-zinc-950">
+    <section id="v-settings" class="settings-aura view absolute inset-0 hidden overflow-y-auto">
       <div class="max-w-3xl mx-auto p-5 md:p-8 space-y-5 pb-12">
         <div>
           <h1 class="text-2xl font-extrabold tracking-tight text-white">Settings</h1>
           <p class="text-xs text-zinc-400 mt-1">Overview, appearance, accessibility and runtime diagnostics.</p>
         </div>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-overview">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Workspace overview</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Activity metrics from your local storage</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-accent/15 border border-accent/25 text-accent grid place-items-center shrink-0"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Workspace overview</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Activity metrics from your local storage</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
@@ -483,16 +532,19 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4"></div>
             <div class="py-5">
               <div class="text-xs font-medium text-zinc-400 mb-3">Messages per conversation</div>
-              <div id="bars" class="space-y-2.5"></div>
+              <div id="bars" class="space-y-3"></div>
             </div>
           </div>
         </section>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-look">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Appearance</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Theme accent colour</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-400/25 text-pink-300 grid place-items-center shrink-0"><i data-lucide="palette" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Appearance</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Theme accent colour</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
@@ -503,75 +555,81 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Ambient chat wallpaper</div><div class="text-xs text-zinc-400 mt-0.5">Subtle mesh gradient and micro-dot pattern behind active messages.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="wallpaper" data-k="wallpaper" aria-label="Ambient chat wallpaper"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="wallpaper" data-k="wallpaper" aria-label="Ambient chat wallpaper"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">AI smart reply chips</div><div class="text-xs text-zinc-400 mt-0.5">Suggested one-tap replies above the message bar.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="smartReplies" data-k="smartReplies" aria-label="AI smart reply chips"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="smartReplies" data-k="smartReplies" aria-label="AI smart reply chips"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Desktop notifications</div><div class="text-xs text-zinc-400 mt-0.5">Show browser alerts for incoming messages while backgrounded.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="notify" data-k="notify" aria-label="Desktop notifications"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="notify" data-k="notify" aria-label="Desktop notifications"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
           </div>
         </section>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-a11y">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Accessibility</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Colour, contrast, motion and spatial audio</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-400/25 text-amber-300 grid place-items-center shrink-0"><i data-lucide="eye" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Accessibility</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Colour, contrast, motion and spatial audio</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-a11y" class="hidden px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Protanopia filter</div><div class="text-xs text-zinc-400 mt-0.5">Re-maps colours for red-weak vision.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="prot" data-k="prot" aria-label="Protanopia filter"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="prot" data-k="prot" aria-label="Protanopia filter"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">High contrast</div><div class="text-xs text-zinc-400 mt-0.5">Raises contrast and border visibility.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="hc" data-k="hc" aria-label="High contrast"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="hc" data-k="hc" aria-label="High contrast"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Reduced motion</div><div class="text-xs text-zinc-400 mt-0.5">Disables animations and transitions.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="rm" data-k="rm" aria-label="Reduced motion"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="rm" data-k="rm" aria-label="Reduced motion"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
             <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
               <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Spatial audio cues</div><div class="text-xs text-zinc-400 mt-0.5">Plays a left-to-right panned tone when enabled.</div></div>
-              <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="spatial" data-k="spatial" aria-label="Spatial audio cues"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+              <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="spatial" data-k="spatial" aria-label="Spatial audio cues"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
           </div>
         </section>
 
-        <section class="rounded-2xl bg-zinc-900/65 border border-white/[0.08] overflow-hidden">
+        <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-diag">
-            <span class="min-w-0">
-              <span class="block text-sm font-semibold text-white">Diagnostics</span>
-              <span class="block text-xs text-zinc-400 mt-0.5">Wiring audit, runtime checks and latency benchmark</span>
+            <span class="flex items-center gap-3.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 text-emerald-300 grid place-items-center shrink-0"><i data-lucide="terminal" class="w-4 h-4"></i></span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-white">Diagnostics</span>
+                <span class="block text-xs text-zinc-400 mt-0.5">Wiring audit, runtime checks and latency benchmark</span>
+              </span>
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-diag" class="hidden px-5 border-t border-white/[0.07]">
             <div class="py-4 space-y-3">
-              <div class="grid grid-cols-2 gap-2">
-                <button class="h-9 px-3 rounded-xl bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.06] text-xs font-semibold text-zinc-100 transition" data-act="dWiring">Wiring audit</button>
-                <button class="h-9 px-3 rounded-xl bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.06] text-xs font-semibold text-zinc-100 transition" data-act="dSignal">Reactive signal test</button>
-                <button class="h-9 px-3 rounded-xl bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.06] text-xs font-semibold text-zinc-100 transition" data-act="dDeps">Dependency check</button>
-                <button class="h-9 px-3 rounded-xl bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.06] text-xs font-semibold text-zinc-100 transition" data-act="dTelemetry">Runtime telemetry</button>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button class="btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-zinc-100" data-act="dWiring">Wiring audit</button>
+                <button class="btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-zinc-100" data-act="dSignal">Reactive signal test</button>
+                <button class="btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-zinc-100" data-act="dDeps">Dependency check</button>
+                <button class="btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-zinc-100" data-act="dTelemetry">Runtime telemetry</button>
               </div>
-              <pre id="diag" class="hidden font-mono text-[11px] text-emerald-400 bg-black/70 border border-white/[0.08] rounded-xl p-3.5 max-h-40 overflow-auto whitespace-pre-wrap"></pre>
+              <pre id="diag" class="hidden font-mono text-[11px] leading-relaxed text-emerald-300 bg-[#04060a]/90 border border-white/[0.08] rounded-2xl p-4 max-h-44 overflow-auto whitespace-pre-wrap shadow-inner"></pre>
             </div>
             <div class="py-4 border-t border-white/[0.07] space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="text-sm font-semibold text-zinc-100">Input latency benchmark</div>
                 <div class="font-mono text-[11px] text-zinc-400">Last <span id="b-last" class="text-white font-semibold">–</span> ms · Best <span id="b-best" class="text-accent font-semibold">–</span> ms</div>
               </div>
-              <div id="b-area" class="relative h-36 rounded-xl border border-white/[0.08] bg-black/70 overflow-hidden">
+              <div id="b-area" class="relative h-36 rounded-2xl border border-white/[0.08] bg-[#04060a]/90 overflow-hidden">
                 <span id="b-msg" class="absolute inset-0 grid place-items-center px-4 text-center text-xs text-zinc-500">Press start, then click the target as fast as you can.</span>
                 <button id="b-target" data-act="bhit" class="hidden absolute w-10 h-10 rounded-full bg-accent shadow-lg shadow-accent/50 ring-4 ring-accent/25 hover:scale-105 transition-transform" aria-label="Target"></button>
               </div>
-              <button class="h-9 w-full rounded-xl bg-accent hover:brightness-110 text-xs font-semibold text-white transition" data-act="bench">Start round</button>
+              <button class="btn-primary h-9 w-full rounded-xl text-xs font-semibold" data-act="bench">Start round</button>
             </div>
           </div>
         </section>
@@ -580,36 +638,41 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </main>
 
   <!-- MOBILE BOTTOM DOCK -->
-  <nav id="dock" class="md:hidden flex items-center border-t border-white/[0.08] bg-black/95 backdrop-blur-xl safe-b shrink-0" aria-label="Primary"></nav>
+  <nav id="dock" class="md:hidden flex items-center border-t border-white/[0.08] bg-[#070810]/90 backdrop-blur-2xl safe-b shrink-0 shadow-[0_-12px_35px_rgba(0,0,0,.65)]" aria-label="Primary"></nav>
 </div>
 
 <!-- MODALS -->
-<div id="m-lock" class="modal fixed inset-0 z-[80] hidden [&.open]:flex items-center justify-center bg-black/90 backdrop-blur-2xl p-4">
-  <div class="relative w-full max-w-sm rounded-3xl bg-zinc-900/90 border border-white/[0.1] p-7 text-center space-y-5 shadow-2xl shadow-black">
-    <div id="lock-ring" class="w-20 h-20 mx-auto rounded-full bg-accent/15 border border-accent/30 grid place-items-center text-accent shadow-[0_0_35px_-5px_var(--ac)]">
+<div id="m-lock" class="modal lock-backdrop fixed inset-0 z-[80] hidden [&.open]:flex items-center justify-center backdrop-blur-2xl p-4">
+  <div class="lux-modal relative w-full max-w-[360px] rounded-[30px] p-8 text-center space-y-5">
+    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.09] text-[10px] font-semibold tracking-wider uppercase text-zinc-300">
+      <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i>
+      <span>Zero-Knowledge Enclave</span>
+    </div>
+    <div id="lock-ring" class="w-20 h-20 mx-auto rounded-full bg-gradient-to-b from-accent/25 to-accent/5 border border-accent/40 grid place-items-center text-accent shadow-[0_0_45px_-6px_var(--ac),inset_0_1px_0_rgba(255,255,255,.2)] ring-4 ring-accent/10">
       <i data-lucide="fingerprint" class="w-8 h-8"></i>
     </div>
     <div>
-      <h2 class="text-lg font-extrabold tracking-tight text-white">Vault locked</h2>
+      <h2 class="text-xl font-extrabold tracking-tight text-white">Vault locked</h2>
       <p id="lock-sub" class="text-xs text-zinc-400 mt-1.5 leading-relaxed">Verify to open your private enclave.</p>
     </div>
-    <input id="lock-pin" data-enter="unlock" type="password" inputmode="numeric" class="hidden h-11 w-full rounded-xl bg-black/60 border border-white/[0.1] px-4 text-center text-sm tracking-widest text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Passcode" autocomplete="off">
-    <button class="btn-ac w-full h-11 rounded-xl bg-accent hover:brightness-110 text-xs font-bold text-white inline-flex items-center justify-center gap-2 shadow-lg shadow-accent/25 transition" data-act="unlock">
+    <input id="lock-pin" data-enter="unlock" type="password" inputmode="numeric" class="lux-input hidden h-11 w-full rounded-xl px-4 text-center text-sm tracking-widest text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Passcode" autocomplete="off">
+    <button class="btn-ac btn-primary w-full h-11 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2" data-act="unlock">
       <i data-lucide="unlock" class="w-4 h-4"></i>
       <span id="lock-btn">Verify passkey</span>
     </button>
+    <p class="text-[10px] font-mono text-zinc-500">ECDH P-256 · AES-GCM-256</p>
   </div>
 </div>
 
 <div id="m-contact" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-  <div class="w-full max-w-sm rounded-3xl bg-zinc-900/95 border border-white/[0.1] p-6 space-y-4 shadow-2xl">
+  <div class="lux-modal w-full max-w-sm rounded-[28px] p-6 space-y-4">
     <div class="flex justify-between items-center">
-      <h3 class="text-base font-bold text-white">New conversation</h3>
+      <h3 class="text-base font-bold tracking-tight text-white">New conversation</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-contact" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
-    <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/60 border border-white/[0.08]">
-      <button id="ctab-dm" data-act="contactTab" data-arg="dm" class="h-8 rounded-xl text-xs font-semibold bg-white text-black transition">Direct DM</button>
-      <button id="ctab-grp" data-act="contactTab" data-arg="group" class="h-8 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition">Group Chat</button>
+    <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/[0.08]">
+      <button id="ctab-dm" data-act="contactTab" data-arg="dm" class="h-8 rounded-xl text-xs font-semibold lux-tab-on transition-all">Direct DM</button>
+      <button id="ctab-grp" data-act="contactTab" data-arg="group" class="h-8 rounded-xl text-xs font-semibold lux-tab-off transition-all">Group Chat</button>
     </div>
     <div id="dm-panel" class="space-y-3.5">
       <div id="dm-users" class="hidden space-y-2">
@@ -620,65 +683,65 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         <div id="dm-users-list" class="max-h-40 overflow-y-auto space-y-1.5 pr-1"></div>
         <div class="flex items-center gap-2 pt-1"><div class="h-px flex-1 bg-white/[0.08]"></div><span class="text-[10px] uppercase tracking-wider text-zinc-500">or AI / local contact</span><div class="h-px flex-1 bg-white/[0.08]"></div></div>
       </div>
-      <input id="c-name" data-enter="addContact" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Contact name" autocomplete="off">
-      <select id="c-folder" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3 text-[13px] text-white focus:outline-none focus:border-accent"><option value="personal">Personal</option><option value="work">Work</option></select>
-      <button class="btn-ac w-full h-10 rounded-xl bg-accent hover:brightness-110 text-xs font-bold text-white transition" data-act="addContact">Create conversation</button>
+      <input id="c-name" data-enter="addContact" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Contact name" autocomplete="off">
+      <select id="c-folder" class="lux-input h-10 w-full rounded-xl px-3 text-[13px] text-white focus:outline-none"><option value="personal" class="bg-zinc-900">Personal</option><option value="work" class="bg-zinc-900">Work</option></select>
+      <button class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="addContact">Create conversation</button>
     </div>
     <div id="grp-panel" class="hidden space-y-3.5">
-      <input id="grp-name" data-enter="createGroup" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Group name (e.g. Design Crew)" autocomplete="off">
-      <select id="grp-folder" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3 text-[13px] text-white focus:outline-none focus:border-accent"><option value="work">Work</option><option value="personal">Personal</option></select>
+      <input id="grp-name" data-enter="createGroup" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Group name (e.g. Design Crew)" autocomplete="off">
+      <select id="grp-folder" class="lux-input h-10 w-full rounded-xl px-3 text-[13px] text-white focus:outline-none"><option value="work" class="bg-zinc-900">Work</option><option value="personal" class="bg-zinc-900">Personal</option></select>
       <div class="space-y-1.5">
         <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Select members (multi-key E2EE)</div>
         <div id="grp-members-list" class="max-h-40 overflow-y-auto space-y-1.5 pr-1"></div>
       </div>
-      <button class="btn-ac w-full h-10 rounded-xl bg-accent hover:brightness-110 text-xs font-bold text-white transition" data-act="createGroup">Create E2EE Group</button>
+      <button class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="createGroup">Create E2EE Group</button>
     </div>
   </div>
 </div>
 
 <div id="m-confirm" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-  <div class="w-full max-w-sm rounded-3xl bg-zinc-900/95 border border-white/[0.1] p-6 space-y-4 shadow-2xl">
+  <div class="lux-modal w-full max-w-sm rounded-[28px] p-6 space-y-4">
     <h3 id="cf-title" class="text-base font-bold text-white"></h3>
     <p id="cf-body" class="text-xs text-zinc-400 leading-relaxed"></p>
     <div class="flex justify-end gap-2 pt-1">
-      <button class="h-9 px-4 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-zinc-200 transition" data-act="closeModal" data-arg="m-confirm">Cancel</button>
-      <button class="h-9 px-4 rounded-xl bg-rose-500 hover:bg-rose-600 text-xs font-semibold text-white transition" data-act="confirmYes">Confirm</button>
+      <button class="btn-ghost h-9 px-4 rounded-xl text-xs font-semibold text-zinc-200" data-act="closeModal" data-arg="m-confirm">Cancel</button>
+      <button class="h-9 px-4 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 hover:brightness-110 shadow-lg shadow-rose-600/30 text-xs font-semibold text-white transition" data-act="confirmYes">Confirm</button>
     </div>
   </div>
 </div>
 
 <div id="m-comments" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-end md:items-center justify-center bg-black/75 backdrop-blur-md p-0 md:p-4">
-  <div class="w-full max-w-md rounded-t-3xl md:rounded-3xl bg-zinc-900/95 border border-white/[0.1] p-5 flex flex-col gap-3.5 max-h-[75vh] shadow-2xl">
+  <div class="lux-modal w-full max-w-md rounded-t-[28px] md:rounded-[28px] p-5 flex flex-col gap-3.5 max-h-[75vh]">
     <div class="flex justify-between items-center pb-2 border-b border-white/[0.07]">
       <h3 id="cm-title" class="text-sm font-bold text-white">Comments</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-comments" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
     <div id="cm-list" class="flex-1 overflow-y-auto space-y-3.5 py-1"></div>
     <div class="flex gap-2 pt-2 border-t border-white/[0.07]">
-      <input id="cm-in" data-enter="postComment" class="flex-1 h-10 rounded-full bg-black/60 border border-white/[0.1] px-4 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Add a comment…" autocomplete="off">
-      <button class="btn-ac h-10 px-4 rounded-full bg-accent hover:brightness-110 text-xs font-bold text-white transition" data-act="postComment">Post</button>
+      <input id="cm-in" data-enter="postComment" class="lux-input flex-1 h-10 rounded-full px-4 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
+      <button class="btn-ac btn-primary h-10 px-4 rounded-full text-xs font-bold" data-act="postComment">Post</button>
     </div>
   </div>
 </div>
 
 <div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-  <div class="w-full max-w-md rounded-3xl bg-zinc-900/95 border border-white/[0.1] p-6 space-y-4 shadow-2xl">
+  <div class="lux-modal w-full max-w-md rounded-[28px] p-6 space-y-4">
     <div class="flex justify-between items-center">
       <h3 id="studio-title" class="text-base font-bold text-white">Creator Studio</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-studio" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
-    <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/60 border border-white/[0.08]">
-      <button id="st-tab-story" data-act="studioMode" data-arg="story" class="h-8 rounded-xl text-xs font-semibold bg-white text-black transition">Story Poll</button>
-      <button id="st-tab-reel" data-act="studioMode" data-arg="reel" class="h-8 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition">New Reel</button>
+    <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/[0.08]">
+      <button id="st-tab-story" data-act="studioMode" data-arg="story" class="h-8 rounded-xl text-xs font-semibold lux-tab-on transition-all">Story Poll</button>
+      <button id="st-tab-reel" data-act="studioMode" data-arg="reel" class="h-8 rounded-xl text-xs font-semibold lux-tab-off transition-all">New Reel</button>
     </div>
-    <div id="st-prev" class="relative overflow-hidden h-48 rounded-2xl border border-white/15 p-5 flex flex-col items-center justify-center gap-3 text-center shadow-inner">
+    <div id="st-prev" class="relative overflow-hidden h-48 rounded-2xl border border-white/15 p-5 flex flex-col items-center justify-center gap-3 text-center shadow-[0_18px_40px_-14px_rgba(0,0,0,.85)]">
       <img id="st-media-img" class="hidden absolute inset-0 w-full h-full object-cover opacity-80" alt="">
       <video id="st-media-vid" class="hidden absolute inset-0 w-full h-full object-cover opacity-80" muted loop autoplay playsinline></video>
       <div class="relative z-10 space-y-3 w-full">
         <p id="st-q" class="text-base font-bold text-white drop-shadow">Approve the Q3 scope?</p>
         <div id="st-poll-prev" class="flex justify-center gap-2 text-xs font-semibold">
-          <span class="px-5 py-1.5 rounded-xl bg-black/45 backdrop-blur border border-white/25 text-white">Yes</span>
-          <span class="px-5 py-1.5 rounded-xl bg-black/45 backdrop-blur border border-white/25 text-white">No</span>
+          <span class="px-5 py-1.5 rounded-xl bg-black/45 backdrop-blur-md border border-white/25 text-white">Yes</span>
+          <span class="px-5 py-1.5 rounded-xl bg-black/45 backdrop-blur-md border border-white/25 text-white">No</span>
         </div>
         <span id="st-link" class="hidden inline-block text-[11px] px-3 py-1 rounded-full bg-black/55 border border-white/20 text-white"></span>
       </div>
@@ -687,25 +750,25 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       <div id="st-bgs" class="flex gap-2"></div>
       <div class="flex items-center gap-1.5 shrink-0">
         <input type="file" id="st-file" accept="image/*,video/*" class="hidden">
-        <button data-act="studioPickMedia" class="h-8 px-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.08] text-xs font-semibold text-white inline-flex items-center gap-1.5 transition"><i data-lucide="image-plus" class="w-3.5 h-3.5 text-accent"></i><span id="st-media-lbl">Add media</span></button>
-        <button id="st-media-clr" data-act="studioClearMedia" class="hidden w-8 h-8 rounded-xl bg-white/[0.06] hover:bg-white/[0.14] grid place-items-center text-zinc-300" aria-label="Clear media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        <button data-act="studioPickMedia" class="btn-ghost h-8 px-3 rounded-xl text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="image-plus" class="w-3.5 h-3.5 text-accent"></i><span id="st-media-lbl">Add media</span></button>
+        <button id="st-media-clr" data-act="studioClearMedia" class="btn-ghost hidden w-8 h-8 rounded-xl grid place-items-center text-zinc-300" aria-label="Clear media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
-    <input id="st-in" data-input="storyPreview" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Poll question" autocomplete="off">
+    <input id="st-in" data-input="storyPreview" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Poll question" autocomplete="off">
     <div id="st-story-extra" class="grid grid-cols-2 gap-2.5">
-      <input id="st-url" data-input="storyPreview" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Link (optional)" autocomplete="off">
-      <select id="st-co" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3 text-[13px] text-white focus:outline-none focus:border-accent"><option value="">No co-author</option></select>
+      <input id="st-url" data-input="storyPreview" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Link (optional)" autocomplete="off">
+      <select id="st-co" class="lux-input h-10 w-full rounded-xl px-3 text-[13px] text-white focus:outline-none"><option value="" class="bg-zinc-900">No co-author</option></select>
     </div>
-    <button id="st-submit" class="btn-ac w-full h-10 rounded-xl bg-accent hover:brightness-110 text-xs font-bold text-white transition" data-act="publish">Publish story</button>
+    <button id="st-submit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="publish">Publish story</button>
   </div>
 </div>
 
 <div id="m-story" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/95 backdrop-blur-xl p-0 sm:p-4">
-  <div id="sv" class="relative w-full max-w-sm h-full sm:h-[min(84vh,740px)] overflow-hidden sm:rounded-3xl sm:border sm:border-white/15 shadow-2xl"></div>
+  <div id="sv" class="relative w-full max-w-sm h-full sm:h-[min(84vh,740px)] overflow-hidden sm:rounded-[30px] sm:border sm:border-white/[0.14] shadow-[0_32px_90px_-15px_rgba(0,0,0,.95)]"></div>
 </div>
 
 <div id="m-call" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/85 backdrop-blur-2xl p-4">
-  <div class="w-full max-w-md rounded-3xl bg-zinc-900/95 border border-white/[0.1] p-7 text-center space-y-5 shadow-2xl">
+  <div class="lux-modal w-full max-w-md rounded-[30px] p-7 text-center space-y-5">
     <div id="call-media" class="relative hidden">
       <video id="call-v" class="w-full h-56 object-cover rounded-2xl bg-black border border-white/10" autoplay playsinline></video>
       <video id="call-local" class="hidden absolute bottom-2.5 right-2.5 w-24 h-16 object-cover rounded-xl bg-zinc-950 border border-white/25 shadow-xl" autoplay muted playsinline></video>
@@ -725,20 +788,20 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       <button class="h-12 px-5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-xs font-bold text-black inline-flex items-center gap-2 shadow-lg shadow-emerald-500/30 transition" data-act="acceptCall"><i data-lucide="phone" class="w-4 h-4"></i>Accept</button>
     </div>
     <div id="call-live-acts" class="flex justify-center gap-2.5 pt-1">
-      <button id="call-mute" class="w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.16] grid place-items-center text-white transition" data-act="callMute" aria-label="Mute microphone"><i data-lucide="mic" class="w-5 h-5"></i></button>
-      <button id="call-cam" class="w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.16] grid place-items-center text-white transition" data-act="callCam" aria-label="Toggle camera"><i data-lucide="video" class="w-5 h-5"></i></button>
-      <button id="call-flip" class="hidden w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.16] grid place-items-center text-white transition" data-act="callFlip" title="Switch camera" aria-label="Switch camera"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-      <button id="call-share" class="hidden w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.16] grid place-items-center text-white transition" data-act="callShare" title="Share screen" aria-label="Share screen"><i data-lucide="monitor-up" class="w-4 h-4"></i></button>
-      <button class="h-11 px-5 rounded-full bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white inline-flex items-center gap-2 shadow-lg shadow-rose-600/30 transition" data-act="endCall"><i data-lucide="phone-off" class="w-4 h-4"></i>End</button>
+      <button id="call-mute" class="btn-ghost w-11 h-11 rounded-full grid place-items-center text-white" data-act="callMute" aria-label="Mute microphone"><i data-lucide="mic" class="w-5 h-5"></i></button>
+      <button id="call-cam" class="btn-ghost w-11 h-11 rounded-full grid place-items-center text-white" data-act="callCam" aria-label="Toggle camera"><i data-lucide="video" class="w-5 h-5"></i></button>
+      <button id="call-flip" class="btn-ghost hidden w-11 h-11 rounded-full grid place-items-center text-white" data-act="callFlip" title="Switch camera" aria-label="Switch camera"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+      <button id="call-share" class="btn-ghost hidden w-11 h-11 rounded-full grid place-items-center text-white" data-act="callShare" title="Share screen" aria-label="Share screen"><i data-lucide="monitor-up" class="w-4 h-4"></i></button>
+      <button class="h-11 px-5 rounded-full bg-gradient-to-br from-rose-500 to-rose-600 hover:brightness-110 text-xs font-bold text-white inline-flex items-center gap-2 shadow-lg shadow-rose-600/35 transition" data-act="endCall"><i data-lucide="phone-off" class="w-4 h-4"></i>End</button>
     </div>
   </div>
 </div>
 
 <div id="m-auth" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-  <div class="w-full max-w-md rounded-3xl bg-zinc-900/95 border border-white/[0.1] p-6 space-y-4 shadow-2xl">
+  <div class="lux-modal w-full max-w-md rounded-[28px] p-6 space-y-4">
     <div class="flex justify-between items-center">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-400/25 grid place-items-center text-emerald-400"><i data-lucide="cloud" class="w-4 h-4"></i></div>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 grid place-items-center text-emerald-300 shadow-[0_0_20px_-6px_rgba(52,211,153,.6)]"><i data-lucide="cloud" class="w-4 h-4"></i></div>
         <div>
           <h3 class="text-base font-bold text-white leading-tight">Account &amp; Cloud Sync</h3>
           <p id="auth-sub" class="text-[11px] text-zinc-400">Checking Supabase status…</p>
@@ -748,38 +811,38 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     </div>
 
     <div id="auth-logged-out" class="space-y-3.5">
-      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/60 border border-white/[0.08]">
-        <button id="auth-tab-signin" data-act="authTab" data-arg="signin" class="h-8 rounded-xl text-xs font-semibold bg-white text-black transition">Sign in</button>
-        <button id="auth-tab-signup" data-act="authTab" data-arg="signup" class="h-8 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition">Create account</button>
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/[0.08]">
+        <button id="auth-tab-signin" data-act="authTab" data-arg="signin" class="h-8 rounded-xl text-xs font-semibold lux-tab-on transition-all">Sign in</button>
+        <button id="auth-tab-signup" data-act="authTab" data-arg="signup" class="h-8 rounded-xl text-xs font-semibold lux-tab-off transition-all">Create account</button>
       </div>
       <div id="auth-name-wrap" class="hidden">
         <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-name">Display name</label>
-        <input id="auth-name" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Alex Mercer" autocomplete="name">
+        <input id="auth-name" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Alex Mercer" autocomplete="name">
       </div>
       <div>
         <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-email">Email</label>
-        <input id="auth-email" type="email" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="you@example.com" autocomplete="email">
+        <input id="auth-email" type="email" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="you@example.com" autocomplete="email">
       </div>
       <div>
         <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-pass">Password</label>
-        <input id="auth-pass" type="password" data-enter="authSubmit" class="h-10 w-full rounded-xl bg-black/60 border border-white/[0.1] px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none focus:border-accent" placeholder="Minimum 6 characters" autocomplete="current-password">
+        <input id="auth-pass" type="password" data-enter="authSubmit" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Minimum 6 characters" autocomplete="current-password">
       </div>
       <div id="auth-err" class="hidden rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs text-rose-300"></div>
-      <button id="auth-submit" data-act="authSubmit" class="btn-ac w-full h-10 rounded-xl bg-accent hover:brightness-110 text-xs font-bold text-white transition">Sign in to Cloud Enclave</button>
+      <button id="auth-submit" data-act="authSubmit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold">Sign in to Cloud Enclave</button>
       <p id="auth-cfg-msg" class="text-[11px] text-zinc-500 leading-relaxed">Sign in to persist chats, stories, Vault settings, and live peer-to-peer DMs in Supabase. Works locally even when signed out.</p>
     </div>
 
     <div id="auth-logged-in" class="hidden space-y-4">
-      <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-black/60 border border-white/[0.08]">
+      <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,.05)]">
         <div id="auth-av" class="shrink-0"></div>
         <div class="min-w-0 flex-1">
           <div id="auth-u-name" class="text-sm font-bold text-white truncate"></div>
           <div id="auth-u-email" class="text-xs text-zinc-400 truncate"></div>
         </div>
-        <span id="auth-rt-badge" class="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/25 text-[10px] font-semibold text-emerald-300">Synced</span>
+        <span id="auth-rt-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/25 text-[10px] font-semibold text-emerald-300">Synced</span>
       </div>
       <div class="grid grid-cols-2 gap-2.5">
-        <button data-act="syncNow" class="h-10 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] text-xs font-semibold text-white inline-flex items-center justify-center gap-1.5 transition"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>Sync now</button>
+        <button data-act="syncNow" class="btn-ghost h-10 rounded-xl text-xs font-semibold text-white inline-flex items-center justify-center gap-1.5"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>Sync now</button>
         <button data-act="signOut" class="h-10 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-xs font-semibold text-rose-200 inline-flex items-center justify-center gap-1.5 transition"><i data-lucide="log-out" class="w-3.5 h-3.5"></i>Sign out</button>
       </div>
       <p class="text-[11px] text-zinc-500">Your session uses HttpOnly cookies via <code class="text-zinc-300">/api/supabase</code>. Start a Live DM with any registered user from the compose button.</p>
@@ -791,8 +854,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   <div class="w-full max-w-4xl flex items-center justify-between gap-3 pb-3">
     <span id="lb-cap" class="text-xs font-medium text-zinc-300 truncate"></span>
     <div class="flex items-center gap-2 shrink-0">
-      <button data-act="lbDownload" class="h-9 px-3.5 rounded-full bg-white/[0.1] hover:bg-white/[0.18] text-xs font-semibold text-white inline-flex items-center gap-1.5 transition"><i data-lucide="download" class="w-3.5 h-3.5"></i>Download</button>
-      <button data-act="closeModal" data-arg="m-media" class="w-9 h-9 rounded-full bg-white/[0.1] hover:bg-white/[0.18] grid place-items-center text-white transition" aria-label="Close lightbox"><i data-lucide="x" class="w-4 h-4"></i></button>
+      <button data-act="lbDownload" class="btn-ghost h-9 px-3.5 rounded-full text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5"></i>Download</button>
+      <button data-act="closeModal" data-arg="m-media" class="btn-ghost w-9 h-9 rounded-full grid place-items-center text-white" aria-label="Close lightbox"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
   </div>
   <div class="relative max-w-4xl max-h-[82vh] flex items-center justify-center">
@@ -802,11 +865,11 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 </div>
 
 <div id="m-cmd" class="modal fixed inset-0 z-[65] hidden [&.open]:flex items-start justify-center bg-black/75 backdrop-blur-md pt-20 p-4">
-  <div class="w-full max-w-lg rounded-3xl bg-zinc-900/95 border border-white/[0.12] overflow-hidden shadow-2xl">
-    <div class="flex items-center gap-3 px-4 py-3 border-b border-white/[0.08]">
-      <i data-lucide="search" class="w-4 h-4 text-zinc-400 shrink-0"></i>
+  <div class="lux-modal w-full max-w-lg rounded-[26px] overflow-hidden">
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.08] bg-white/[0.02]">
+      <i data-lucide="search" class="w-4 h-4 text-accent shrink-0"></i>
       <input id="cmd-in" data-input="cmd" class="flex-1 bg-transparent text-sm text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Jump to conversation, view, or action…" autocomplete="off">
-      <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.09] text-zinc-400">Esc</kbd>
+      <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-white/[0.07] border border-white/[0.10] text-zinc-400">Esc</kbd>
     </div>
     <div id="cmd-list" class="max-h-80 overflow-y-auto p-2 space-y-0.5"></div>
   </div>
@@ -823,12 +886,12 @@ const now=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const store={get(k,d){try{const v=localStorage.getItem('wg_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('wg_'+k,JSON.stringify(v))}catch(e){}}};
 const hue=s=>[...s].reduce((a,c)=>a+c.charCodeAt(0),0)%360;
-const av=(n,sz='w-9 h-9')=>`<span class="${sz} text-xs rounded-full grid place-items-center font-bold shrink-0 text-white shadow-inner" style="background:linear-gradient(135deg,hsl(${hue(n)} 72% 56%),hsl(${(hue(n)+45)%360} 76% 40%))">${esc(n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase())}</span>`;
+const av=(n,sz='w-9 h-9')=>`<span class="${sz} text-xs rounded-full grid place-items-center font-bold shrink-0 text-white ring-1 ring-inset ring-white/15 shadow-inner" style="background:linear-gradient(135deg,hsl(${hue(n)} 74% 58%),hsl(${(hue(n)+45)%360} 78% 40%))">${esc(n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase())}</span>`;
 const ic=(n,c='w-4 h-4')=>`<i data-lucide="${n}" class="${c}"></i>`;
 const icons=()=>{try{window.lucide&&window.lucide.createIcons()}catch(e){}};
 const setTxt=(s,t)=>{const e=$(s);if(e)e.textContent=t};
 const show=(el,on,disp='flex')=>{if(typeof el==='string')el=$(el);if(!el)return;el.classList.toggle('hidden',!on);if(disp)el.classList.toggle(disp,on)};
-function toast(msg,kind){const t=document.createElement('div');t.className=`px-4 py-2.5 rounded-full text-xs font-semibold shadow-2xl border backdrop-blur-xl ${kind==='err'?'bg-rose-600/95 border-rose-400/30 text-white':'bg-zinc-900/95 border-white/15 text-white'}`;t.textContent=msg;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2800)}
+function toast(msg,kind){const t=document.createElement('div');t.className=`px-4 py-2.5 rounded-full text-xs font-semibold backdrop-blur-2xl shadow-[0_16px_36px_-8px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.16)] border ${kind==='err'?'bg-rose-600/90 border-rose-400/35 text-white':'bg-[#12141e]/95 border-white/[0.14] text-white'}`;t.textContent=msg;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2800)}
 let AC=null;function tone(f=620,d=.03,pan=0,v=.03){try{const c=AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(c.state==='suspended')c.resume();const o=c.createOscillator(),g=c.createGain();g.gain.value=v;o.frequency.value=f;o.connect(g);if(c.createStereoPanner){const p=c.createStereoPanner();p.pan.value=pan;g.connect(p);p.connect(c.destination)}else g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
 async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return 'x'+h}}
 const tok=s=>(String(s).toLowerCase().match(/[a-z0-9]+/g)||[]).map(w=>w.replace(/(ing|ed|es|s)$/,''));
@@ -1302,8 +1365,8 @@ function renderAccountUI(){
   const sTab=$('#auth-tab-signin'),uTab=$('#auth-tab-signup'),nw=$('#auth-name-wrap'),subBtn=$('#auth-submit');
   if(sTab&&uTab&&nw&&subBtn){
     const isUp=S.authTab==='signup';
-    sTab.className='h-8 rounded-xl text-xs font-semibold transition '+(isUp?'text-zinc-400 hover:text-white':'bg-white text-black');
-    uTab.className='h-8 rounded-xl text-xs font-semibold transition '+(isUp?'bg-white text-black':'text-zinc-400 hover:text-white');
+    sTab.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isUp?'lux-tab-off':'lux-tab-on');
+    uTab.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isUp?'lux-tab-on':'lux-tab-off');
     nw.classList.toggle('hidden',!isUp);
     subBtn.textContent=isUp?'Create Cloud Account':'Sign in to Cloud Enclave';
   }
@@ -1320,7 +1383,7 @@ function renderDmUsers(){
   }
   list.innerHTML=S.users.map(u=>{
     const on=S.onlineUsers[u.id]||u.status==='Online';
-    return `<button data-act="dmUser" data-arg="${esc(u.id)}" class="w-full flex items-center gap-2.5 p-2 rounded-xl bg-black/50 hover:bg-white/[0.07] border border-white/[0.06] text-left transition"><span class="relative shrink-0">${av(u.display_name||u.email||'U','w-8 h-8')}${on?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-zinc-900"></span>':''}</span><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||u.email)}</div><div class="text-[11px] text-zinc-500 truncate">${esc(u.email)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,8))}`:''}</div></div><span class="text-[10px] font-semibold text-emerald-400">DM</span></button>`;
+    return `<button data-act="dmUser" data-arg="${esc(u.id)}" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.075] border border-white/[0.07] hover:border-white/[0.14] shadow-[inset_0_1px_0_rgba(255,255,255,.04)] text-left transition-all"><span class="relative shrink-0">${av(u.display_name||u.email||'U','w-9 h-9')}${on?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0c0d14] shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>':''}</span><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||u.email)}</div><div class="text-[11px] text-zinc-400 truncate">${esc(u.email)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,8))}`:''}</div></div><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[10px] font-semibold text-emerald-300">DM</span></button>`;
   }).join('');
   icons();
 }
@@ -1333,7 +1396,7 @@ function renderGroupMembers(){
   }
   list.innerHTML=S.users.map(u=>{
     const on=S.onlineUsers[u.id]||u.status==='Online';
-    return `<label class="flex items-center gap-2.5 p-2 rounded-xl bg-black/50 hover:bg-white/[0.07] border border-white/[0.06] cursor-pointer transition"><input type="checkbox" value="${esc(u.id)}" class="grp-mem-cb accent-[var(--ac)] w-4 h-4 rounded shrink-0">${av(u.display_name||u.email||'U','w-7 h-7')}<div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||u.email)}</div><div class="text-[10px] text-zinc-500 truncate">${on?'Online':esc(u.email)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,6))}`:''}</div></div></label>`;
+    return `<label class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.075] border border-white/[0.07] hover:border-white/[0.14] shadow-[inset_0_1px_0_rgba(255,255,255,.04)] cursor-pointer transition-all"><input type="checkbox" value="${esc(u.id)}" class="grp-mem-cb accent-[var(--ac)] w-4 h-4 rounded shrink-0">${av(u.display_name||u.email||'U','w-8 h-8')}<div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||u.email)}</div><div class="text-[10px] text-zinc-400 truncate">${on?'Online':esc(u.email)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,6))}`:''}</div></div></label>`;
   }).join('');
 }
 
@@ -1519,12 +1582,12 @@ function applyCfg(){
 }
 
 function renderNav(){
-  const bd='<span class="nav-badge hidden absolute top-1.5 left-7 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 ring-2 ring-black text-white text-[10px] font-bold grid place-items-center"></span>';
-  const rail=([v,i,l])=>`<button data-act="nav" data-arg="${v}" class="nav-btn relative group flex items-center gap-3.5 h-12 w-12 xl:w-full px-3 rounded-xl text-[15px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.06] aria-[current=page]:bg-white/[0.09] aria-[current=page]:text-white aria-[current=page]:font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="${l}" aria-label="${l}">${ic(i,'w-6 h-6 shrink-0 group-hover:scale-105 transition-transform')}<span class="hidden xl:inline">${l}</span>${v==='chats'?bd:''}</button>`;
-  const dock=([v,i,l])=>`<button data-act="nav" data-arg="${v}" class="dock-btn relative flex-1 h-14 grid place-items-center text-zinc-500 hover:text-zinc-200 aria-[current=page]:text-white transition-colors" title="${l}" aria-label="${l}">${ic(i,'w-6 h-6')}${v==='chats'?bd.replace('left-7','left-1/2 ml-1.5'):''}</button>`;
+  const bd='<span class="nav-badge hidden absolute top-1.5 left-7 min-w-[18px] h-[18px] px-1 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 ring-2 ring-[#06070c] text-white text-[10px] font-bold grid place-items-center shadow-[0_2px_10px_rgba(244,63,94,.6)]"></span>';
+  const rail=([v,i,l])=>`<button data-act="nav" data-arg="${v}" class="nav-btn relative group flex items-center gap-3.5 h-11 w-12 xl:w-full px-3.5 rounded-xl text-[14.5px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.05] aria-[current=page]:bg-gradient-to-r aria-[current=page]:from-white/[0.11] aria-[current=page]:to-white/[0.03] aria-[current=page]:border aria-[current=page]:border-white/[0.10] aria-[current=page]:text-white aria-[current=page]:font-semibold aria-[current=page]:shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_10px_24px_-12px_rgba(0,0,0,.75)] border border-transparent transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="${l}" aria-label="${l}">${ic(i,'w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform')}<span class="hidden xl:inline tracking-tight">${l}</span>${v==='chats'?bd:''}</button>`;
+  const dock=([v,i,l])=>`<button data-act="nav" data-arg="${v}" class="dock-btn relative flex-1 h-14 grid place-items-center text-zinc-500 hover:text-zinc-200 aria-[current=page]:text-white transition-colors" title="${l}" aria-label="${l}">${ic(i,'w-[22px] h-[22px]')}${v==='chats'?bd.replace('left-7','left-1/2 ml-1.5'):''}</button>`;
   const create=c=>c==='nav-btn'
-    ?`<button data-act="storyNew" class="relative group flex items-center gap-3.5 h-12 w-12 xl:w-full px-3 rounded-xl text-[15px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="Create" aria-label="Create story">${ic('square-plus','w-6 h-6 shrink-0 group-hover:scale-105 transition-transform')}<span class="hidden xl:inline">Create</span></button>`
-    :`<button data-act="storyNew" class="relative flex-1 h-14 grid place-items-center text-zinc-300 hover:text-white transition-colors" title="Create" aria-label="Create story"><span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shadow-md">${ic('plus','w-5 h-5')}</span></button>`;
+    ?`<button data-act="storyNew" class="relative group flex items-center gap-3.5 h-11 w-12 xl:w-full px-3.5 rounded-xl text-[14.5px] font-medium text-zinc-400 hover:text-white hover:bg-white/[0.05] border border-transparent transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" title="Create" aria-label="Create story">${ic('square-plus','w-[22px] h-[22px] shrink-0 group-hover:scale-105 transition-transform')}<span class="hidden xl:inline tracking-tight">Create</span></button>`
+    :`<button data-act="storyNew" class="relative flex-1 h-14 grid place-items-center text-zinc-300 hover:text-white transition-colors" title="Create" aria-label="Create story"><span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shadow-[0_6px_22px_-4px_rgba(221,42,123,.65),inset_0_1px_0_rgba(255,255,255,.35)] active:scale-95 transition-transform">${ic('plus','w-5 h-5')}</span></button>`;
   $('#rail').innerHTML=NAV.slice(0,3).map(rail).join('')+create('nav-btn')+NAV.slice(3).map(rail).join('');
   $('#dock').innerHTML=NAV.slice(0,2).map(dock).join('')+create('dock-btn')+NAV.slice(2).map(dock).join('');
 }
@@ -1554,7 +1617,7 @@ function ask(title,body,fn){S.confirm=fn;setTxt('#cf-title',title);setTxt('#cf-b
 /* ---------- conversations ---------- */
 function renderFolders(){
   const un=D.filter(c=>c.unread).length;
-  $('#folders').innerHTML=[['all','All'],['work','Work'],['personal','Personal'],['unread','Unread'+(un?` ${un}`:'')]].map(([k,l])=>`<button role="tab" class="h-8 px-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 aria-[selected=true]:bg-white/[0.12] aria-[selected=true]:text-white aria-[selected=true]:shadow-sm transition truncate" data-act="folder" data-arg="${k}" aria-selected="${S.folder===k}">${l}</button>`).join('');
+  $('#folders').innerHTML=[['all','All'],['work','Work'],['personal','Personal'],['unread','Unread'+(un?` ${un}`:'')]].map(([k,l])=>`<button role="tab" class="h-8 px-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-200 border border-transparent aria-[selected=true]:bg-gradient-to-b aria-[selected=true]:from-white/[0.15] aria-[selected=true]:to-white/[0.07] aria-[selected=true]:text-white aria-[selected=true]:border-white/[0.14] aria-[selected=true]:shadow-[inset_0_1px_0_rgba(255,255,255,.2),0_4px_12px_-4px_rgba(0,0,0,.6)] transition-all truncate" data-act="folder" data-arg="${k}" aria-selected="${S.folder===k}">${l}</button>`).join('');
 }
 const prev=m=>!m?'No messages':m.type==='voice'?'🎙 Voice note':m.type==='file'?'📎 '+m.name:m.text;
 
@@ -1567,8 +1630,8 @@ function renderList(){
     const l=c.msgs[c.msgs.length-1];
     const active=c.id===S.chat;
     const online=!c.isGroup&&c.status==='Online';
-    return `<button data-act="chat" data-arg="${c.id}" class="w-full text-left flex items-center gap-3.5 px-3 py-2.5 rounded-2xl transition-colors ${active?'bg-white/[0.09] ring-1 ring-white/[0.06]':'hover:bg-white/[0.05]'}">
-      <span class="relative shrink-0">${av(c.name,'w-12 h-12')}${online?'<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-black"></span>':c.isGroup?'<span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent ring-2 ring-black grid place-items-center text-[9px] font-bold text-white">G</span>':''}</span>
+    return `<button data-act="chat" data-arg="${c.id}" class="w-full text-left flex items-center gap-3.5 px-3 py-2.5 rounded-2xl border transition-all ${active?'bg-gradient-to-r from-white/[0.095] to-white/[0.03] border-white/[0.10] shadow-[inset_0_1px_0_rgba(255,255,255,.09),0_12px_26px_-14px_rgba(0,0,0,.85)]':'border-transparent hover:bg-white/[0.04] hover:border-white/[0.05]'}">
+      <span class="relative shrink-0">${av(c.name,'w-12 h-12')}${online?'<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-[#070810] shadow-[0_0_8px_rgba(52,211,153,.75)]"></span>':c.isGroup?'<span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent ring-2 ring-[#070810] grid place-items-center text-[9px] font-bold text-white shadow-sm">G</span>':''}</span>
       <div class="min-w-0 flex-1">
         <div class="flex items-center justify-between gap-2">
           <span class="text-[13.5px] ${c.unread?'font-bold text-white':'font-semibold text-zinc-100'} truncate">${esc(c.name)}</span>
@@ -1576,7 +1639,7 @@ function renderList(){
         </div>
         <div class="flex items-center justify-between gap-2 mt-0.5">
           ${S.typing[c.id]?'<span class="text-xs text-emerald-400 font-medium truncate">typing…</span>':`<span class="text-xs ${c.unread?'text-zinc-200 font-medium':'text-zinc-400'} truncate">${esc(prev(l))}</span>`}
-          ${q?`<span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-accent/15 text-accent shrink-0">${Math.round(s*100)}%</span>`:c.unread?`<span class="min-w-[18px] h-[18px] px-1.5 rounded-full bg-accent text-white text-[10px] font-bold grid place-items-center shrink-0">${c.unread}</span>`:''}
+          ${q?`<span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-accent/15 text-accent shrink-0">${Math.round(s*100)}%</span>`:c.unread?`<span class="btn-primary min-w-[19px] h-[19px] px-1.5 rounded-full text-[10px] font-bold grid place-items-center shrink-0">${c.unread}</span>`:''}
         </div>
       </div>
     </button>`;
@@ -1586,14 +1649,14 @@ function renderList(){
 
 function renderStories(){
   $('#stories').innerHTML=`<button data-act="storyNew" class="group flex flex-col items-center gap-1.5 shrink-0 w-[68px]" aria-label="Create story">
-    <span class="relative w-[62px] h-[62px] rounded-full bg-zinc-900 border border-dashed border-white/25 group-hover:border-white/50 grid place-items-center text-zinc-300 transition-colors">
+    <span class="relative w-[62px] h-[62px] rounded-full bg-white/[0.03] border border-dashed border-white/25 group-hover:border-white/50 group-hover:bg-white/[0.06] grid place-items-center text-zinc-300 transition-all">
       ${ic('plus','w-5 h-5')}
-      <span class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-accent ring-2 ring-black grid place-items-center text-white">${ic('plus','w-3 h-3')}</span>
+      <span class="btn-primary absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full ring-2 ring-[#070810] grid place-items-center">${ic('plus','w-3 h-3')}</span>
     </span>
     <span class="text-[11px] font-medium text-zinc-400 group-hover:text-zinc-200">Your story</span>
   </button>`+ST.map((s,i)=>`<button data-act="storyOpen" data-arg="${i}" class="group flex flex-col items-center gap-1.5 shrink-0 w-[68px]" aria-label="View ${esc(s.name)} story">
-    <span class="p-[2.5px] rounded-full transition-transform group-hover:scale-[1.03] ${s.seen?'bg-zinc-700/80':'bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af]'}">
-      <span class="block p-[2px] rounded-full bg-black">${av(s.name,'w-[54px] h-[54px]')}</span>
+    <span class="p-[2.5px] rounded-full transition-transform group-hover:scale-[1.04] ${s.seen?'bg-zinc-700/80':'bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] shadow-[0_6px_18px_-6px_rgba(221,42,123,.65)]'}">
+      <span class="block p-[2px] rounded-full bg-[#070810]">${av(s.name,'w-[54px] h-[54px]')}</span>
     </span>
     <span class="text-[11px] ${s.seen?'text-zinc-500':'text-zinc-200 font-medium'} w-full truncate text-center">${esc(s.name.split(' ')[0])}</span>
   </button>`).join('');
@@ -1614,9 +1677,9 @@ function renderHead(){
   const c=cur();
   if(!c){setTxt('#th-name','Select a conversation');setTxt('#th-status','');$('#th-av').innerHTML='';return}
   const online=c.peerUserId?(S.onlineUsers[c.peerUserId]||c.status==='Online'):(!c.isGroup&&c.status==='Online');
-  $('#th-av').innerHTML=`<span class="relative inline-block">${av(c.name,'w-9 h-9')}${online?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-black"></span>':''}</span>`;
+  $('#th-av').innerHTML=`<span class="relative inline-block">${av(c.name,'w-9 h-9')}${online?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#080910] shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>':''}</span>`;
   setTxt('#th-name',c.name);
-  const e2Txt=cfg.e2ee?((c.peerUserId||c.isGroup)?(canE2eeConv(c)?(c.isGroup?' · E2EE Group':' · E2EE (ECDH)'):' · E2EE pending'):' · E2EE on'):'';
+  const e2Txt=cfg.e2ee?((c.peerUserId||c.isGroup)?(canE2eeConv(c)?' · E2EE':' · E2EE pending'):' · E2EE'):'';
   const tp=S.typing[c.id];
   const baseSt=c.isGroup?`${c.members?.length||1} members`:(online?'Online':c.status);
   setTxt('#th-status',(tp?(typeof tp==='string'?tp+' typing…':'typing…'):baseSt)+e2Txt);
@@ -1638,7 +1701,7 @@ function dayLabel(ts){
   return d.toLocaleDateString([],{month:'short',day:'numeric',year:d.getFullYear()!==nowD.getFullYear()?'numeric':undefined});
 }
 function typingBubbleHTML(tp){
-  return `<div id="typing-bubble" class="msg-in flex items-center gap-2 pt-1"><div class="px-4 py-3 rounded-[22px] rounded-bl-md bg-zinc-800/95 border border-white/[0.06] inline-flex items-center gap-1.5"><span class="tdot inline-flex items-center gap-1"><i></i><i></i><i></i></span>${typeof tp==='string'?`<span class="text-[11px] text-zinc-400 pl-1">${esc(tp)}</span>`:''}</div></div>`;
+  return `<div id="typing-bubble" class="msg-in flex items-center gap-2 pt-1"><div class="bubble-them px-4 py-3 rounded-[20px] rounded-bl-[6px] inline-flex items-center gap-1.5"><span class="tdot inline-flex items-center gap-1"><i></i><i></i><i></i></span>${typeof tp==='string'?`<span class="text-[11px] text-zinc-400 pl-1">${esc(tp)}</span>`:''}</div></div>`;
 }
 function renderTypingRow(){
   const s=$('#stream');if(!s)return;
@@ -1669,8 +1732,8 @@ function msgHTML(m,c){
   else body=renderMsgText(m.text,q);
 
   const rep=m.reply?`<div class="mb-1.5 pl-2.5 border-l-2 border-white/50 text-[11px] opacity-85 truncate">${esc(m.reply.text)}</div>`:'';
-  const rx=Object.entries(m.react||{}).map(([e,n])=>`<button data-act="react" data-arg="${m.id}|${e}" class="px-2 py-0.5 rounded-full border border-white/[0.1] bg-zinc-900 hover:bg-zinc-800 text-[11px] shadow-sm transition">${e} ${n}</button>`).join('');
-  const cls=me?(m.ct?'bg-emerald-600 border border-emerald-400/25':'bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]')+' text-white rounded-[22px] rounded-br-md':'bg-zinc-800/95 border border-white/[0.06] text-zinc-100 rounded-[22px] rounded-bl-md';
+  const rx=Object.entries(m.react||{}).map(([e,n])=>`<button data-act="react" data-arg="${m.id}|${e}" class="px-2 py-0.5 rounded-full border border-white/[0.12] bg-[#141724]/90 backdrop-blur-md hover:bg-white/[0.12] text-[11px] shadow-sm transition">${e} ${n}</button>`).join('');
+  const cls=me?(m.ct?'bubble-me-zk':'bubble-me')+' text-white rounded-[20px] rounded-br-[6px]':'bubble-them text-zinc-100 rounded-[20px] rounded-bl-[6px]';
   const isZk=m.ct?.startsWith('e2ee1.')||m.ct?.startsWith('e2ee2.');
   const e2Badge=isZk?` · <span class="text-emerald-400" title="Zero-knowledge ECDH P-256 + AES-GCM-256">🔒 E2EE</span>`:(m.ct?` · <span title="AES-GCM ciphertext ${esc(m.ct)}">🔒 encrypted</span>`:'');
   let rcpt='';
@@ -1698,11 +1761,13 @@ function renderThread(preserveScroll=false){
   const prevTop=s.scrollTop;
   if(!c){
     s.innerHTML=`<div class="h-full grid place-items-center px-6">
-      <div class="max-w-xs text-center space-y-3">
-        <span class="w-16 h-16 mx-auto rounded-full border-2 border-white/20 grid place-items-center text-zinc-200">${ic('message-circle','w-7 h-7')}</span>
-        <div class="text-base font-bold text-white">Your messages</div>
-        <p class="text-xs text-zinc-400 leading-relaxed">Select a conversation or start a new private thread in your local enclave.</p>
-        <button data-act="open" data-arg="m-contact" class="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-accent hover:brightness-110 text-xs font-semibold text-white transition">Send message</button>
+      <div class="lux-card max-w-xs w-full rounded-[28px] p-7 text-center space-y-3.5">
+        <span class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-[#f58529]/20 via-[#dd2a7b]/20 to-[#8134af]/20 border border-white/15 grid place-items-center text-white shadow-[0_0_30px_-8px_rgb(var(--ac-rgb)/.5)]">${ic('message-circle','w-6 h-6')}</span>
+        <div>
+          <div class="text-base font-bold text-white">Your messages</div>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-1">Select a conversation or start a new encrypted thread in your enclave.</p>
+        </div>
+        <button data-act="open" data-arg="m-contact" class="btn-primary inline-flex items-center gap-1.5 h-9 px-5 rounded-full text-xs font-semibold">Send message</button>
       </div>
     </div>`;
     show('#pinned',false);show('#key-warn',false);show('#jump-bottom',false);renderSmartChips();icons();return;
@@ -1712,7 +1777,7 @@ function renderThread(preserveScroll=false){
     const dl=dayLabel(m.ts);
     if(dl&&dl!==lastDay){
       lastDay=dl;
-      html+=`<div class="flex justify-center my-2"><span class="px-3 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.07] text-[10px] font-medium text-zinc-400">${esc(dl)}</span></div>`;
+      html+=`<div class="flex justify-center my-2.5"><span class="px-3.5 py-0.5 rounded-full bg-[#10121c]/80 backdrop-blur-md border border-white/[0.08] text-[10px] font-medium text-zinc-400 shadow-sm">${esc(dl)}</span></div>`;
     }
     html+=msgHTML(m,c);
   }
@@ -1762,7 +1827,7 @@ function renderSmartChips(){
   const box=$('#smart-chips'),c=cur();
   if(!box)return;
   if(!c||cfg.smartReplies===false||S.editId||!S.smart.length){show(box,false);box.innerHTML='';return}
-  box.innerHTML=`<span class="text-[10px] font-medium text-zinc-500 mr-0.5">${ic('sparkles','w-3 h-3 inline text-accent')}</span>`+S.smart.map((t,i)=>`<button data-act="smartReply" data-arg="${i}" class="h-7 px-3 rounded-full bg-white/[0.06] hover:bg-white/[0.13] border border-white/[0.08] text-[11px] font-medium text-zinc-200 transition truncate max-w-[14rem]">${esc(t)}</button>`).join('');
+  box.innerHTML=`<span class="text-[10px] font-medium text-zinc-500 mr-0.5 shrink-0">${ic('sparkles','w-3.5 h-3.5 inline text-accent')}</span>`+S.smart.map((t,i)=>`<button data-act="smartReply" data-arg="${i}" class="btn-ghost shrink-0 h-7 px-3 rounded-full text-[11px] font-medium text-zinc-200 hover:text-white truncate max-w-[14rem]">${esc(t)}</button>`).join('');
   show(box,true);
   icons();
 }
@@ -1792,42 +1857,42 @@ function renderInfo(){
   if(!c){el.innerHTML='';return}
   const files=c.msgs.filter(m=>m.type==='file');
   const online=c.peerUserId?(S.onlineUsers[c.peerUserId]||c.status==='Online'):(!c.isGroup&&c.status==='Online');
-  el.innerHTML=`<div class="h-16 px-5 border-b border-white/[0.08] flex items-center justify-between shrink-0">
+  el.innerHTML=`<div class="h-16 px-5 border-b border-white/[0.07] flex items-center justify-between shrink-0 bg-white/[0.01]">
     <span class="text-sm font-bold text-white">Details</span>
     <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition" data-act="info" aria-label="Close panel">${ic('x')}</button>
   </div>
-  <div class="p-6 flex flex-col items-center gap-2 border-b border-white/[0.07]">
-    ${av(c.name,'w-16 h-16')}
-    <div class="text-sm font-bold text-white mt-1">${esc(c.name)}</div>
-    <div class="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-white/[0.06] text-zinc-300">${online?'<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>':''}${online?'Online':esc(c.status)}</div>
+  <div class="p-6 flex flex-col items-center gap-2 border-b border-white/[0.07] bg-gradient-to-b from-white/[0.02] to-transparent">
+    <span class="p-1 rounded-full ring-1 ring-white/[0.1] shadow-[0_12px_30px_-8px_rgba(0,0,0,.8)]">${av(c.name,'w-16 h-16')}</span>
+    <div class="text-sm font-bold text-white mt-1.5">${esc(c.name)}</div>
+    <div class="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-zinc-300">${online?'<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>':''}${online?'Online':esc(c.status)}</div>
   </div>
   <div class="p-5 space-y-5">
-    ${c.peerUserId?`<div class="rounded-2xl bg-black/50 border ${c.keyChanged?'border-amber-500/40':'border-white/[0.08]'} p-3.5 space-y-1.5"><div class="flex items-center justify-between text-xs"><span class="font-semibold text-zinc-200 inline-flex items-center gap-1.5">${ic('shield-check','w-3.5 h-3.5 text-emerald-400')}ECDH P-256 E2EE</span><span class="text-[10px] font-semibold ${c.keyChanged?'text-amber-300':(c.peerPublicKey&&S.ecdhId?'text-emerald-400':'text-amber-300')}">${c.keyChanged?'Key rotated':(c.peerPublicKey&&S.ecdhId?'Key verified':'Pending peer')}</span></div><div class="text-[11px] text-zinc-400">Peer key: <span class="font-mono text-zinc-200">${esc(c.peerKeyFp||'not published yet')}</span></div><div id="info-safety" class="text-[11px] font-mono text-emerald-300"></div>${c.keyChanged?'<button data-act="verifyPeerKey" class="mt-1 h-7 px-3 rounded-lg bg-amber-400 text-black text-[11px] font-bold">Verify new key</button>':''}</div>`:''}
-    ${c.isGroup?`<div class="rounded-2xl bg-black/50 border border-white/[0.08] p-3.5 space-y-2"><div class="flex items-center justify-between text-xs"><span class="font-semibold text-zinc-200">Members (${c.members?.length||1})</span><span class="text-[10px] font-mono text-emerald-400">${canE2eeConv(c)?'e2ee2 wrapped':'Local'}</span></div><div class="space-y-1.5 max-h-36 overflow-y-auto">${(c.members||[]).map(m=>`<div class="flex items-center gap-2 text-xs"><span class="w-2 h-2 rounded-full ${S.onlineUsers[m.id]?'bg-emerald-400':'bg-zinc-600'}"></span><span class="flex-1 truncate text-zinc-200">${esc(m.displayName)}</span><span class="text-[10px] font-mono text-zinc-500">${m.keyFp?'🔒':''}${m.role==='owner'?' owner':''}</span></div>`).join('')}</div>${S.user?`<button data-act="leaveGroup" class="w-full h-8 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold text-rose-300 transition">Leave group</button>`:''}</div>`:''}
+    ${c.peerUserId?`<div class="lux-card rounded-2xl ${c.keyChanged?'border-amber-500/40':'border-emerald-400/20'} p-3.5 space-y-1.5"><div class="flex items-center justify-between text-xs"><span class="font-semibold text-zinc-200 inline-flex items-center gap-1.5">${ic('shield-check','w-3.5 h-3.5 text-emerald-400')}ECDH P-256 E2EE</span><span class="text-[10px] font-semibold ${c.keyChanged?'text-amber-300':(c.peerPublicKey&&S.ecdhId?'text-emerald-400':'text-amber-300')}">${c.keyChanged?'Key rotated':(c.peerPublicKey&&S.ecdhId?'Key verified':'Pending peer')}</span></div><div class="text-[11px] text-zinc-400">Peer key: <span class="font-mono text-zinc-200">${esc(c.peerKeyFp||'not published yet')}</span></div><div id="info-safety" class="text-[11px] font-mono text-emerald-300 bg-emerald-500/10 border border-emerald-400/20 rounded-lg px-2.5 py-1 mt-1 inline-block"></div>${c.keyChanged?'<button data-act="verifyPeerKey" class="mt-1 h-7 px-3 rounded-lg bg-amber-400 text-black text-[11px] font-bold">Verify new key</button>':''}</div>`:''}
+    ${c.isGroup?`<div class="lux-card rounded-2xl p-3.5 space-y-2"><div class="flex items-center justify-between text-xs"><span class="font-semibold text-zinc-200">Members (${c.members?.length||1})</span><span class="text-[10px] font-mono text-emerald-400">${canE2eeConv(c)?'e2ee2 wrapped':'Local'}</span></div><div class="space-y-1.5 max-h-36 overflow-y-auto">${(c.members||[]).map(m=>`<div class="flex items-center gap-2 text-xs"><span class="w-2 h-2 rounded-full ${S.onlineUsers[m.id]?'bg-emerald-400':'bg-zinc-600'}"></span><span class="flex-1 truncate text-zinc-200">${esc(m.displayName)}</span><span class="text-[10px] font-mono text-zinc-500">${m.keyFp?'🔒':''}${m.role==='owner'?' owner':''}</span></div>`).join('')}</div>${S.user?`<button data-act="leaveGroup" class="w-full h-8 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-xs font-semibold text-rose-300 transition">Leave group</button>`:''}</div>`:''}
     <div>
       <div class="text-xs font-medium text-zinc-400 mb-2">Folder</div>
-      <div class="flex gap-1.5">${['work','personal'].map(f=>`<button class="h-8 px-3.5 rounded-full bg-white/[0.07] hover:bg-white/[0.14] text-xs font-semibold text-zinc-200 aria-[pressed=true]:bg-white aria-[pressed=true]:text-black transition" data-act="setFolder" data-arg="${f}" aria-pressed="${c.folder===f}">${f[0].toUpperCase()+f.slice(1)}</button>`).join('')}</div>
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/45 border border-white/[0.08]">${['work','personal'].map(f=>`<button class="h-8 px-3 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white border border-transparent aria-[pressed=true]:bg-gradient-to-b aria-[pressed=true]:from-white/[0.16] aria-[pressed=true]:to-white/[0.08] aria-[pressed=true]:text-white aria-[pressed=true]:border-white/[0.15] aria-[pressed=true]:shadow-[inset_0_1px_0_rgba(255,255,255,.22)] transition-all" data-act="setFolder" data-arg="${f}" aria-pressed="${c.folder===f}">${f[0].toUpperCase()+f.slice(1)}</button>`).join('')}</div>
     </div>
     <div class="flex items-center justify-between gap-3 py-1">
       <span class="text-xs font-semibold text-zinc-200">End-to-end encryption</span>
-      <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="e2ee" data-k="e2ee" aria-checked="${cfg.e2ee}" aria-label="Encryption"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+      <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="e2ee" data-k="e2ee" aria-checked="${cfg.e2ee}" aria-label="Encryption"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
     </div>
     <div class="flex items-center justify-between gap-3 py-1">
       <span class="text-xs font-semibold text-zinc-200">Read receipts</span>
-      <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="receipts" data-k="receipts" aria-checked="${cfg.receipts!==false}" aria-label="Read receipts"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+      <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="receipts" data-k="receipts" aria-checked="${cfg.receipts!==false}" aria-label="Read receipts"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
     </div>
     <div class="flex items-center justify-between gap-3 py-1">
       <span class="text-xs font-semibold text-zinc-200">Vanish mode (${cfg.vanishSec||6}s)</span>
-      <button class="group relative w-11 h-6 rounded-full bg-zinc-700 aria-[checked=true]:bg-accent transition-colors shrink-0" role="switch" data-act="sw" data-arg="vanish" data-k="vanish" aria-checked="${cfg.vanish}" aria-label="Vanish mode"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[22px]"></span></button>
+      <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="vanish" data-k="vanish" aria-checked="${cfg.vanish}" aria-label="Vanish mode"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
     </div>
     <div>
       <div class="text-xs font-medium text-zinc-400 mb-2">Shared files (${files.length})</div>
-      ${files.length?files.map(f=>(BLOBS[f.id]||f.mediaPath)?`<button data-act="downloadFile" data-arg="${f.id}" class="w-full flex items-center justify-between gap-2 text-xs py-2 border-b border-white/[0.06] hover:bg-white/[0.04] px-1 rounded text-left transition"><span class="truncate text-zinc-200">${esc(f.name)}</span><span class="font-mono text-[10px] text-accent shrink-0">${esc(f.size)} ↓</span></button>`:`<div class="flex items-center justify-between gap-2 text-xs py-2 border-b border-white/[0.06]"><span class="truncate text-zinc-200">${esc(f.name)}</span><span class="font-mono text-[10px] text-zinc-500 shrink-0">${esc(f.size)}</span></div>`).join(''):'<div class="text-xs text-zinc-500">No shared files yet.</div>'}
+      ${files.length?files.map(f=>(BLOBS[f.id]||f.mediaPath)?`<button data-act="downloadFile" data-arg="${f.id}" class="w-full flex items-center justify-between gap-2 text-xs py-2 border-b border-white/[0.06] hover:bg-white/[0.04] px-2 rounded-lg text-left transition"><span class="truncate text-zinc-200">${esc(f.name)}</span><span class="font-mono text-[10px] text-accent shrink-0">${esc(f.size)} ↓</span></button>`:`<div class="flex items-center justify-between gap-2 text-xs py-2 border-b border-white/[0.06]"><span class="truncate text-zinc-200">${esc(f.name)}</span><span class="font-mono text-[10px] text-zinc-500 shrink-0">${esc(f.size)}</span></div>`).join(''):'<div class="text-xs text-zinc-500">No shared files yet.</div>'}
     </div>
     <div class="grid gap-2 pt-1">
-      <button class="h-9 px-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-white inline-flex items-center justify-center gap-1.5 transition" data-act="summarize">${ic('sparkles','w-3.5 h-3.5 text-accent')}Summarize thread</button>
-      <button class="h-9 px-3.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold text-rose-400 transition" data-act="clearChat">Clear history</button>
-      <button class="h-9 px-3.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold text-rose-400 transition" data-act="deleteChat">Delete conversation</button>
+      <button class="btn-ghost h-9 px-3.5 rounded-xl text-xs font-semibold text-white inline-flex items-center justify-center gap-1.5" data-act="summarize">${ic('sparkles','w-3.5 h-3.5 text-accent')}Summarize thread</button>
+      <button class="h-9 px-3.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-xs font-semibold text-rose-300 transition" data-act="clearChat">Clear history</button>
+      <button class="h-9 px-3.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-xs font-semibold text-rose-300 transition" data-act="deleteChat">Delete conversation</button>
     </div>
   </div>`;
   if(c.peerUserId&&c.peerKeyFp&&S.ecdhId?.fp){
@@ -2179,11 +2244,11 @@ function renderReel(reset=true){
   const cached=r._localUrl||BLOBS['social:reel:'+r.id];
   if(cached)applyReelUrl(cached);
   else if(r.mediaPath&&S.user)resolveSocialMediaUrl('reel',r).then(applyReelUrl);
-  const sb=(act,i,l,on,col='text-rose-500')=>`<button data-act="${act}" class="group flex flex-col items-center gap-1" aria-label="${l}"><span class="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm grid place-items-center group-hover:scale-110 transition-transform ${on?col:'text-white'}">${ic(i,'w-6 h-6'+(on?' fill-current':''))}</span><span class="text-[11px] font-semibold text-white drop-shadow">${l}</span></button>`;
+  const sb=(act,i,l,on,col='text-rose-500')=>`<button data-act="${act}" class="group flex flex-col items-center gap-1" aria-label="${l}"><span class="w-11 h-11 rounded-full bg-black/45 backdrop-blur-xl border border-white/[0.16] shadow-[inset_0_1px_0_rgba(255,255,255,.15),0_8px_20px_-6px_rgba(0,0,0,.6)] grid place-items-center group-hover:scale-110 group-hover:bg-white/[0.14] transition-all ${on?col:'text-white'}">${ic(i,'w-5 h-5'+(on?' fill-current':''))}</span><span class="text-[11px] font-semibold text-white drop-shadow tabular-nums">${l}</span></button>`;
   $('#reel-ui').innerHTML=`<div class="min-w-0 space-y-2.5">
-    <div class="flex items-center gap-2.5">${av(r.author,'w-8 h-8')}<span class="text-xs font-bold text-white drop-shadow">${esc(r.author)}</span><button data-act="reelFollow" class="h-7 px-3 rounded-full border border-white/40 text-[11px] font-semibold transition ${f?'bg-white text-black':'bg-black/30 text-white hover:bg-white/15'}">${f?'Following':'Follow'}</button></div>
+    <div class="flex items-center gap-2.5">${av(r.author,'w-8 h-8')}<span class="text-xs font-bold text-white drop-shadow">${esc(r.author)}</span><button data-act="reelFollow" class="h-7 px-3 rounded-full border text-[11px] font-semibold backdrop-blur-md transition-all ${f?'bg-white/[0.16] border-white/25 text-white':'bg-white/[0.08] border-white/20 text-white hover:bg-white/[0.2]'}">${f?'Following':'Follow'}</button></div>
     <p class="text-[13px] text-white/95 leading-snug drop-shadow">${esc(r.cap)}</p>
-    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] text-zinc-200">${ic('music','w-3 h-3')}<span>Original Audio · WhatsGram Studio</span></div>
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 text-[10px] text-zinc-200"><span class="inline-flex items-end gap-0.5 h-2.5 text-pink-400"><i class="eq-bar h-2"></i><i class="eq-bar h-2.5" style="animation-delay:.18s"></i><i class="eq-bar h-1.5" style="animation-delay:.36s"></i></span><span>Original Audio · WhatsGram Studio</span></div>
   </div>
   <div class="flex flex-col items-center gap-3.5 shrink-0">${sb('reelLike','heart',n.toLocaleString(),liked,'text-rose-500')}${sb('reelComments','message-circle',com,false)}${sb('reelSave','bookmark',saved?'Saved':'Save',saved,'text-amber-400')}${sb('reelShare','share-2','Share',false)}</div>`;
   if(reset){const b=bar();b.style.animation='none';void b.offsetWidth;b.style.animation='bar 9s linear forwards';S.paused=false;show('#reel-pause',false)}
@@ -2196,7 +2261,7 @@ function likeReel(force){const r=getReels()[S.reel],i=RS.liked.indexOf(r.id);if(
 function openComments(){
   const r=getReels()[S.reel],all=[...(r.com||[]),...(RS.extra[r.id]||[])];
   setTxt('#cm-title',`Comments (${all.length})`);
-  $('#cm-list').innerHTML=all.length?all.map(c=>`<div class="flex gap-2.5 items-start">${av(c.n,'w-8 h-8')}<div class="min-w-0 flex-1 rounded-2xl bg-white/[0.04] px-3.5 py-2"><div class="text-xs font-bold text-white">${esc(c.n)}</div><div class="text-xs text-zinc-300 mt-0.5 break-words">${esc(c.t)}</div></div></div>`).join(''):'<div class="text-xs text-zinc-500 text-center py-6">No comments yet. Start the thread.</div>';
+  $('#cm-list').innerHTML=all.length?all.map(c=>`<div class="flex gap-2.5 items-start">${av(c.n,'w-8 h-8')}<div class="lux-card min-w-0 flex-1 rounded-2xl px-3.5 py-2.5"><div class="text-xs font-bold text-white">${esc(c.n)}</div><div class="text-xs text-zinc-300 mt-0.5 break-words">${esc(c.t)}</div></div></div>`).join(''):'<div class="text-xs text-zinc-500 text-center py-6">No comments yet. Start the thread.</div>';
   openM('m-comments');$('#cm-list').scrollTop=1e9;
 }
 
@@ -2205,8 +2270,8 @@ function renderStudioPreview(){
   const isReel=S.studioMode==='reel';
   const ts=$('#st-tab-story'),tr=$('#st-tab-reel');
   if(ts&&tr){
-    ts.className='h-8 rounded-xl text-xs font-semibold transition '+(isReel?'text-zinc-400 hover:text-white':'bg-white text-black');
-    tr.className='h-8 rounded-xl text-xs font-semibold transition '+(isReel?'bg-white text-black':'text-zinc-400 hover:text-white');
+    ts.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isReel?'lux-tab-off':'lux-tab-on');
+    tr.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isReel?'lux-tab-on':'lux-tab-off');
   }
   setTxt('#studio-title',isReel?'Create reel':'Create story');
   $('#st-in').placeholder=isReel?'Reel caption…':'Poll question';
@@ -2298,8 +2363,8 @@ function aiBubble(role,html){
   const d=document.createElement('div');
   d.className=role==='me'?'flex justify-end':'flex gap-3 items-start';
   d.innerHTML=role==='me'
-    ?`<div class="bg-accent text-white rounded-2xl rounded-br-md px-4 py-2.5 text-[13.5px] max-w-[85%] break-words shadow-md">${html}</div>`
-    :`<span class="w-8 h-8 rounded-xl border border-accent/30 bg-accent/15 grid place-items-center text-accent shrink-0">${ic('bot','w-4 h-4')}</span><div class="rounded-2xl rounded-tl-md bg-zinc-900/90 border border-white/[0.08] px-4 py-3 text-[13.5px] leading-relaxed text-zinc-100 max-w-[90%] whitespace-pre-wrap break-words"></div>`;
+    ?`<div class="bubble-me text-white rounded-[20px] rounded-br-[6px] px-4 py-2.5 text-[13.5px] max-w-[85%] break-words">${html}</div>`
+    :`<span class="w-8 h-8 rounded-xl border border-accent/35 bg-gradient-to-br from-accent/25 to-indigo-500/20 grid place-items-center text-accent shrink-0 shadow-[0_0_16px_-4px_rgb(var(--ac-rgb)/.45)]">${ic('bot','w-4 h-4')}</span><div class="lux-card rounded-[20px] rounded-tl-[6px] px-4 py-3 text-[13.5px] leading-relaxed text-zinc-100 max-w-[90%] whitespace-pre-wrap break-words"></div>`;
   $('#ai-log').appendChild(d);icons();$('#ai-log').scrollTop=1e9;return role==='me'?d:d.lastElementChild;
 }
 function aiWelcome(){aiBubble('bot','').textContent='Hi. I can summarize your conversations, extract action items, draft replies and search by meaning across your stored messages.'}
@@ -2342,7 +2407,7 @@ async function aiRun(p){
   let i=0;
   S.aiBusy=setInterval(()=>{i+=4;el.textContent=a.t.slice(0,i);$('#ai-log').scrollTop=1e9;if(i>=a.t.length)aiDone(el,a)},14);
 }
-function aiDone(el,a){clearInterval(S.aiBusy);S.aiBusy=null;el.textContent=a.t;if(a.draft){S.draft=a.draft;el.insertAdjacentHTML('beforeend',`<div class="mt-3"><button class="h-8 px-3.5 rounded-full bg-accent hover:brightness-110 text-xs font-semibold text-white transition" data-act="useDraft">Insert into conversation</button></div>`)}$('#ai-send').classList.remove('hidden');show('#ai-stop',false,'inline-flex')}
+function aiDone(el,a){clearInterval(S.aiBusy);S.aiBusy=null;el.textContent=a.t;if(a.draft){S.draft=a.draft;el.insertAdjacentHTML('beforeend',`<div class="mt-3"><button class="btn-primary h-8 px-4 rounded-full text-xs font-semibold" data-act="useDraft">Insert into conversation</button></div>`)}$('#ai-send').classList.remove('hidden');show('#ai-stop',false,'inline-flex')}
 
 /* ---------- vault / settings ---------- */
 function renderAudit(){
@@ -2351,9 +2416,9 @@ function renderAudit(){
 }
 function renderStats(){
   const sent=D.reduce((a,c)=>a+c.msgs.filter(m=>m.from==='me').length,0),rec=D.reduce((a,c)=>a+c.msgs.filter(m=>m.from==='them').length,0),mx=Math.max(1,...D.map(c=>c.msgs.length));
-  $('#stats').innerHTML=[['Conversations',D.length],['Sent',sent],['Received',rec],['Reels liked',RS.liked.length]].map(([l,v])=>`<div class="rounded-2xl bg-black/40 border border-white/[0.07] p-3.5"><div class="text-[11px] font-medium text-zinc-400">${l}</div><div class="text-2xl font-bold tracking-tight text-white mt-1 font-mono tabular-nums">${v}</div></div>`).join('');
-  $('#bars').innerHTML=D.length?D.map(c=>`<div class="flex items-center gap-3 text-xs"><span class="w-28 truncate text-zinc-300 font-medium">${esc(c.name)}</span><div class="flex-1 h-2 rounded-full bg-white/[0.07] overflow-hidden"><div class="h-full rounded-full bg-accent transition-all duration-300" style="width:${c.msgs.length/mx*100}%"></div></div><span class="font-mono w-6 text-right text-zinc-300 tabular-nums">${c.msgs.length}</span></div>`).join(''):'<div class="text-xs text-zinc-500">No data.</div>';
-  $('#accents').innerHTML=ACCENTS.map(([n,c])=>`<button data-act="accent" data-arg="${c}" aria-label="${n}" title="${n}" aria-pressed="${cfg.accent===c}" class="w-7 h-7 rounded-full border-2 border-zinc-950 ring-1 ring-white/20 aria-[pressed=true]:ring-2 aria-[pressed=true]:ring-white aria-[pressed=true]:scale-110 transition-transform" style="background:${c}"></button>`).join('');
+  $('#stats').innerHTML=[['Conversations',D.length],['Sent',sent],['Received',rec],['Reels liked',RS.liked.length]].map(([l,v])=>`<div class="rounded-2xl bg-gradient-to-b from-white/[0.045] to-white/[0.015] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,.06)] p-3.5"><div class="text-[11px] font-medium text-zinc-400">${l}</div><div class="text-2xl font-extrabold tracking-tight text-white mt-1 font-mono tabular-nums">${v}</div></div>`).join('');
+  $('#bars').innerHTML=D.length?D.map(c=>`<div class="flex items-center gap-3 text-xs"><span class="w-28 truncate text-zinc-300 font-medium">${esc(c.name)}</span><div class="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden"><div class="h-full rounded-full transition-all duration-300 shadow-[0_0_10px_rgb(var(--ac-rgb)/.6)]" style="width:${c.msgs.length/mx*100}%;background:linear-gradient(90deg,var(--ac),rgb(var(--ac-rgb)/.65))"></div></div><span class="font-mono w-6 text-right text-zinc-300 tabular-nums">${c.msgs.length}</span></div>`).join(''):'<div class="text-xs text-zinc-500">No data.</div>';
+  $('#accents').innerHTML=ACCENTS.map(([n,c])=>`<button data-act="accent" data-arg="${c}" aria-label="${n}" title="${n}" aria-pressed="${cfg.accent===c}" class="w-7 h-7 rounded-full border-2 border-[#080a12] ring-1 ring-white/20 aria-[pressed=true]:ring-2 aria-[pressed=true]:ring-white aria-[pressed=true]:scale-110 transition-transform shadow-sm" style="background:${c}"></button>`).join('');
   icons();
 }
 const diag=m=>{const o=$('#diag');o.classList.remove('hidden');o.textContent+=`[${now()}] ${m}\n`;o.scrollTop=1e9};
@@ -2384,7 +2449,7 @@ function cmdItems(q){
 }
 function renderCmdPalette(q=''){
   const items=cmdItems(q),box=$('#cmd-list');if(!box)return;
-  box.innerHTML=items.length?items.map(it=>`<button data-act="cmdRun" data-arg="${esc(it.run)}" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-white/[0.08] focus:bg-white/[0.08] focus:outline-none text-left transition"><span class="w-8 h-8 rounded-xl bg-white/[0.07] border border-white/[0.08] grid place-items-center text-accent shrink-0">${ic(it.icon,'w-4 h-4')}</span><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(it.lbl)}</div><div class="text-[11px] text-zinc-400 truncate">${esc(it.sub)}</div></div><i data-lucide="corner-down-left" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i></button>`).join(''):'<div class="py-8 text-center text-xs text-zinc-500">No matching commands.</div>';
+  box.innerHTML=items.length?items.map(it=>`<button data-act="cmdRun" data-arg="${esc(it.run)}" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl border border-transparent hover:bg-white/[0.06] hover:border-white/[0.08] focus:bg-white/[0.08] focus:outline-none text-left transition-all"><span class="w-8 h-8 rounded-xl bg-white/[0.05] border border-white/[0.09] grid place-items-center text-accent shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,.08)]">${ic(it.icon,'w-4 h-4')}</span><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(it.lbl)}</div><div class="text-[11px] text-zinc-400 truncate">${esc(it.sub)}</div></div><i data-lucide="corner-down-left" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i></button>`).join(''):'<div class="py-8 text-center text-xs text-zinc-500">No matching commands.</div>';
   icons();
 }
 
@@ -2408,7 +2473,7 @@ function closeMenu(restore){const o=S.menu;if(!o)return;S.menu=null;o.m.remove()
 function openMenu(key,el){
   const[name,param]=key.split(':'),def=MENUS[name];if(!def)return console.warn('Unknown menu',name);
   const m=document.createElement('div');m.id='menu';m.setAttribute('role','menu');
-  m.className='fixed z-[60] min-w-[13rem] max-w-[calc(100vw-16px)] max-h-[calc(100vh-16px)] overflow-y-auto bg-zinc-900/95 backdrop-blur-xl border border-white/[0.12] rounded-2xl p-1.5 shadow-2xl shadow-black/80';
+  m.className='fixed z-[60] min-w-[13.5rem] max-w-[calc(100vw-16px)] max-h-[calc(100vh-16px)] overflow-y-auto lux-modal rounded-2xl p-1.5';
   m.style.visibility='hidden';m.style.left='0';m.style.top='0';m.innerHTML=menuHTML(def(param));document.body.appendChild(m);icons();
   const r=el.getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight,vw=innerWidth,vh=innerHeight;let x,y;
   if(PREF[name]==='right'){x=r.right+8;y=r.bottom-h}else{x=r.right-w;y=r.bottom+6;if(y+h>vh-8)y=r.top-h-6}
@@ -2508,7 +2573,7 @@ const A={
  delMsg(id){const c=cur();if(c){c.msgs=c.msgs.filter(m=>m.id!==id);if(c.pin===id)c.pin=null;saveD();renderThread(true);renderList();if(S.user)sbPost({action:'deleteMessage',conversationId:c.id,messageId:id})}},
  clearChat(){const c=cur();if(c)ask('Clear history?',`All messages with ${c.name} will be removed from this device.`,()=>{c.msgs=[];c.pin=null;saveD();renderThread();renderList();renderInfo();if(S.user)sbPost({action:'clearChat',id:c.id})})},
  deleteChat(){const c=cur();if(c)ask('Delete conversation?',`${c.name} and its messages will be removed.`,()=>{D=D.filter(x=>x.id!==c.id);S.chat=null;saveD();$('#v-chats').dataset.open='0';renderList();renderThread();renderInfo();audit('Conversation deleted');if(S.user)sbPost({action:'deleteChat',id:c.id})})},
- contactTab(tab){S.contactTab=tab==='group'?'group':'dm';const isG=S.contactTab==='group';const td=$('#ctab-dm'),tg=$('#ctab-grp');if(td&&tg){td.className='h-8 rounded-xl text-xs font-semibold transition '+(isG?'text-zinc-400 hover:text-white':'bg-white text-black');tg.className='h-8 rounded-xl text-xs font-semibold transition '+(isG?'bg-white text-black':'text-zinc-400 hover:text-white')}show('#dm-panel',!isG,'space-y-3.5');show('#grp-panel',isG,'space-y-3.5');if(isG)renderGroupMembers()},
+ contactTab(tab){S.contactTab=tab==='group'?'group':'dm';const isG=S.contactTab==='group';const td=$('#ctab-dm'),tg=$('#ctab-grp');if(td&&tg){td.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isG?'lux-tab-off':'lux-tab-on');tg.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isG?'lux-tab-on':'lux-tab-off')}show('#dm-panel',!isG,'space-y-3.5');show('#grp-panel',isG,'space-y-3.5');if(isG)renderGroupMembers()},
  newGroup(){S.contactTab='group';A.open('m-contact')},
  async createGroup(){
    const n=$('#grp-name').value.trim();if(!n)return toast('Enter a group name','err');
