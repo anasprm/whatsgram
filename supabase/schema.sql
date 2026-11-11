@@ -4,6 +4,7 @@
 -- 1. User Profiles (discovered for real-time user-to-user DMs + ECDH E2EE public keys)
 create table if not exists public.wg_profiles (
   id uuid primary key references auth.users(id) on delete cascade,
+  username text,
   email text unique not null,
   display_name text not null,
   status text not null default 'Online',
@@ -11,8 +12,49 @@ create table if not exists public.wg_profiles (
   key_fp text,
   created_at timestamptz not null default now()
 );
+alter table public.wg_profiles add column if not exists username text;
 alter table public.wg_profiles add column if not exists public_key jsonb;
 alter table public.wg_profiles add column if not exists key_fp text;
+create unique index if not exists idx_wg_profiles_username_lower
+  on public.wg_profiles (lower(username))
+  where username is not null;
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'wg_profiles_username_format'
+      and conrelid = 'public.wg_profiles'::regclass
+  ) then
+    alter table public.wg_profiles
+      add constraint wg_profiles_username_format
+      check (username is null or username ~ '^[a-z0-9][a-z0-9._-]{2,23}$');
+  end if;
+end $$;
+
+-- 1b. Optional Recovery Emails (private owner-scoped RLS so peer reads never expose recovery email)
+create table if not exists public.wg_account_recovery (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  recovery_email text not null,
+  updated_at timestamptz not null default now()
+);
+create unique index if not exists idx_wg_recovery_email_lower
+  on public.wg_account_recovery (lower(recovery_email));
+
+-- 1c. Hashed Single-Use Password Reset Tokens (server-only via secretKey/service_role)
+create table if not exists public.wg_password_resets (
+  id text primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  recovery_email text not null,
+  token_hash text unique not null,
+  expires_at timestamptz not null,
+  used_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_wg_pw_resets_user_created
+  on public.wg_password_resets (user_id, created_at desc);
+create index if not exists idx_wg_pw_resets_active_hash
+  on public.wg_password_resets (token_hash)
+  where used_at is null;
 
 -- 2. Vault & Workspace Settings
 create table if not exists public.wg_settings (
@@ -159,6 +201,8 @@ create index if not exists idx_wg_audit_user on public.wg_audit_logs(user_id, cr
 
 -- Enable Row Level Security (RLS) on all tables
 alter table public.wg_profiles enable row level security;
+alter table public.wg_account_recovery enable row level security;
+alter table public.wg_password_resets enable row level security;
 alter table public.wg_settings enable row level security;
 alter table public.wg_conversations enable row level security;
 alter table public.wg_conversation_members enable row level security;
@@ -176,6 +220,17 @@ create policy "wg_profiles_select" on public.wg_profiles for select to authentic
 drop policy if exists "wg_profiles_upsert_own" on public.wg_profiles;
 create policy "wg_profiles_upsert_own" on public.wg_profiles for all to authenticated
   using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
+
+-- Private recovery email policies (strictly owner-scoped)
+drop policy if exists "wg_account_recovery_own" on public.wg_account_recovery;
+create policy "wg_account_recovery_own" on public.wg_account_recovery for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+
+-- Server-only hashed password reset tokens (block direct client access; backend uses secretKey)
+revoke all on table public.wg_password_resets from anon, authenticated;
+drop policy if exists "wg_pw_resets_deny_clients" on public.wg_password_resets;
+create policy "wg_pw_resets_deny_clients" on public.wg_password_resets for all to anon, authenticated
+  using (false) with check (false);
 
 -- Settings, reels prefs & audit logs policies (strictly owner-scoped)
 drop policy if exists "wg_settings_own" on public.wg_settings;

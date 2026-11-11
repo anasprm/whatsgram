@@ -101,6 +101,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 .grp.playing .wv i{animation:wave .5s ease-in-out infinite alternate}
 .grp.playing .wv i:nth-child(odd){animation-delay:.18s}
 .grp.playing .wv i:nth-child(3n){animation-delay:.32s}
+.landing-aura{background-color:#040509;background-image:radial-gradient(ellipse 80% 55% at 50% -10%,rgb(var(--ac-rgb)/.19),transparent 65%),radial-gradient(circle at 88% 24%,rgba(221,42,123,.12),transparent 42%),radial-gradient(circle at 12% 72%,rgba(16,185,129,.09),transparent 45%),radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:100% 100%,100% 100%,100% 100%,28px 28px}
+.auth-aura{background-image:radial-gradient(circle at 15% 15%,rgb(var(--ac-rgb)/.22),transparent 45%),radial-gradient(circle at 85% 85%,rgba(221,42,123,.14),transparent 45%),linear-gradient(160deg,#0a0c16 0%,#06070d 100%)}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:9999px}
@@ -116,7 +118,321 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
 <div id="toasts" class="fixed z-[70] right-4 bottom-20 md:bottom-5 flex flex-col gap-2 items-end pointer-events-none"></div>
 
-<div id="app" class="flex flex-col md:flex-row bg-[#040509] selection:bg-accent/30 selection:text-white" style="height:100dvh">
+<!-- INTERNATIONAL LANDING PAGE -->
+<div id="landing" class="landing-aura fixed inset-0 z-40 overflow-y-auto overflow-x-hidden">
+  <!-- Sticky Top Navigation -->
+  <header class="sticky top-0 z-30 border-b border-white/[0.07] bg-[#040509]/80 backdrop-blur-2xl">
+    <div class="max-w-7xl mx-auto h-16 px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
+      <button data-act="landScroll" data-arg="l-hero" class="flex items-center gap-2.5 sm:gap-3 text-left group shrink-0">
+        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shadow-[0_8px_22px_-4px_rgba(221,42,123,.55),inset_0_1px_0_rgba(255,255,255,.35)] group-hover:scale-105 transition-transform">
+          <i data-lucide="hexagon" class="w-4 h-4 stroke-[2.4]"></i>
+        </span>
+        <span class="flex items-center gap-1.5 sm:gap-2">
+          <span class="text-base sm:text-lg font-extrabold tracking-tight text-white">WhatsGram</span>
+          <span class="hidden sm:inline-block text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/[0.07] text-zinc-200 border border-white/[0.11]">OS</span>
+        </span>
+      </button>
+      <nav class="hidden md:flex items-center gap-1 text-[13px] font-medium text-zinc-400">
+        <button data-act="landScroll" data-arg="l-features" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">Capabilities</button>
+        <button data-act="landScroll" data-arg="l-security" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">E2EE Security</button>
+        <button data-act="landScroll" data-arg="l-recovery" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">Identity &amp; Recovery</button>
+        <button data-act="landScroll" data-arg="l-faq" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">FAQ</button>
+      </nav>
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button data-act="openAuth" data-arg="signin" class="btn-ghost h-9 px-3 sm:px-4 rounded-full text-xs font-semibold text-zinc-100 whitespace-nowrap">Sign in</button>
+        <button data-act="openAuth" data-arg="signup" class="btn-primary h-9 px-3 sm:px-4 rounded-full text-xs font-bold inline-flex items-center gap-1.5 whitespace-nowrap"><span>Create account</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="l-hero" class="max-w-7xl mx-auto px-4 sm:px-8 pt-10 pb-14 lg:pt-20 lg:pb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div class="lg:col-span-6 min-w-0 space-y-6">
+        <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-[11px] font-medium text-zinc-200 max-w-full shadow-[inset_0_1px_0_rgba(255,255,255,.08)]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>
+          <span>ECDH P-256 · Meta-Style @AI · Postgres Cloud Sync</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl xl:text-[54px] font-extrabold tracking-tight text-white leading-[1.07]">
+          Sovereign messaging with <span class="bg-gradient-to-r from-[#38bdf8] via-[#a855f7] to-[#ec4899] bg-clip-text text-transparent">AI intelligence</span> and zero-noise identity.
+        </h1>
+        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-xl">
+          Create your account in seconds with a <strong class="text-zinc-200 font-semibold">username and password</strong> — no phone number or mandatory tracking email. Chat with client-side WebCrypto E2EE, invoke <code class="text-zinc-200 font-mono text-xs px-1.5 py-0.5 rounded bg-white/[0.07]">@ai</code> anywhere, and add an optional recovery email solely for instant password reset links.
+        </p>
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          <button data-act="openAuth" data-arg="signup" class="btn-primary h-11 px-6 rounded-full text-sm font-bold inline-flex items-center gap-2">
+            <span>Get started free</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+          <button data-act="openAuth" data-arg="signin" class="btn-ghost h-11 px-6 rounded-full text-sm font-semibold text-white inline-flex items-center gap-2">
+            <i data-lucide="log-in" class="w-4 h-4 text-accent"></i>
+            <span>Sign in</span>
+          </button>
+          <button data-act="enterDemo" class="h-11 px-4 rounded-full text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/[0.05] transition inline-flex items-center gap-1.5">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+            <span>Try local sandbox</span>
+          </button>
+        </div>
+        <div class="grid grid-cols-3 gap-4 pt-5 border-t border-white/[0.08] max-w-lg">
+          <div>
+            <div class="text-lg sm:text-xl font-extrabold text-white">P-256</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">Browser ECDH keys</div>
+          </div>
+          <div>
+            <div class="text-lg sm:text-xl font-extrabold text-white">Optional</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">Email only for resets</div>
+          </div>
+          <div>
+            <div class="text-lg sm:text-xl font-extrabold text-white">Gemini 2.5</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">GK answers &amp; replies</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Live Showcase Preview -->
+      <div class="lg:col-span-6 min-w-0">
+        <div class="lux-modal rounded-[28px] p-4 sm:p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></span>
+              <span class="hidden sm:inline ml-2 font-mono text-[11px] text-zinc-400">whatsgram.os / enclave</span>
+            </div>
+            <div class="inline-flex max-w-full overflow-x-auto p-0.5 rounded-xl bg-black/50 border border-white/[0.08] text-[10px] sm:text-[11px]">
+              <button data-act="landTab" data-arg="chat" id="ltab-chat" class="px-2 sm:px-2.5 py-1 rounded-lg font-semibold lux-tab-on whitespace-nowrap">Encrypted Chat</button>
+              <button data-act="landTab" data-arg="ai" id="ltab-ai" class="px-2 sm:px-2.5 py-1 rounded-lg font-semibold lux-tab-off whitespace-nowrap">@AI Copilot</button>
+              <button data-act="landTab" data-arg="vault" id="ltab-vault" class="px-2 sm:px-2.5 py-1 rounded-lg font-semibold lux-tab-off whitespace-nowrap">Identity</button>
+            </div>
+          </div>
+
+          <!-- Preview Panel: Chat -->
+          <div id="lprev-chat" class="space-y-3">
+            <div class="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 grid place-items-center text-xs font-bold text-white">AR</div>
+                <div>
+                  <div class="text-xs font-bold text-white flex items-center gap-1.5"><span>Alex Rivera</span><span class="text-[10px] font-mono text-emerald-300">@alex.dev</span></div>
+                  <div class="text-[10px] text-emerald-300 flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3"></i><span>E2EE Verified · Safety # 4821 9034</span></div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[10px] font-semibold text-emerald-300">Live</span>
+            </div>
+            <div class="space-y-2.5 px-1 py-2 text-xs">
+              <div class="flex justify-start">
+                <div class="bubble-them max-w-[82%] rounded-2xl rounded-bl-md px-3.5 py-2.5 text-zinc-100">
+                  Architecture review docs are synced in the encrypted enclave. Ready for launch?
+                  <div class="text-[10px] text-zinc-500 mt-1">19:40 · e2ee1 verified</div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <div class="bubble-me-zk max-w-[82%] rounded-2xl rounded-br-md px-3.5 py-2.5 text-white">
+                  Confirmed — keys match across both browsers, zero plaintext on wire.
+                  <div class="text-[10px] text-emerald-100/80 mt-1 text-right">19:41 · ✓✓ Read</div>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-accent/30 bg-accent/10 p-3 text-zinc-200">
+                <div class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-accent mb-1"><i data-lucide="sparkles" class="w-3 h-3"></i>Private @AI Assistant</div>
+                <p class="text-[11px] leading-relaxed text-zinc-300">Suggested reply: <span class="text-white">"Deployment checklist looks clean — shipping tonight at 20:00 UTC."</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Panel: AI -->
+          <div id="lprev-ai" class="hidden space-y-3">
+            <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-2.5">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-semibold text-white flex items-center gap-1.5"><i data-lucide="bot" class="w-3.5 h-3.5 text-accent"></i>Meta-Style AI Copilot</span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[10px] font-mono">Gemini 2.5 Flash</span>
+              </div>
+              <div class="flex justify-end">
+                <div class="bubble-me rounded-2xl px-3.5 py-2 text-xs text-white">@ai What is the scientific name of a lizard and why does it matter?</div>
+              </div>
+              <div class="bubble-them rounded-2xl p-3 text-xs text-zinc-200 leading-relaxed space-y-1">
+                <p>Lizards belong to the order <strong class="text-white">Squamata</strong> (historically classified under suborder <strong class="text-white">Lacertilia</strong>), covering over 7,000 reptile species worldwide.</p>
+                <p class="text-[10px] text-zinc-400">Works for general knowledge, math, coding, translations &amp; thread summaries.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Panel: Vault / Identity -->
+          <div id="lprev-vault" class="hidden space-y-3">
+            <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-white">Username-First Identity</div>
+                  <div class="text-[11px] text-zinc-400">Zero mandatory phone or email harvesting</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[10px] font-semibold text-emerald-300">RLS Protected</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 text-[11px]">
+                <div class="p-2.5 rounded-xl bg-black/40 border border-white/[0.07]">
+                  <div class="text-zinc-500">Username</div>
+                  <div class="font-mono font-semibold text-white mt-0.5">@alex_mercer</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-black/40 border border-white/[0.07]">
+                  <div class="text-zinc-500">Recovery Email</div>
+                  <div class="font-mono font-semibold text-emerald-300 mt-0.5">Optional · Verified</div>
+                </div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-sky-500/10 border border-sky-400/25 text-[11px] text-sky-200 flex items-center gap-2">
+                <i data-lucide="mail-check" class="w-4 h-4 shrink-0 text-sky-300"></i>
+                <span>Single-use SHA-256 reset links expire in 15 min when requested.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Architecture Strip -->
+  <section class="border-y border-white/[0.06] bg-white/[0.015] py-5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-wrap items-center justify-center md:justify-between gap-4 text-[11px] font-mono text-zinc-400">
+      <span class="flex items-center gap-2"><i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i>WebCrypto ECDH P-256 + AES-GCM</span>
+      <span class="flex items-center gap-2"><i data-lucide="database" class="w-3.5 h-3.5 text-sky-400"></i>Postgres Row-Level Security</span>
+      <span class="flex items-center gap-2"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-fuchsia-400"></i>Gemini Live @AI Assistant</span>
+      <span class="flex items-center gap-2"><i data-lucide="video" class="w-3.5 h-3.5 text-amber-400"></i>WebRTC Voice &amp; Video Calls</span>
+      <span class="flex items-center gap-2"><i data-lucide="key-round" class="w-3.5 h-3.5 text-indigo-400"></i>Hashed Reset Link Recovery</span>
+    </div>
+  </section>
+
+  <!-- Feature Bento Grid -->
+  <section id="l-features" class="max-w-7xl mx-auto px-4 sm:px-8 py-16 lg:py-24 space-y-10">
+    <div class="max-w-2xl space-y-2.5">
+      <div class="text-xs font-bold uppercase tracking-widest text-accent">Built for modern communication</div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Everything inside one unified dark OS.</h2>
+      <p class="text-sm text-zinc-400">Real-time messaging, intelligent AI help, encrypted files, and clean account recovery without sacrificing speed or control.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <article class="lux-card rounded-[24px] p-6 space-y-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 grid place-items-center"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
+        <h3 class="text-base font-bold text-white">Zero-Knowledge DMs &amp; Groups</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">Messages, captions, and file keys are encrypted inside your browser with ECDH P-256 + AES-GCM-256 (<code class="text-zinc-200 font-mono">e2ee1</code> &amp; multi-recipient <code class="text-zinc-200 font-mono">e2ee2</code>) before touching Postgres.</p>
+      </article>
+      <article class="lux-card rounded-[24px] p-6 space-y-3">
+        <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-300 grid place-items-center"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+        <h3 class="text-base font-bold text-white">Meta-Style @AI Everywhere</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">Ask general knowledge questions, solve math, translate, summarize threads, or draft one-tap replies using <code class="text-zinc-200">@ai</code> privately right in chat or full AI mode.</p>
+      </article>
+      <article class="lux-card rounded-[24px] p-6 space-y-3">
+        <div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-400/30 text-violet-300 grid place-items-center"><i data-lucide="at-sign" class="w-5 h-5"></i></div>
+        <h3 class="text-base font-bold text-white">Username + Optional Email</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">Join instantly using a unique username and password. Add an optional recovery email during sign up or later — stored privately under owner-only RLS policies.</p>
+      </article>
+      <article class="lux-card rounded-[24px] p-6 space-y-3">
+        <div class="w-10 h-10 rounded-xl bg-pink-500/15 border border-pink-400/30 text-pink-300 grid place-items-center"><i data-lucide="mail-check" class="w-5 h-5"></i></div>
+        <h3 class="text-base font-bold text-white">Verified Password Reset Links</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">Forgot your password? Request a time-limited, single-use reset link dispatched cleanly to your registered recovery email to regain account access smoothly.</p>
+      </article>
+      <article class="lux-card rounded-[24px] p-6 space-y-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/30 text-amber-300 grid place-items-center"><i data-lucide="film" class="w-5 h-5"></i></div>
+        <h3 class="text-base font-bold text-white">Stories, Reels &amp; Voice Calls</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">Publish interactive polls, apply live AR filters on vertical reels, encrypt voice notes, and launch peer-to-peer WebRTC voice &amp; video calls.</p>
+      </article>
+      <article class="lux-card rounded-[24px] p-6 space-y-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 grid place-items-center"><i data-lucide="fingerprint" class="w-5 h-5"></i></div>
+        <h3 class="text-base font-bold text-white">Hardware Passkey Vault</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">Protect active enclaves with WebAuthn passkeys or a numeric PIN, idle auto-lock timers, vanish mode expiry, and real-time security audit logs.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Security & Recovery Architecture -->
+  <section id="l-security" class="max-w-7xl mx-auto px-4 sm:px-8 py-12 lg:py-16">
+    <div id="l-recovery" class="lux-card rounded-[30px] p-6 sm:p-10 space-y-8">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="max-w-xl space-y-2">
+          <div class="text-xs font-bold uppercase tracking-widest text-emerald-400">Identity &amp; Password Recovery</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Your email stays optional, private, and solely for recovery.</h2>
+          <p class="text-xs sm:text-sm text-zinc-400">Built directly on Supabase Auth and Row-Level Security protected Postgres tables.</p>
+        </div>
+        <button data-act="openAuth" data-arg="forgot" class="btn-ghost h-9 px-4 rounded-full text-xs font-semibold text-white inline-flex items-center gap-1.5">
+          <i data-lucide="key-round" class="w-3.5 h-3.5 text-accent"></i>
+          <span>Open password recovery</span>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="p-5 rounded-2xl bg-black/40 border border-white/[0.08] space-y-2">
+          <div class="text-[11px] font-mono text-accent">01 · SIGN UP</div>
+          <div class="text-sm font-bold text-white">Pick <code class="text-accent font-mono">@username</code> + Password</div>
+          <p class="text-xs text-zinc-400 leading-relaxed">Sign up immediately without supplying an email. Or include an optional recovery email right away to protect future access.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-black/40 border border-white/[0.08] space-y-2">
+          <div class="text-[11px] font-mono text-emerald-400">02 · STORAGE ISOLATION</div>
+          <div class="text-sm font-bold text-white">Owner-Only RLS Email Vault</div>
+          <p class="text-xs text-zinc-400 leading-relaxed">Public DM directories only show your username and public key fingerprint. Your optional recovery email lives in a private owner-only Postgres table.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-black/40 border border-white/[0.08] space-y-2">
+          <div class="text-[11px] font-mono text-fuchsia-400">03 · RESET LINK</div>
+          <div class="text-sm font-bold text-white">Hashed Single-Use Link Delivery</div>
+          <p class="text-xs text-zinc-400 leading-relaxed">Forgot password generates a 256-bit random token, saves only its SHA-256 hash in Postgres for 15 minutes, and sends the reset link to your email.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Accordion -->
+  <section id="l-faq" class="max-w-4xl mx-auto px-4 sm:px-8 py-12 lg:py-16 space-y-6">
+    <div class="text-center space-y-2">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Frequently asked questions</h2>
+      <p class="text-xs sm:text-sm text-zinc-400">Clear answers about username accounts, optional emails, password resets, and E2EE.</p>
+    </div>
+    <div class="space-y-2.5">
+      <div class="lux-card rounded-2xl overflow-hidden">
+        <button data-act="landFaq" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-white hover:bg-white/[0.03]" aria-expanded="true">
+          <span>Do I have to provide an email address to create an account?</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform"></i>
+        </button>
+        <div class="faq-body px-5 pb-4 text-xs text-zinc-400 leading-relaxed">No. You only need a unique username (3–24 characters) and a password of at least 6 characters. The recovery email field is strictly optional — only link one if you want password reset links sent to an inbox, or add one later in Account Settings.</div>
+      </div>
+      <div class="lux-card rounded-2xl overflow-hidden">
+        <button data-act="landFaq" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-white hover:bg-white/[0.03]" aria-expanded="false">
+          <span>How does password reset link sharing work with my optional email?</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform"></i>
+        </button>
+        <div class="faq-body hidden px-5 pb-4 text-xs text-zinc-400 leading-relaxed">When you click Forgot Password and enter your username (or registered email), the backend verifies your registered recovery email in Postgres, creates a single-use SHA-256 hashed 15-minute reset token, and emails the clickable reset URL directly to that inbox. Signed-in users can also manage or share their own recovery link cleanly from Account Settings.</div>
+      </div>
+      <div class="lux-card rounded-2xl overflow-hidden">
+        <button data-act="landFaq" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-white hover:bg-white/[0.03]" aria-expanded="false">
+          <span>Can other WhatsGram users see my recovery email?</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform"></i>
+        </button>
+        <div class="faq-body hidden px-5 pb-4 text-xs text-zinc-400 leading-relaxed">Never. Other accounts only see your display name, <code class="text-zinc-200 font-mono">@username</code>, online status, and ECDH P-256 public key fingerprint. Your recovery email is isolated inside <code class="text-zinc-200 font-mono">wg_account_recovery</code> with owner-only Row-Level Security (<code class="text-zinc-200 font-mono">auth.uid() = user_id</code>).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA & Footer -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-8 pb-16 pt-4">
+    <div class="rounded-[30px] p-8 sm:p-12 border border-white/[0.12] bg-gradient-to-br from-accent/20 via-[#0d1020] to-[#1a0b1e] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="space-y-2 max-w-xl">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Ready to launch your private workspace?</h2>
+        <p class="text-xs sm:text-sm text-zinc-300">Claim your username in under 15 seconds, chat over P-256 encryption, and keep @ai one keystroke away.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <button data-act="openAuth" data-arg="signup" class="btn-primary h-11 px-6 rounded-full text-xs font-bold inline-flex items-center gap-2"><span>Create account</span><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+        <button data-act="openAuth" data-arg="signin" class="btn-ghost h-11 px-6 rounded-full text-xs font-semibold text-white">Sign in</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/[0.07] py-8 px-4 sm:px-8 max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs text-zinc-500">
+    <div class="flex items-center gap-2.5">
+      <span class="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white"><i data-lucide="hexagon" class="w-3.5 h-3.5"></i></span>
+      <span class="font-bold text-zinc-200">WhatsGram OS</span>
+      <span>· Sovereign Encrypted Communications</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-4">
+      <button data-act="openAuth" data-arg="signin" class="hover:text-white transition">Sign in</button>
+      <button data-act="openAuth" data-arg="signup" class="hover:text-white transition">Create account</button>
+      <button data-act="openAuth" data-arg="forgot" class="hover:text-white transition">Reset password</button>
+      <button data-act="enterDemo" class="hover:text-white transition">Local sandbox</button>
+    </div>
+  </footer>
+</div>
+
+<div id="app" class="hidden flex-col md:flex-row bg-[#040509] selection:bg-accent/30 selection:text-white" style="height:100dvh">
   <!-- LEFT NAVIGATION RAIL (Instagram Web inspired) -->
   <aside class="hidden md:flex md:w-[76px] xl:w-[252px] shrink-0 flex-col justify-between py-6 px-3.5 border-r border-white/[0.07] bg-gradient-to-b from-[#080a12] via-[#06070c] to-[#05060a]">
     <div class="flex flex-col gap-2">
@@ -526,10 +842,24 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     <!-- SETTINGS VIEW -->
     <section id="v-settings" class="settings-aura view absolute inset-0 hidden overflow-y-auto">
       <div class="max-w-3xl mx-auto p-5 md:p-8 space-y-5 pb-12">
-        <div>
-          <h1 class="text-2xl font-extrabold tracking-tight text-white">Settings</h1>
-          <p class="text-xs text-zinc-400 mt-1">Overview, appearance, accessibility and runtime diagnostics.</p>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-white">Settings</h1>
+            <p class="text-xs text-zinc-400 mt-1">Account identity, overview, appearance, accessibility and runtime diagnostics.</p>
+          </div>
+          <button data-act="openLanding" class="btn-ghost h-9 px-3.5 rounded-full text-xs font-semibold text-zinc-200 inline-flex items-center gap-1.5"><i data-lucide="layout-template" class="w-3.5 h-3.5 text-accent"></i><span>Overview page</span></button>
         </div>
+
+        <section class="lux-card rounded-[22px] p-5 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5 min-w-0">
+            <span class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-400/25 text-sky-300 grid place-items-center shrink-0"><i data-lucide="user-check" class="w-5 h-5"></i></span>
+            <div class="min-w-0">
+              <div id="set-acct-title" class="text-sm font-bold text-white truncate">Local enclave session</div>
+              <div id="set-acct-sub" class="text-xs text-zinc-400 mt-0.5 truncate">Sign in with a username or link an optional email for password reset recovery.</div>
+            </div>
+          </div>
+          <button data-act="open" data-arg="m-auth" class="btn-primary h-9 px-4 rounded-full text-xs font-semibold shrink-0">Account &amp; recovery</button>
+        </section>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
           <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-overview">
@@ -811,55 +1141,199 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-auth" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-  <div class="lux-modal w-full max-w-md rounded-[28px] p-6 space-y-4">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 grid place-items-center text-emerald-300 shadow-[0_0_20px_-6px_rgba(52,211,153,.6)]"><i data-lucide="cloud" class="w-4 h-4"></i></div>
-        <div>
-          <h3 class="text-base font-bold text-white leading-tight">Account &amp; Cloud Sync</h3>
-          <p id="auth-sub" class="text-[11px] text-zinc-400">Checking Supabase status…</p>
+<div id="m-auth" class="modal fixed inset-0 z-[60] hidden [&.open]:flex items-center justify-center bg-[#030408]/85 backdrop-blur-xl p-3 sm:p-6 overflow-y-auto">
+  <div id="auth-dialog" class="lux-modal w-full max-w-[900px] rounded-[28px] overflow-hidden my-auto">
+    <div id="auth-logged-out" class="grid grid-cols-1 md:grid-cols-12">
+      <!-- Left International Architecture Panel -->
+      <div class="hidden md:flex md:col-span-5 auth-aura p-7 flex-col justify-between border-r border-white/[0.08]">
+        <div class="space-y-5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shadow-[0_6px_18px_-4px_rgba(221,42,123,.55)]"><i data-lucide="hexagon" class="w-4 h-4 stroke-[2.4]"></i></span>
+            <span class="text-base font-extrabold tracking-tight text-white">WhatsGram OS</span>
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-xl font-extrabold text-white tracking-tight leading-snug">Identity without compulsory data mining.</h2>
+            <p class="text-xs text-zinc-400 leading-relaxed">Sign up using only a unique username and password. Add an optional recovery email anytime solely for encrypted reset links.</p>
+          </div>
+          <div class="space-y-2.5 pt-1 text-xs text-zinc-300">
+            <div class="flex items-start gap-2.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i><span>Client-side ECDH P-256 + AES-GCM-256 keys</span></div>
+            <div class="flex items-start gap-2.5"><i data-lucide="at-sign" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i><span>Fast username sign-in across devices</span></div>
+            <div class="flex items-start gap-2.5"><i data-lucide="mail-check" class="w-4 h-4 text-fuchsia-400 shrink-0 mt-0.5"></i><span>Single-use 15m password reset links</span></div>
+          </div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-black/40 border border-white/[0.08] text-[11px] text-zinc-400">
+          <div class="text-zinc-200 font-semibold mb-0.5">Connected to Postgres Enclave</div>
+          <div id="auth-side-status">HttpOnly session cookies + Row-Level Security</div>
         </div>
       </div>
-      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-auth" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+
+      <!-- Right Interactive Form Pane -->
+      <div class="md:col-span-7 p-6 sm:p-8 space-y-4">
+        <div class="flex justify-between items-start gap-3">
+          <div>
+            <h3 id="auth-heading" class="text-lg font-extrabold text-white leading-tight">Sign in to WhatsGram</h3>
+            <p id="auth-sub" class="text-[11px] text-zinc-400 mt-0.5">Checking Supabase status…</p>
+          </div>
+          <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] shrink-0" data-act="closeModal" data-arg="m-auth" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+
+        <div id="auth-tabs" class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/[0.08]">
+          <button id="auth-tab-signin" data-act="authTab" data-arg="signin" class="h-8 rounded-xl text-xs font-semibold lux-tab-on transition-all">Sign in</button>
+          <button id="auth-tab-signup" data-act="authTab" data-arg="signup" class="h-8 rounded-xl text-xs font-semibold lux-tab-off transition-all">Create account</button>
+        </div>
+
+        <!-- SIGN IN PANEL -->
+        <div id="auth-panel-signin" class="space-y-3.5">
+          <div>
+            <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-si-id">Username or recovery email</label>
+            <input id="auth-si-id" type="text" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="e.g. alex_dev or alex@example.com" autocomplete="username">
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-medium text-zinc-400" for="auth-si-pass">Password</label>
+              <button data-act="authTab" data-arg="forgot" class="text-[11px] font-semibold text-accent hover:underline">Forgot password?</button>
+            </div>
+            <div class="relative">
+              <input id="auth-si-pass" type="password" data-enter="authSubmit" class="lux-input h-10 w-full rounded-xl pl-3.5 pr-10 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Enter your password" autocomplete="current-password">
+              <button data-act="togglePass" data-arg="auth-si-pass" class="absolute right-2.5 top-2 w-6 h-6 rounded-lg grid place-items-center text-zinc-400 hover:text-white" aria-label="Show password"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIGN UP PANEL -->
+        <div id="auth-panel-signup" class="hidden space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-su-user">Username <span class="text-accent">*</span></label>
+              <input id="auth-su-user" data-input="suUser" type="text" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="alex_mercer" autocomplete="username">
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-su-name">Display name <span class="text-zinc-500">(optional)</span></label>
+              <input id="auth-su-name" type="text" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Alex Mercer" autocomplete="name">
+            </div>
+          </div>
+          <div id="auth-su-user-hint" class="text-[10px] font-mono text-zinc-500">3–24 chars: lowercase letters, numbers, dot, underscore or hyphen.</div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-medium text-zinc-400" for="auth-su-email">Recovery email <span class="px-1.5 py-0.5 rounded bg-white/[0.06] text-[10px] text-zinc-300 ml-1">Optional</span></label>
+              <span class="text-[10px] text-zinc-500">Password reset only</span>
+            </div>
+            <input id="auth-su-email" type="email" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="you@example.com (leave blank to skip)" autocomplete="email">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-su-pass">Password <span class="text-accent">*</span></label>
+            <div class="relative">
+              <input id="auth-su-pass" data-input="pwStrength" type="password" data-enter="authSubmit" class="lux-input h-10 w-full rounded-xl pl-3.5 pr-10 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Minimum 6 characters" autocomplete="new-password">
+              <button data-act="togglePass" data-arg="auth-su-pass" class="absolute right-2.5 top-2 w-6 h-6 rounded-lg grid place-items-center text-zinc-400 hover:text-white" aria-label="Show password"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+            </div>
+            <div class="flex items-center gap-2 mt-1.5">
+              <div class="flex-1 h-1 rounded-full bg-white/[0.08] overflow-hidden"><div id="auth-pw-bar" class="h-full w-0 bg-rose-400 transition-all"></div></div>
+              <span id="auth-pw-lbl" class="text-[10px] font-mono text-zinc-500">Min 6 chars</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORGOT PASSWORD PANEL -->
+        <div id="auth-panel-forgot" class="hidden space-y-3.5">
+          <button data-act="authTab" data-arg="signin" class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-white"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i><span>Back to sign in</span></button>
+          <p class="text-xs text-zinc-400 leading-relaxed">Enter your username or registered recovery email. We will dispatch a single-use password reset link valid for 15 minutes.</p>
+          <div>
+            <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-fp-id">Username or registered recovery email</label>
+            <input id="auth-fp-id" type="text" data-enter="requestReset" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="e.g. alex_dev or alex@example.com">
+          </div>
+          <div id="auth-fp-res" class="hidden rounded-xl border px-3 py-2.5 text-xs leading-relaxed"></div>
+        </div>
+
+        <!-- SET NEW PASSWORD (FROM RESET LINK) PANEL -->
+        <div id="auth-panel-reset" class="hidden space-y-3.5">
+          <div class="rounded-xl bg-emerald-500/10 border border-emerald-400/25 px-3 py-2 text-xs text-emerald-200 flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 shrink-0 text-emerald-300"></i>
+            <span>Verified recovery link detected. Set your new password below.</span>
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-rs-p1">New password</label>
+            <div class="relative">
+              <input id="auth-rs-p1" type="password" class="lux-input h-10 w-full rounded-xl pl-3.5 pr-10 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Minimum 6 characters" autocomplete="new-password">
+              <button data-act="togglePass" data-arg="auth-rs-p1" class="absolute right-2.5 top-2 w-6 h-6 rounded-lg grid place-items-center text-zinc-400 hover:text-white" aria-label="Show password"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-rs-p2">Confirm new password</label>
+            <input id="auth-rs-p2" type="password" data-enter="confirmReset" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Repeat new password" autocomplete="new-password">
+          </div>
+        </div>
+
+        <div id="auth-err" class="hidden rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs text-rose-300"></div>
+        <button id="auth-submit" data-act="authSubmit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold">Sign in to Cloud Enclave</button>
+        <p id="auth-cfg-msg" class="text-[11px] text-zinc-500 leading-relaxed">Sign in to persist chats, stories, Vault settings, and live peer-to-peer DMs in Supabase.</p>
+      </div>
     </div>
 
-    <div id="auth-logged-out" class="space-y-3.5">
-      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/[0.08]">
-        <button id="auth-tab-signin" data-act="authTab" data-arg="signin" class="h-8 rounded-xl text-xs font-semibold lux-tab-on transition-all">Sign in</button>
-        <button id="auth-tab-signup" data-act="authTab" data-arg="signup" class="h-8 rounded-xl text-xs font-semibold lux-tab-off transition-all">Create account</button>
+    <!-- SIGNED-IN ACCOUNT & RECOVERY MANAGEMENT -->
+    <div id="auth-logged-in" class="hidden p-6 sm:p-7 space-y-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 grid place-items-center text-emerald-300"><i data-lucide="cloud" class="w-4 h-4"></i></div>
+          <div>
+            <h3 class="text-base font-bold text-white leading-tight">Account &amp; Password Recovery</h3>
+            <p class="text-[11px] text-zinc-400">Connected with HttpOnly cookies</p>
+          </div>
+        </div>
+        <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-auth" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <div id="auth-name-wrap" class="hidden">
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-name">Display name</label>
-        <input id="auth-name" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Alex Mercer" autocomplete="name">
-      </div>
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-email">Email</label>
-        <input id="auth-email" type="email" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="you@example.com" autocomplete="email">
-      </div>
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1" for="auth-pass">Password</label>
-        <input id="auth-pass" type="password" data-enter="authSubmit" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Minimum 6 characters" autocomplete="current-password">
-      </div>
-      <div id="auth-err" class="hidden rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs text-rose-300"></div>
-      <button id="auth-submit" data-act="authSubmit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold">Sign in to Cloud Enclave</button>
-      <p id="auth-cfg-msg" class="text-[11px] text-zinc-500 leading-relaxed">Sign in to persist chats, stories, Vault settings, and live peer-to-peer DMs in Supabase. Works locally even when signed out.</p>
-    </div>
 
-    <div id="auth-logged-in" class="hidden space-y-4">
       <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,.05)]">
         <div id="auth-av" class="shrink-0"></div>
         <div class="min-w-0 flex-1">
-          <div id="auth-u-name" class="text-sm font-bold text-white truncate"></div>
-          <div id="auth-u-email" class="text-xs text-zinc-400 truncate"></div>
+          <div class="flex items-center gap-2 min-w-0">
+            <span id="auth-u-name" class="text-sm font-bold text-white truncate"></span>
+            <span id="auth-u-handle" class="text-[11px] font-mono text-accent truncate"></span>
+          </div>
+          <div id="auth-u-email" class="text-xs text-zinc-400 truncate mt-0.5"></div>
         </div>
-        <span id="auth-rt-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/25 text-[10px] font-semibold text-emerald-300">Synced</span>
+        <span id="auth-rt-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/25 text-[10px] font-semibold text-emerald-300 shrink-0">Synced</span>
       </div>
+
+      <!-- Optional Recovery Email Card -->
+      <div class="p-4 rounded-2xl bg-white/[0.025] border border-white/[0.08] space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="text-xs font-bold text-white flex items-center gap-1.5"><i data-lucide="mail-check" class="w-3.5 h-3.5 text-sky-400"></i><span>Optional recovery email</span></div>
+          <span id="auth-rec-status" class="text-[11px] text-zinc-400">Not configured</span>
+        </div>
+        <div class="flex flex-wrap sm:flex-nowrap gap-2">
+          <input id="auth-rec-in" type="email" data-enter="saveRecoveryEmail" class="lux-input h-9 flex-1 min-w-[180px] rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="you@example.com (for password reset links)">
+          <button data-act="saveRecoveryEmail" class="btn-primary h-9 px-3.5 rounded-xl text-xs font-semibold shrink-0">Save email</button>
+          <button id="auth-rec-clear" data-act="clearRecoveryEmail" class="hidden btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-zinc-300 shrink-0">Remove</button>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/[0.06]">
+          <span class="text-[11px] text-zinc-500">Dispatch or share a 15-min password reset link to your registered email.</span>
+          <button data-act="sendSelfReset" class="btn-ghost h-8 px-3 rounded-lg text-[11px] font-semibold text-sky-300 inline-flex items-center gap-1.5"><i data-lucide="send" class="w-3 h-3"></i><span>Create / email reset link</span></button>
+        </div>
+        <div id="auth-self-link-box" class="hidden p-3 rounded-xl bg-black/50 border border-sky-400/25 space-y-2">
+          <div id="auth-self-link-msg" class="text-[11px] text-sky-200"></div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="auth-self-url" readonly class="lux-input h-8 flex-1 min-w-[160px] rounded-lg px-2.5 font-mono text-[10px] text-zinc-300 focus:outline-none">
+            <button data-act="copySelfReset" class="btn-ghost h-8 px-2.5 rounded-lg text-[11px] font-semibold text-white">Copy link</button>
+            <a id="auth-self-mailto" href="#" target="_blank" rel="noopener" class="btn-ghost h-8 px-2.5 rounded-lg text-[11px] font-semibold text-sky-300 inline-flex items-center">Open Mail</a>
+            <button data-act="openSelfReset" class="btn-primary h-8 px-2.5 rounded-lg text-[11px] font-semibold">Open Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password Row -->
+      <div class="p-4 rounded-2xl bg-white/[0.025] border border-white/[0.08] space-y-2.5">
+        <div class="text-xs font-bold text-white flex items-center gap-1.5"><i data-lucide="key-round" class="w-3.5 h-3.5 text-amber-300"></i><span>Change password</span></div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="auth-chg-cur" type="password" class="lux-input h-9 rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Current password">
+          <input id="auth-chg-new" type="password" data-enter="changePassword" class="lux-input h-9 rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="New password (6+)">
+          <button data-act="changePassword" class="btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-white">Update password</button>
+        </div>
+      </div>
+
       <div class="grid grid-cols-2 gap-2.5">
         <button data-act="syncNow" class="btn-ghost h-10 rounded-xl text-xs font-semibold text-white inline-flex items-center justify-center gap-1.5"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>Sync now</button>
         <button data-act="signOut" class="h-10 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-xs font-semibold text-rose-200 inline-flex items-center justify-center gap-1.5 transition"><i data-lucide="log-out" class="w-3.5 h-3.5"></i>Sign out</button>
       </div>
-      <p class="text-[11px] text-zinc-500">Your session uses HttpOnly cookies via <code class="text-zinc-300">/api/supabase</code>. Start a Live DM with any registered user from the compose button.</p>
     </div>
   </div>
 </div>
@@ -965,10 +1439,11 @@ async function sbGet(act,params){
   }catch(e){return {ok:false,error:e.message||'Network error'}}
 }
 async function sbPost(payload){
-  if(!S.user&&payload.action!=='signin'&&payload.action!=='signup'&&payload.action!=='signout')return null;
+  const pub=payload.action==='signin'||payload.action==='signup'||payload.action==='signout'||payload.action==='requestPasswordReset'||payload.action==='confirmPasswordReset';
+  if(!S.user&&!pub)return null;
   try{
     const r=await fetch('/api/supabase',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(payload)});
-    if(r.status===401&&payload.action!=='signin'&&payload.action!=='signup')handleSbUnauthorized();
+    if(r.status===401&&!pub)handleSbUnauthorized();
     const d=await r.json().catch(()=>({}));
     if(!r.ok)return Object.assign({ok:false,status:r.status},d);
     return Object.assign({ok:true},d);
@@ -1233,6 +1708,37 @@ async function applyCloudBootstrap(data,quiet){
   renderDmUsers();
   renderGroupMembers();
 }
+function setShell(mode){
+  const isApp=mode==='app';
+  const appEl=$('#app'),landEl=$('#landing');
+  if(appEl){
+    appEl.classList.toggle('hidden',!isApp);
+    appEl.classList.toggle('flex',isApp);
+  }
+  if(landEl)landEl.classList.toggle('hidden',isApp);
+  if(isApp){
+    applyCfg();
+    renderThread(true);
+    renderInfo();
+    renderStats();
+  }
+  icons();
+}
+function parseHashOrSearchParams(){
+  const hp=new URLSearchParams((location.hash||'').replace(/^#/, ''));
+  const sp=new URLSearchParams(location.search||'');
+  const rawToken=hp.get('wg-reset')||sp.get('reset')||'';
+  const type=hp.get('type')||sp.get('type')||'';
+  const accessToken=type==='recovery'?(hp.get('access_token')||''):'';
+  const tokenHash=type==='recovery'?(sp.get('token_hash')||hp.get('token_hash')||''):'';
+  if(rawToken||accessToken||tokenHash){
+    S.recovery={token:rawToken||null,accessToken:accessToken||null,tokenHash:tokenHash||null};
+    try{history.replaceState(null,'',location.pathname)}catch(e){}
+    return true;
+  }
+  return false;
+}
+const userHandle=u=>u?.username?('@'+u.username):(u?.email&&!String(u.email).endsWith('@users.whatsgram.invalid')?u.email:'Member');
 async function refreshCloud(quiet=false){
   if(!S.user||S.syncing)return;
   S.syncing=true;renderAccountUI();
@@ -1251,14 +1757,26 @@ async function checkSupabaseSession(){
   S.sbConfigured=Boolean(st?.configured);
   S.sbRealtime=Boolean(st?.hasRealtime);
   renderAccountUI();
-  if(!S.sbConfigured)return;
+  if(!S.sbConfigured){
+    if(!S.recovery&&localStorage.getItem('wg_local_mode')!=='1')setShell('landing');
+    return;
+  }
   const sess=await sbGet('session');
   if(sess?.ok&&sess.authenticated&&sess.user){
+    try{localStorage.setItem('wg_has_session','1');localStorage.removeItem('wg_local_mode')}catch(e){}
     await applyCloudBootstrap(sess,false);
     connectRealtime(sess.realtime);
+    if(!S.recovery){
+      setShell('app');
+      setView('chats');
+      if(window.matchMedia('(min-width:768px)').matches&&D.length&&(!S.chat||!D.some(c=>c.id===S.chat)))openChat(D[0].id);
+      if(cfg.lockLaunch)lock();else audit('Cloud session verified');
+    }
   }else{
+    try{localStorage.removeItem('wg_has_session')}catch(e){}
     S.user=null;S.users=[];
     renderAccountUI();renderDmUsers();renderGroupMembers();
+    if(!S.recovery&&localStorage.getItem('wg_local_mode')!=='1')setShell('landing');
   }
 }
 function blobToBase64(blob){
@@ -1355,36 +1873,58 @@ function hydrateThreadMedia(c){
 }
 function renderAccountUI(){
   const dot=$('#sb-dot'),lbl=$('#sb-label'),navDot=$('#nav-auth-dot'),navLbl=$('#nav-auth-lbl');
-  const lo=$('#auth-logged-out'),li=$('#auth-logged-in'),sub=$('#auth-sub'),cfgMsg=$('#auth-cfg-msg'),rtBadge=$('#auth-rt-badge');
+  const lo=$('#auth-logged-out'),li=$('#auth-logged-in'),dlg=$('#auth-dialog'),sub=$('#auth-sub'),cfgMsg=$('#auth-cfg-msg'),rtBadge=$('#auth-rt-badge');
   const live=Boolean(S.user&&S.rtChan);
+  const uLabel=S.user?(S.user.displayName||(S.user.username?'@'+S.user.username:S.user.email)):'';
   if(dot)dot.className='w-2 h-2 rounded-full '+(S.user?(live?'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]':'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]'):(S.sbConfigured?'bg-amber-400':'bg-emerald-400'));
   if(lbl)lbl.textContent=S.user?(S.syncing?'Syncing…':(live?'Live':'Cloud')):(S.sbConfigured?'Sign in':'Local');
-  if(navLbl)navLbl.textContent=S.user?(S.user.displayName||S.user.email):(S.sbConfigured?'Sign in':'Local mode');
+  if(navLbl)navLbl.textContent=S.user?uLabel:(S.sbConfigured?'Sign in':'Local mode');
   if(navDot){
-    navDot.innerHTML=S.user?esc((S.user.displayName||S.user.email||'U').slice(0,2).toUpperCase()):ic('cloud','w-3.5 h-3.5');
+    navDot.innerHTML=S.user?esc((uLabel||'U').replace(/^@/,'').slice(0,2).toUpperCase()):ic('cloud','w-3.5 h-3.5');
     navDot.className='w-6 h-6 rounded-full grid place-items-center shrink-0 text-[10px] font-bold '+(S.user?'bg-emerald-500/20 border border-emerald-400/40 text-emerald-300':'bg-white/[0.08] border border-white/[0.12] text-zinc-300');
   }
-  if(sub)sub.textContent=S.user?('Signed in · '+(live?'Realtime WebSocket':(S.sbConfigured?'Cloud polling':'Local'))):(S.sbConfigured?'Supabase backend ready':'Local enclave mode (backend not configured)');
-  if(lo&&li){lo.classList.toggle('hidden',Boolean(S.user));li.classList.toggle('hidden',!S.user)}
+  const showResetPane=Boolean(S.recovery&&S.authTab==='reset');
+  if(dlg)dlg.className='lux-modal w-full rounded-[28px] overflow-hidden my-auto '+((S.user&&!showResetPane)?'max-w-lg':'max-w-[900px]');
+  if(lo&&li){lo.classList.toggle('hidden',Boolean(S.user&&!showResetPane));li.classList.toggle('hidden',!S.user||showResetPane)}
+  if($('#set-acct-title')){
+    $('#set-acct-title').textContent=S.user?`${S.user.displayName||'Account'}${S.user.username?' · @'+S.user.username:''}`:'Local enclave session';
+    $('#set-acct-sub').textContent=S.user
+      ?(S.user.recoveryEmail?`Recovery email verified: ${S.user.recoveryEmail}`:'No optional recovery email linked yet — add one to enable password reset links.')
+      :'Sign in with a username or link an optional email for password reset recovery.';
+  }
   if(S.user){
-    if($('#auth-av'))$('#auth-av').innerHTML=av(S.user.displayName||S.user.email||'U','w-10 h-10');
-    if($('#auth-u-name'))$('#auth-u-name').textContent=S.user.displayName||'User';
-    if($('#auth-u-email'))$('#auth-u-email').textContent=S.user.email||'';
+    const recEmail=S.user.recoveryEmail||(!String(S.user.email||'').endsWith('@users.whatsgram.invalid')?S.user.email:'');
+    if($('#auth-av'))$('#auth-av').innerHTML=av(uLabel||'U','w-10 h-10');
+    if($('#auth-u-name'))$('#auth-u-name').textContent=S.user.displayName||S.user.username||'User';
+    if($('#auth-u-handle'))$('#auth-u-handle').textContent=S.user.username?('@'+S.user.username):'';
+    if($('#auth-u-email'))$('#auth-u-email').textContent=recEmail?('Recovery email: '+recEmail):'No recovery email registered (optional)';
+    if($('#auth-rec-status'))$('#auth-rec-status').textContent=recEmail?'Registered':'Optional · Not set';
+    if($('#auth-rec-in')&&document.activeElement!==$('#auth-rec-in'))$('#auth-rec-in').value=recEmail||'';
+    if($('#auth-rec-clear'))$('#auth-rec-clear').classList.toggle('hidden',!recEmail);
     if(rtBadge)rtBadge.textContent=S.syncing?'Syncing…':(live?'Realtime Live':'Cloud Synced');
   }
   if(cfgMsg){
     cfgMsg.textContent=S.sbConfigured
-      ?'Sign in or create an account to persist chats, stories, Vault settings, and Live DMs across devices.'
-      :'SUPABASE_URL / SUPABASE_SECRET_KEY env vars are not detected on /api/supabase. Works locally until configured.';
+      ?'Accounts are stored in Supabase Postgres with Row-Level Security. Recovery emails remain completely private and optional.'
+      :'SUPABASE_URL / SUPABASE_SECRET_KEY env vars are not detected on /api/supabase. Local sandbox mode remains available.';
   }
-  const sTab=$('#auth-tab-signin'),uTab=$('#auth-tab-signup'),nw=$('#auth-name-wrap'),subBtn=$('#auth-submit');
-  if(sTab&&uTab&&nw&&subBtn){
-    const isUp=S.authTab==='signup';
-    sTab.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isUp?'lux-tab-off':'lux-tab-on');
-    uTab.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isUp?'lux-tab-on':'lux-tab-off');
-    nw.classList.toggle('hidden',!isUp);
-    subBtn.textContent=isUp?'Create Cloud Account':'Sign in to Cloud Enclave';
+  const tab=S.authTab||'signin';
+  const heading=$('#auth-heading'),tabs=$('#auth-tabs'),sTab=$('#auth-tab-signin'),uTab=$('#auth-tab-signup'),subBtn=$('#auth-submit');
+  const titles={signin:'Sign in to WhatsGram',signup:'Create your account',forgot:'Password recovery',reset:'Set a new password'};
+  const subs={signin:'Enter your username or recovery email',signup:'Username & password only — recovery email is optional',forgot:'Send a 15-min reset link to your registered optional email',reset:'Choose a strong new password for your account'};
+  const btnText={signin:'Sign in to Cloud Enclave',signup:'Create Cloud Account',forgot:'Send password reset link',reset:'Update password & sign in'};
+  if(heading)heading.textContent=titles[tab]||titles.signin;
+  if(sub)sub.textContent=S.sbConfigured?(subs[tab]||subs.signin):'Local enclave mode (Supabase env vars not detected)';
+  if(tabs)tabs.classList.toggle('hidden',tab==='forgot'||tab==='reset');
+  if(sTab&&uTab){
+    sTab.className='h-8 rounded-xl text-xs font-semibold transition-all '+(tab==='signup'?'lux-tab-off':'lux-tab-on');
+    uTab.className='h-8 rounded-xl text-xs font-semibold transition-all '+(tab==='signup'?'lux-tab-on':'lux-tab-off');
   }
+  show('#auth-panel-signin',tab==='signin',null);
+  show('#auth-panel-signup',tab==='signup',null);
+  show('#auth-panel-forgot',tab==='forgot',null);
+  show('#auth-panel-reset',tab==='reset',null);
+  if(subBtn)subBtn.textContent=btnText[tab]||btnText.signin;
   icons();
 }
 function renderDmUsers(){
@@ -1398,7 +1938,8 @@ function renderDmUsers(){
   }
   list.innerHTML=S.users.map(u=>{
     const on=S.onlineUsers[u.id]||u.status==='Online';
-    return `<button data-act="dmUser" data-arg="${esc(u.id)}" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.075] border border-white/[0.07] hover:border-white/[0.14] shadow-[inset_0_1px_0_rgba(255,255,255,.04)] text-left transition-all"><span class="relative shrink-0">${av(u.display_name||u.email||'U','w-9 h-9')}${on?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0c0d14] shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>':''}</span><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||u.email)}</div><div class="text-[11px] text-zinc-400 truncate">${esc(u.email)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,8))}`:''}</div></div><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[10px] font-semibold text-emerald-300">DM</span></button>`;
+    const handle=userHandle(u);
+    return `<button data-act="dmUser" data-arg="${esc(u.id)}" class="w-full flex items-center gap-3 p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.075] border border-white/[0.07] hover:border-white/[0.14] shadow-[inset_0_1px_0_rgba(255,255,255,.04)] text-left transition-all"><span class="relative shrink-0">${av(u.display_name||handle||'U','w-9 h-9')}${on?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0c0d14] shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>':''}</span><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||handle)}</div><div class="text-[11px] text-zinc-400 truncate">${esc(handle)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,8))}`:''}</div></div><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[10px] font-semibold text-emerald-300">DM</span></button>`;
   }).join('');
   icons();
 }
@@ -1411,7 +1952,8 @@ function renderGroupMembers(){
   }
   list.innerHTML=S.users.map(u=>{
     const on=S.onlineUsers[u.id]||u.status==='Online';
-    return `<label class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.075] border border-white/[0.07] hover:border-white/[0.14] shadow-[inset_0_1px_0_rgba(255,255,255,.04)] cursor-pointer transition-all"><input type="checkbox" value="${esc(u.id)}" class="grp-mem-cb accent-[var(--ac)] w-4 h-4 rounded shrink-0">${av(u.display_name||u.email||'U','w-8 h-8')}<div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||u.email)}</div><div class="text-[10px] text-zinc-400 truncate">${on?'Online':esc(u.email)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,6))}`:''}</div></div></label>`;
+    const handle=userHandle(u);
+    return `<label class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.075] border border-white/[0.07] hover:border-white/[0.14] shadow-[inset_0_1px_0_rgba(255,255,255,.04)] cursor-pointer transition-all"><input type="checkbox" value="${esc(u.id)}" class="grp-mem-cb accent-[var(--ac)] w-4 h-4 rounded shrink-0">${av(u.display_name||handle||'U','w-8 h-8')}<div class="min-w-0 flex-1"><div class="text-xs font-semibold text-white truncate">${esc(u.display_name||handle)}</div><div class="text-[10px] text-zinc-400 truncate">${on?'Online':esc(handle)}${u.key_fp?` · 🔒 ${esc(u.key_fp.slice(0,6))}`:''}</div></div></label>`;
   }).join('');
 }
 
@@ -2694,7 +3236,7 @@ const MENUS={
  msg:id=>{const m=cur()?.msgs.find(x=>x.id===id);return[{emojis:['❤️','👍','😂'],id},{sep:1},{l:'Reply',i:'corner-up-left',act:'reply',arg:id},...(m?.text?[{l:'Reply with AI',i:'sparkles',act:'aiReplyToMsg',arg:id},{l:'Explain / translate',i:'bot',act:'aiExplainMsg',arg:id}]:[]),...(m?.from==='me'&&m.type==='text'?[{l:'Edit message',i:'pencil',act:'editMsg',arg:id}]:[]),{l:cur()&&cur().pin===id?'Unpin message':'Pin message',i:'pin',act:'pin',arg:id},{l:'Copy text',i:'copy',act:'copy',arg:id},{sep:1},{l:'Delete message',i:'trash-2',act:'delMsg',arg:id,danger:1}]},
  reelFilter:()=>[{label:'AR filter'},...FILTERS.map(([n],i)=>({l:n,act:'setFilter',arg:String(i),radio:1,on:RS.filter===i}))],
  aiTools:()=>[{l:'Ask general knowledge',i:'globe',act:'aiRun',arg:'What is the scientific name of a lizard and 3 quick facts?'},{l:'Summarize all conversations',i:'sparkles',act:'aiRun',arg:'Summarize all conversations'},{l:'Find action items',i:'list-checks',act:'aiRun',arg:'Find action items'},{l:'Generate hashtags',i:'hash',act:'aiRun',arg:'Generate hashtags'},{sep:1},{l:'Clear conversation',i:'trash-2',act:'aiClear',danger:1}],
- account:()=>[{l:S.user?`Account · ${S.user.displayName||S.user.email}`:'Sign in / Cloud sync',i:S.user?'user-check':'cloud',act:'open',arg:'m-auth'},{l:'Command palette',i:'command',act:'openCmd'},{sep:1},{l:'Settings',i:'settings',act:'nav',arg:'settings'},{l:'Security vault',i:'shield-check',act:'nav',arg:'vault'},{sep:1},{l:'Create story / reel',i:'plus-circle',act:'storyNew'},{l:'Lock now',i:'lock',act:'lock'}]
+ account:()=>[{l:S.user?`Account · ${S.user.displayName||(S.user.username?'@'+S.user.username:S.user.email)}`:'Sign in / Create account',i:S.user?'user-check':'cloud',act:'open',arg:'m-auth'},{l:'Overview page',i:'layout-template',act:'openLanding'},{l:'Command palette',i:'command',act:'openCmd'},{sep:1},{l:'Settings',i:'settings',act:'nav',arg:'settings'},{l:'Security vault',i:'shield-check',act:'nav',arg:'vault'},{sep:1},{l:'Create story / reel',i:'plus-circle',act:'storyNew'},{l:'Lock now',i:'lock',act:'lock'}]
 };
 function menuHTML(items){return items.map(it=>{
  if(it.sep)return '<div class="my-1 h-px bg-white/[0.08]" role="separator"></div>';
@@ -2720,7 +3262,7 @@ const A={
  acc(_,el){const open=el.getAttribute('aria-expanded')!=='true';el.setAttribute('aria-expanded',String(open));const b=document.getElementById(el.getAttribute('aria-controls'));if(b)b.classList.toggle('hidden',!open)},
  lock:()=>lock(),
  async unlock(){if(cfg.pin&&await sha($('#lock-pin').value)!==cfg.pin){toast('Incorrect passcode','err');audit('Failed unlock attempt');return}const r=$('#lock-ring');r.classList.add('animate-pulse');await wait(cfg.pin?100:700);r.classList.remove('animate-pulse');closeM('m-lock');audit('Vault unlocked');resetIdle();tone(880,.08)},
- open:id=>{openM(id);if(id==='m-auth')renderAccountUI();if(id==='m-contact'){A.contactTab(S.contactTab||'dm');renderDmUsers();renderGroupMembers();if(S.user)sbGet('users').then(r=>{if(r?.ok&&Array.isArray(r.users)){S.users=r.users;r.users.forEach(u=>{if(u.public_key&&u.key_fp)cachePeerPub(u.key_fp,u.public_key)});renderDmUsers();renderGroupMembers()}})}},closeModal:id=>closeM(id),
+ open:id=>{openM(id);if(id==='m-auth'){if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-fp-res'))$('#auth-fp-res').classList.add('hidden');if(S.user&&S.authTab!=='reset')S.authTab='signin';renderAccountUI()}if(id==='m-contact'){A.contactTab(S.contactTab||'dm');renderDmUsers();renderGroupMembers();if(S.user)sbGet('users').then(r=>{if(r?.ok&&Array.isArray(r.users)){S.users=r.users;r.users.forEach(u=>{if(u.public_key&&u.key_fp)cachePeerPub(u.key_fp,u.public_key)});renderDmUsers();renderGroupMembers()}})}},closeModal:id=>{closeM(id);if(id==='m-auth'&&S.user)S.authTab='signin'},
  openCmd(){$('#cmd-in').value='';renderCmdPalette('');openM('m-cmd');setTimeout(()=>$('#cmd-in')?.focus(),25)},
  cmdRun(spec){closeM('m-cmd');const[kind,arg,sub]=String(spec||'').split(':');if(kind==='chat'){setView('chats');openChat(arg)}else if(kind==='nav')setView(arg);else if(kind==='act'&&A[arg])A[arg](sub)},
  chat:id=>openChat(id),back(){$('#v-chats').dataset.open='0'},
@@ -2826,9 +3368,164 @@ const A={
  addContact(){const n=$('#c-name').value.trim();if(!n)return toast('Enter a contact name','err');if(D.some(c=>c.name.toLowerCase()===n.toLowerCase()))return toast('Contact already exists','err');const sys={id:uid('m'),from:'sys',type:'sys',text:`Conversation with ${n} created`,t:now()};const c={id:uid('c'),name:n,folder:$('#c-folder').value,unread:0,status:'Online',pin:null,msgs:[sys]};D.push(c);saveD();$('#c-name').value='';closeM('m-contact');setView('chats');openChat(c.id);if(S.user)sbPost({action:'createChat',id:c.id,name:c.name,folder:c.folder,peerUserId:null,sysMsg:sys})},
  async dmUser(userId){if(!S.user){closeM('m-contact');openM('m-auth');return toast('Sign in to start a Live DM','err')}const u=S.users.find(x=>x.id===userId);if(!u)return toast('User not found','err');if(u.public_key&&u.key_fp)cachePeerPub(u.key_fp,u.public_key);const existing=D.find(c=>c.peerUserId===u.id);if(existing){closeM('m-contact');setView('chats');return openChat(existing.id)}const sys={id:uid('m'),from:'sys',type:'sys',text:`Encrypted DM started with ${u.display_name||u.email}`,t:now(),ts:Date.now()};const cid=uid('c'),c={id:cid,name:u.display_name||u.email,peerUserId:u.id,peerPublicKey:u.public_key||null,peerKeyFp:u.key_fp||'',isOwner:true,myReadMs:Date.now(),peerReadMs:0,folder:'personal',unread:0,status:u.status||'Online',pin:null,msgs:[sys]};const res=await sbPost({action:'createChat',id:cid,name:c.name,folder:'personal',peerUserId:u.id,sysMsg:sys});if(!res?.ok)return toast(res?.error||'Could not start DM','err');closeM('m-contact');setView('chats');if(res.existing&&res.id){await refreshCloud(true);openChat(res.id);return}D.push(c);saveD();openChat(c.id);toast(`Live DM with ${c.name} ready`)},
  async refreshUsers(){if(!S.user)return;const r=await sbGet('users');if(r?.ok&&Array.isArray(r.users)){S.users=r.users;r.users.forEach(u=>{if(u.public_key&&u.key_fp)cachePeerPub(u.key_fp,u.public_key)});renderDmUsers();renderGroupMembers();toast('Account directory updated')}},
- authTab(tab){S.authTab=tab==='signup'?'signup':'signin';if($('#auth-err'))$('#auth-err').classList.add('hidden');renderAccountUI()},
- async authSubmit(){const errEl=$('#auth-err'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};if(errEl)errEl.classList.add('hidden');if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');const email=($('#auth-email')?.value||'').trim(),password=$('#auth-pass')?.value||'',displayName=($('#auth-name')?.value||'').trim();if(!email||!password)return showErr('Enter email and password.');if(S.authTab==='signup'&&password.length<6)return showErr('Password must be at least 6 characters.');if(btn){btn.disabled=true;btn.textContent=S.authTab==='signup'?'Creating account…':'Signing in…'}try{const res=await sbPost({action:S.authTab,email,password,displayName});if(!res?.ok)return showErr(res?.error||'Authentication failed');await applyCloudBootstrap(res,false);connectRealtime(res.realtime);if($('#auth-pass'))$('#auth-pass').value='';closeM('m-auth');toast(S.authTab==='signup'?'Account created & synced':'Signed in to Supabase')}finally{if(btn){btn.disabled=false;renderAccountUI()}}},
- async signOut(){disconnectRealtime();await sbPost({action:'signout'});S.user=null;S.users=[];S.ecdhId=null;S.e2eeRing={};S.onlineUsers={};S.typingTms={};await genKey();renderAccountUI();renderDmUsers();renderGroupMembers();renderList();renderThread();renderInfo();renderStories();closeM('m-auth');toast('Signed out · local mode active')},
+ landScroll(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},
+ landTab(tab){const k=tab==='ai'||tab==='vault'?tab:'chat';['chat','ai','vault'].forEach(t=>{const b=$('#ltab-'+t),p=$('#lprev-'+t);if(b)b.className='px-2.5 py-1 rounded-lg font-semibold '+(t===k?'lux-tab-on':'lux-tab-off');if(p)p.classList.toggle('hidden',t!==k)})},
+ landFaq(_,el){const open=el.getAttribute('aria-expanded')!=='true';el.setAttribute('aria-expanded',String(open));const body=el.nextElementSibling;if(body)body.classList.toggle('hidden',!open);const ico=el.querySelector('svg,[data-lucide]');if(ico)ico.style.transform=open?'rotate(180deg)':'rotate(0deg)'},
+ enterDemo(){try{localStorage.setItem('wg_local_mode','1')}catch(e){}setShell('app');setView('chats');if(window.matchMedia('(min-width:768px)').matches&&D.length&&(!S.chat||!D.some(c=>c.id===S.chat)))openChat(D[0].id);audit('Local sandbox started')},
+ openLanding(){closeMenu();setShell('landing');const ld=$('#landing');if(ld)ld.scrollTo({top:0,behavior:'smooth'})},
+ openAuth(tab){S.authTab=['signin','signup','forgot','reset'].includes(tab)?tab:'signin';if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-fp-res'))$('#auth-fp-res').classList.add('hidden');renderAccountUI();openM('m-auth');setTimeout(()=>{const f=S.authTab==='signup'?'#auth-su-user':S.authTab==='forgot'?'#auth-fp-id':S.authTab==='reset'?'#auth-rs-p1':'#auth-si-id';$(f)?.focus()},40)},
+ togglePass(id,el){const inp=document.getElementById(id);if(!inp)return;const showPass=inp.type==='password';inp.type=showPass?'text':'password';if(el){el.setAttribute('aria-label',showPass?'Hide password':'Show password');el.innerHTML=ic(showPass?'eye-off':'eye','w-3.5 h-3.5');icons()}},
+ authTab(tab){S.authTab=['signin','signup','forgot','reset'].includes(tab)?tab:'signin';if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-fp-res'))$('#auth-fp-res').classList.add('hidden');renderAccountUI();setTimeout(()=>{const f=S.authTab==='signup'?'#auth-su-user':S.authTab==='forgot'?'#auth-fp-id':S.authTab==='reset'?'#auth-rs-p1':'#auth-si-id';$(f)?.focus()},30)},
+ async authSubmit(){
+   if(S.authTab==='forgot')return A.requestReset();
+   if(S.authTab==='reset')return A.confirmReset();
+   const errEl=$('#auth-err'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};
+   if(errEl)errEl.classList.add('hidden');
+   if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');
+   let payload;
+   if(S.authTab==='signup'){
+     const username=($('#auth-su-user')?.value||'').trim().toLowerCase().replace(/^@+/,'');
+     const displayName=($('#auth-su-name')?.value||'').trim();
+     const recoveryEmail=($('#auth-su-email')?.value||'').trim().toLowerCase();
+     const password=$('#auth-su-pass')?.value||'';
+     if(!/^[a-z0-9][a-z0-9._-]{1,22}[a-z0-9]$/.test(username))return showErr('Username must be 3–24 characters using lowercase letters, numbers, dot, underscore or hyphen.');
+     if(recoveryEmail&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recoveryEmail))return showErr('Enter a valid recovery email or leave the field blank.');
+     if(password.length<6)return showErr('Password must be at least 6 characters.');
+     payload={action:'signup',username,password,displayName,recoveryEmail:recoveryEmail||null};
+   }else{
+     const identifier=($('#auth-si-id')?.value||'').trim();
+     const password=$('#auth-si-pass')?.value||'';
+     if(!identifier||!password)return showErr('Enter your username (or recovery email) and password.');
+     payload={action:'signin',identifier,password};
+   }
+   if(btn){btn.disabled=true;btn.textContent=S.authTab==='signup'?'Creating account…':'Signing in…'}
+   try{
+     const res=await sbPost(payload);
+     if(!res?.ok)return showErr(res?.error||'Authentication failed');
+     try{localStorage.setItem('wg_has_session','1');localStorage.removeItem('wg_local_mode')}catch(e){}
+     await applyCloudBootstrap(res,false);
+     connectRealtime(res.realtime);
+     if($('#auth-si-pass'))$('#auth-si-pass').value='';
+     if($('#auth-su-pass'))$('#auth-su-pass').value='';
+     closeM('m-auth');
+     setShell('app');
+     setView('chats');
+     if(window.matchMedia('(min-width:768px)').matches&&D.length&&!D.some(c=>c.id===S.chat))openChat(D[0].id);
+     toast(S.authTab==='signup'?'Account created & synced':'Signed in to WhatsGram');
+   }finally{if(btn){btn.disabled=false;renderAccountUI()}}
+ },
+ async requestReset(){
+   const errEl=$('#auth-err'),resEl=$('#auth-fp-res'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};
+   if(errEl)errEl.classList.add('hidden');
+   if(resEl)resEl.classList.add('hidden');
+   if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');
+   const identifier=($('#auth-fp-id')?.value||'').trim();
+   if(!identifier)return showErr('Enter your username or registered recovery email.');
+   if(btn){btn.disabled=true;btn.textContent='Sending reset link…'}
+   try{
+     const res=await sbPost({action:'requestPasswordReset',identifier});
+     if(!res?.ok)return showErr(res?.error||'Could not send reset link');
+     if(resEl){
+       resEl.className='rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2.5 text-xs text-emerald-200 leading-relaxed';
+       resEl.textContent=res.message||`Password reset link sent to ${res.maskedEmail||'your registered recovery email'}. Check your inbox.`;
+       resEl.classList.remove('hidden');
+     }
+     toast('Reset link dispatched');
+   }finally{if(btn){btn.disabled=false;renderAccountUI()}}
+ },
+ async confirmReset(){
+   const errEl=$('#auth-err'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};
+   if(errEl)errEl.classList.add('hidden');
+   if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');
+   if(!S.recovery?.token&&!S.recovery?.accessToken&&!S.recovery?.tokenHash)return showErr('Reset token is missing or already used.');
+   const p1=$('#auth-rs-p1')?.value||'',p2=$('#auth-rs-p2')?.value||'';
+   if(p1.length<6)return showErr('New password must be at least 6 characters.');
+   if(p1!==p2)return showErr('Passwords do not match.');
+   if(btn){btn.disabled=true;btn.textContent='Updating password…'}
+   try{
+     const res=await sbPost({action:'confirmPasswordReset',token:S.recovery.token||undefined,accessToken:S.recovery.accessToken||undefined,tokenHash:S.recovery.tokenHash||undefined,newPassword:p1});
+     if(!res?.ok)return showErr(res?.error||'Could not update password');
+     S.recovery=null;
+     if($('#auth-rs-p1'))$('#auth-rs-p1').value='';
+     if($('#auth-rs-p2'))$('#auth-rs-p2').value='';
+     if(res.authenticated&&res.user){
+       try{localStorage.setItem('wg_has_session','1');localStorage.removeItem('wg_local_mode')}catch(e){}
+       await applyCloudBootstrap(res,false);
+       connectRealtime(res.realtime);
+       closeM('m-auth');
+       setShell('app');
+       setView('chats');
+       if(window.matchMedia('(min-width:768px)').matches&&D.length&&!D.some(c=>c.id===S.chat))openChat(D[0].id);
+       toast('Password updated · signed in');
+     }else{
+       S.authTab='signin';
+       renderAccountUI();
+       toast('Password updated · please sign in');
+     }
+   }finally{if(btn){btn.disabled=false;renderAccountUI()}}
+ },
+ async saveRecoveryEmail(){
+   const email=($('#auth-rec-in')?.value||'').trim().toLowerCase();
+   if(!email)return toast('Enter a recovery email or click Remove','err');
+   const res=await sbPost({action:'updateRecoveryEmail',recoveryEmail:email});
+   if(!res?.ok)return toast(res?.error||'Could not save recovery email','err');
+   if(S.user){S.user.recoveryEmail=res.recoveryEmail||email;S.user.hasRecoveryEmail=true}
+   renderAccountUI();
+   toast('Recovery email saved');
+ },
+ async clearRecoveryEmail(){
+   const res=await sbPost({action:'updateRecoveryEmail',recoveryEmail:''});
+   if(!res?.ok)return toast(res?.error||'Could not remove recovery email','err');
+   if(S.user){S.user.recoveryEmail=null;S.user.hasRecoveryEmail=false}
+   if($('#auth-self-link-box'))$('#auth-self-link-box').classList.add('hidden');
+   renderAccountUI();
+   toast('Recovery email removed');
+ },
+ async sendSelfReset(){
+   const res=await sbPost({action:'createSelfResetLink',sendEmail:true});
+   if(!res?.ok)return toast(res?.error||'Could not create reset link','err');
+   const box=$('#auth-self-link-box'),msg=$('#auth-self-link-msg'),urlIn=$('#auth-self-url'),mailA=$('#auth-self-mailto');
+   if(urlIn)urlIn.value=res.resetUrl||'';
+   if(msg)msg.textContent=res.delivered
+     ?`Reset link dispatched via ${res.provider||'email'} to ${res.maskedEmail} and ready to copy below (valid ${res.expiresInMinutes||15} min).`
+     :`Single-use 15-min reset link generated for ${res.maskedEmail}. Copy or share it below${res.emailNotice?' — '+res.emailNotice:''}.`;
+   if(mailA){
+     const sub=encodeURIComponent('WhatsGram Password Reset Link');
+     const body=encodeURIComponent(`Use this single-use 15-minute link to reset your WhatsGram password:\n\n${res.resetUrl}\n`);
+     mailA.href=`mailto:${encodeURIComponent(res.recoveryEmail||'')}?subject=${sub}&body=${body}`;
+   }
+   if(box)box.classList.remove('hidden');
+   toast(res.delivered?'Reset link emailed & ready':'Reset link ready to share');
+ },
+ copySelfReset(){
+   const v=$('#auth-self-url')?.value||'';
+   if(!v)return toast('Create a reset link first','err');
+   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(v).then(()=>toast('Reset link copied'),()=>toast('Copy blocked by browser','err'));
+   else toast('Clipboard unavailable','err');
+ },
+ openSelfReset(){
+   const raw=($('#auth-self-url')?.value||'').trim();
+   const m=raw.match(/#wg-reset=([^&#]+)/)||raw.match(/[?&]reset=([^&#]+)/);
+   const token=m?decodeURIComponent(m[1]):'';
+   if(!token)return toast('Create a reset link first','err');
+   S.recovery={token,accessToken:null,tokenHash:null};
+   S.authTab='reset';
+   if($('#auth-err'))$('#auth-err').classList.add('hidden');
+   if($('#auth-rs-p1'))$('#auth-rs-p1').value='';
+   if($('#auth-rs-p2'))$('#auth-rs-p2').value='';
+   renderAccountUI();
+   setTimeout(()=>$('#auth-rs-p1')?.focus(),40);
+ },
+ async changePassword(){
+   const currentPassword=$('#auth-chg-cur')?.value||'',newPassword=$('#auth-chg-new')?.value||'';
+   if(!currentPassword||newPassword.length<6)return toast('Enter current password and a new password (6+ chars)','err');
+   const res=await sbPost({action:'changePassword',currentPassword,newPassword});
+   if(!res?.ok)return toast(res?.error||'Could not update password','err');
+   if($('#auth-chg-cur'))$('#auth-chg-cur').value='';
+   if($('#auth-chg-new'))$('#auth-chg-new').value='';
+   toast('Password updated');
+ },
+ async signOut(){disconnectRealtime();await sbPost({action:'signout'});try{localStorage.removeItem('wg_has_session');localStorage.removeItem('wg_local_mode')}catch(e){}S.user=null;S.users=[];S.ecdhId=null;S.e2eeRing={};S.onlineUsers={};S.typingTms={};S.recovery=null;await genKey();renderAccountUI();renderDmUsers();renderGroupMembers();renderList();renderThread();renderInfo();renderStories();closeM('m-auth');setShell('landing');toast('Signed out')},
  syncNow(){refreshCloud(false)},
  confirmYes(){const f=S.confirm;S.confirm=null;closeM('m-confirm');f&&f()},
  sw(k){cfg[k]=!cfg[k];if(k==='notify'&&cfg[k]&&typeof Notification!=='undefined'&&Notification.permission==='default'){Notification.requestPermission().then(p=>{if(p!=='granted'){cfg.notify=false;applyCfg()}saveCfg()})}saveCfg();applyCfg();if(k==='spatial'&&cfg[k]){tone(500,.25,-1,.05);setTimeout(()=>tone(700,.25,1,.05),300)}if(k==='e2ee'){renderHead();audit('E2EE '+(cfg[k]?'enabled':'disabled'))}if(k==='vanish')audit('Vanish mode '+(cfg[k]?'enabled':'disabled'))},
@@ -2944,6 +3641,22 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('input',e=>{
   const k=e.target.dataset&&e.target.dataset.input;
   if(k==='search'){S.q=e.target.value;renderList()}
+  if(k==='suUser'){
+    const raw=String(e.target.value||'').trim().toLowerCase().replace(/^@+/,'');
+    const hint=$('#auth-su-user-hint');
+    if(hint){
+      if(!raw){hint.className='text-[10px] font-mono text-zinc-500';hint.textContent='3–24 chars: lowercase letters, numbers, dot, underscore or hyphen.'}
+      else if(/^[a-z0-9][a-z0-9._-]{1,22}[a-z0-9]$/.test(raw)){hint.className='text-[10px] font-mono text-emerald-300';hint.textContent=`@${raw} · Valid handle`}
+      else{hint.className='text-[10px] font-mono text-amber-300';hint.textContent='Use 3–24 lowercase letters, numbers, dot, underscore or hyphen.'}
+    }
+  }
+  if(k==='pwStrength'){
+    const p=String(e.target.value||''),bar=$('#auth-pw-bar'),lbl=$('#auth-pw-lbl');
+    let sc=0;if(p.length>=6)sc++;if(p.length>=10)sc++;if(/[A-Z]/.test(p)&&/[a-z]/.test(p))sc++;if(/\d/.test(p))sc++;if(/[^A-Za-z0-9]/.test(p))sc++;
+    const lvl=!p?{w:'0%',c:'bg-rose-400',t:'Min 6 chars'}:p.length<6?{w:'20%',c:'bg-rose-400',t:'Too short'}:sc<=2?{w:'45%',c:'bg-amber-400',t:'Fair'}:sc===3?{w:'75%',c:'bg-sky-400',t:'Good'}:{w:'100%',c:'bg-emerald-400',t:'Strong'};
+    if(bar){bar.className=`h-full transition-all ${lvl.c}`;bar.style.width=lvl.w}
+    if(lbl){lbl.textContent=lvl.t;lbl.className='text-[10px] font-mono '+(sc>=3&&p.length>=6?'text-emerald-300':'text-zinc-400')}
+  }
   if(k==='storyPreview')renderStudioPreview();
   if(k==='threadSearch')searchThread(e.target.value);
   if(k==='cmd')renderCmdPalette(e.target.value);
@@ -3006,14 +3719,29 @@ window.addEventListener('resize',()=>closeMenu());
 window.addEventListener('scroll',e=>{if(S.menu&&!(e.target.nodeType===1&&e.target.closest('#menu')))closeMenu()},true);
 window.addEventListener('offline',()=>{show('#offline',true,null);toast('You are offline','err')});
 window.addEventListener('online',()=>{show('#offline',false,null);flushOutbox()});
+window.addEventListener('hashchange',()=>{if(parseHashOrSearchParams()){S.authTab='reset';if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-rs-p1'))$('#auth-rs-p1').value='';if($('#auth-rs-p2'))$('#auth-rs-p2').value='';renderAccountUI();openM('m-auth');setTimeout(()=>$('#auth-rs-p1')?.focus(),40)}});
 
 /* ---------- boot ---------- */
+const hasResetToken=parseHashOrSearchParams();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('/sw.js').catch(()=>{})}
 renderNav();applyCfg();renderStories();genKey();checkAIStatus();renderAccountUI();checkSupabaseSession();window.addEventListener('focus',()=>{if(S.user)refreshCloud(true)});
 if(!navigator.onLine)show('#offline',true,null);
 setView('chats');renderThread();renderInfo();
-if(window.matchMedia('(min-width:768px)').matches&&D.length)openChat(D[0].id);
-if(cfg.lockLaunch)lock();else audit('Session started');
+const localDemo=!hasResetToken&&localStorage.getItem('wg_local_mode')==='1';
+if(hasResetToken){
+  setShell('landing');
+  S.authTab='reset';
+  renderAccountUI();
+  openM('m-auth');
+  setTimeout(()=>$('#auth-rs-p1')?.focus(),50);
+}else if(localDemo){
+  setShell('app');
+  if(window.matchMedia('(min-width:768px)').matches&&D.length)openChat(D[0].id);
+  if(cfg.lockLaunch)lock();else audit('Session started');
+}else{
+  setShell('landing');
+  audit('Landing ready');
+}
 resetIdle();
 });
 </script>
