@@ -119,7 +119,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   Offline — outgoing messages are queued and will send on reconnect.
 </div>
 
-<div id="toasts" class="fixed z-[70] right-4 bottom-20 md:bottom-5 flex flex-col gap-2 items-end pointer-events-none"></div>
+<div id="toasts" class="fixed z-[70] left-1/2 -translate-x-1/2 top-3.5 sm:top-4 flex flex-col gap-2 items-center pointer-events-none"></div>
 
 <!-- INTERNATIONAL LANDING PAGE -->
 <div id="landing" class="landing-aura fixed inset-0 z-40 overflow-y-auto overflow-x-hidden">
@@ -1104,21 +1104,27 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-comments" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-end md:items-center justify-center bg-black/75 backdrop-blur-md p-0 md:p-4">
-  <div class="lux-modal w-full max-w-md rounded-t-[28px] md:rounded-[28px] p-5 flex flex-col gap-3.5 max-h-[75vh]">
-    <div class="flex justify-between items-center pb-2 border-b border-white/[0.07]">
-      <h3 id="cm-title" class="text-sm font-bold text-white">Comments</h3>
-      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-comments" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+<div id="m-comments" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-end md:items-center justify-center bg-black/80 backdrop-blur-lg p-0 md:p-4">
+  <div class="w-full max-w-[440px] rounded-t-[24px] md:rounded-[20px] bg-[#16171f] border border-white/[0.11] shadow-[0_32px_90px_-14px_rgba(0,0,0,.98)] flex flex-col max-h-[80vh] overflow-hidden">
+    <div class="pt-2.5 pb-3 px-4 border-b border-white/[0.08] shrink-0">
+      <div class="w-9 h-1 rounded-full bg-white/20 mx-auto mb-2.5 md:hidden"></div>
+      <div class="flex items-center justify-between">
+        <span class="w-8"></span>
+        <h3 id="cm-title" class="text-[13px] font-bold tracking-tight text-white">Comments</h3>
+        <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition" data-act="closeModal" data-arg="m-comments" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
     </div>
-    <div id="cm-list" class="flex-1 overflow-y-auto space-y-3.5 py-1"></div>
-    <div class="flex gap-2 pt-2 border-t border-white/[0.07]">
-      <input id="cm-in" data-enter="postComment" class="lux-input flex-1 h-10 rounded-full px-4 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
-      <button class="btn-ac btn-primary h-10 px-4 rounded-full text-xs font-bold" data-act="postComment">Post</button>
+    <div id="cm-ctx" class="px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02] flex items-center gap-2.5 shrink-0"></div>
+    <div id="cm-list" class="flex-1 overflow-y-auto px-4 py-3.5 space-y-3.5"></div>
+    <div class="px-3.5 py-3 border-t border-white/[0.08] bg-[#121319] flex items-center gap-2.5 shrink-0 safe-b">
+      <span id="cm-me-av" class="shrink-0"></span>
+      <input id="cm-in" data-enter="postComment" class="lux-input flex-1 h-9 rounded-full px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
+      <button class="h-9 px-3.5 rounded-full bg-[#0095f6] hover:bg-[#1877f2] text-xs font-semibold text-white transition shrink-0" data-act="postComment">Post</button>
     </div>
   </div>
 </div>
 
-<div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/85 backdrop-blur-xl p-2.5 sm:p-5 overflow-y-auto">
+<div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/85 backdrop-blur-xl p-2.5 sm:p-5 overflow-y-auto">
   <div class="w-full max-w-[760px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] overflow-hidden my-auto">
     <div class="px-4 py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-3">
       <div class="flex items-center gap-2.5 min-w-0">
@@ -1246,32 +1252,37 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   <div id="sv" class="relative w-full max-w-[400px] h-full sm:h-[min(88vh,740px)] overflow-hidden sm:rounded-[20px] sm:border sm:border-white/[0.14] shadow-[0_32px_90px_-15px_rgba(0,0,0,.95)]"></div>
 </div>
 
-<div id="m-call" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/85 backdrop-blur-2xl p-4">
-  <div class="lux-modal w-full max-w-md rounded-[30px] p-7 text-center space-y-5">
-    <div id="call-media" class="relative hidden">
-      <video id="call-v" class="w-full h-56 object-cover rounded-2xl bg-black border border-white/10" autoplay playsinline></video>
-      <video id="call-local" class="hidden absolute bottom-2.5 right-2.5 w-24 h-16 object-cover rounded-xl bg-zinc-950 border border-white/25 shadow-xl" autoplay muted playsinline></video>
+<div id="m-call" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/90 backdrop-blur-2xl p-3 sm:p-5">
+  <div class="relative w-full max-w-[440px] rounded-[28px] bg-[#0b0c12] border border-white/[0.11] shadow-[0_36px_110px_-14px_rgba(0,0,0,.98)] overflow-hidden p-6 sm:p-7 text-center space-y-5">
+    <div class="pointer-events-none absolute -top-24 inset-x-0 h-56 opacity-45 blur-3xl" style="background:radial-gradient(circle at 50% 45%, rgba(0,149,246,.32), rgba(221,42,123,.2) 55%, transparent 75%)"></div>
+    <div id="call-media" class="relative z-10 hidden">
+      <video id="call-v" class="w-full h-64 sm:h-72 object-cover rounded-[20px] bg-black border border-white/[0.12] shadow-2xl" autoplay playsinline></video>
+      <video id="call-local" class="hidden absolute bottom-3 right-3 w-24 h-32 object-cover rounded-xl bg-zinc-950 border border-white/25 shadow-2xl" autoplay muted playsinline></video>
     </div>
     <audio id="call-a" class="hidden" autoplay></audio>
-    <div id="call-av" class="flex justify-center"></div>
-    <div>
-      <div class="flex items-center justify-center gap-2">
-        <h3 id="call-name" class="text-base font-bold text-white"></h3>
-        <span id="call-mode-badge" class="hidden px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/25 text-[10px] font-semibold text-emerald-300">WebRTC</span>
+    <div class="relative z-10 flex justify-center">
+      <div class="p-[3px] rounded-full ig-ring shadow-[0_0_45px_-8px_rgba(221,42,123,.5)]">
+        <div id="call-av" class="rounded-full p-1 bg-[#0b0c12]"></div>
       </div>
-      <p id="call-st" class="text-xs text-zinc-400 font-mono mt-1"></p>
-      <p id="call-stats" class="hidden text-[10px] text-emerald-300/90 font-mono mt-1"></p>
     </div>
-    <div id="call-in-acts" class="hidden flex justify-center gap-3 pt-1">
-      <button class="h-12 px-5 rounded-full bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white inline-flex items-center gap-2 shadow-lg shadow-rose-600/30 transition" data-act="rejectCall"><i data-lucide="phone-off" class="w-4 h-4"></i>Decline</button>
-      <button class="h-12 px-5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-xs font-bold text-black inline-flex items-center gap-2 shadow-lg shadow-emerald-500/30 transition" data-act="acceptCall"><i data-lucide="phone" class="w-4 h-4"></i>Accept</button>
+    <div class="relative z-10">
+      <div class="flex items-center justify-center gap-2">
+        <h3 id="call-name" class="text-lg font-bold tracking-tight text-white"></h3>
+        <span id="call-mode-badge" class="hidden px-2 py-0.5 rounded-full bg-[#0095f6]/15 border border-[#0095f6]/35 text-[10px] font-semibold text-[#5ebdff]">WebRTC</span>
+      </div>
+      <p id="call-st" class="text-xs text-zinc-300 mt-1"></p>
+      <p id="call-stats" class="hidden text-[10.5px] text-emerald-300/90 font-mono mt-1"></p>
     </div>
-    <div id="call-live-acts" class="flex justify-center gap-2.5 pt-1">
-      <button id="call-mute" class="btn-ghost w-11 h-11 rounded-full grid place-items-center text-white" data-act="callMute" aria-label="Mute microphone"><i data-lucide="mic" class="w-5 h-5"></i></button>
-      <button id="call-cam" class="btn-ghost w-11 h-11 rounded-full grid place-items-center text-white" data-act="callCam" aria-label="Toggle camera"><i data-lucide="video" class="w-5 h-5"></i></button>
-      <button id="call-flip" class="btn-ghost hidden w-11 h-11 rounded-full grid place-items-center text-white" data-act="callFlip" title="Switch camera" aria-label="Switch camera"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-      <button id="call-share" class="btn-ghost hidden w-11 h-11 rounded-full grid place-items-center text-white" data-act="callShare" title="Share screen" aria-label="Share screen"><i data-lucide="monitor-up" class="w-4 h-4"></i></button>
-      <button class="h-11 px-5 rounded-full bg-gradient-to-br from-rose-500 to-rose-600 hover:brightness-110 text-xs font-bold text-white inline-flex items-center gap-2 shadow-lg shadow-rose-600/35 transition" data-act="endCall"><i data-lucide="phone-off" class="w-4 h-4"></i>End</button>
+    <div id="call-in-acts" class="relative z-10 hidden flex justify-center gap-6 pt-2">
+      <button class="flex flex-col items-center gap-1.5 group" data-act="rejectCall"><span class="w-14 h-14 rounded-full bg-[#ff3040] hover:brightness-110 grid place-items-center text-white shadow-xl shadow-rose-600/35 group-hover:scale-105 transition"><i data-lucide="phone-off" class="w-6 h-6"></i></span><span class="text-[11px] font-semibold text-zinc-300">Decline</span></button>
+      <button class="flex flex-col items-center gap-1.5 group" data-act="acceptCall"><span class="w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 grid place-items-center text-black shadow-xl shadow-emerald-500/35 group-hover:scale-105 transition"><i data-lucide="phone" class="w-6 h-6"></i></span><span class="text-[11px] font-semibold text-zinc-300">Accept</span></button>
+    </div>
+    <div id="call-live-acts" class="relative z-10 inline-flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-full bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] mx-auto">
+      <button id="call-mute" class="w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callMute" aria-label="Mute microphone"><i data-lucide="mic" class="w-5 h-5"></i></button>
+      <button id="call-cam" class="w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callCam" aria-label="Toggle camera"><i data-lucide="video" class="w-5 h-5"></i></button>
+      <button id="call-flip" class="hidden w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callFlip" title="Switch camera" aria-label="Switch camera"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+      <button id="call-share" class="hidden w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callShare" title="Share screen" aria-label="Share screen"><i data-lucide="monitor-up" class="w-4 h-4"></i></button>
+      <button class="w-12 h-11 rounded-full bg-[#ff3040] hover:brightness-110 grid place-items-center text-white shadow-lg shadow-rose-600/40 transition" data-act="endCall" aria-label="End call"><i data-lucide="phone-off" class="w-5 h-5"></i></button>
     </div>
   </div>
 </div>
@@ -1345,41 +1356,99 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-post" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto">
-  <div class="lux-modal w-full max-w-md rounded-[26px] p-5 sm:p-6 space-y-4 my-auto">
-    <div class="flex items-center justify-between">
-      <h3 class="text-base font-bold text-white">Create new post</h3>
-      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-post" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+<div id="m-post" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/85 backdrop-blur-xl p-2.5 sm:p-5 overflow-y-auto">
+  <div class="w-full max-w-[780px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] overflow-hidden my-auto">
+    <div class="px-4 py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition" data-act="closeModal" data-arg="m-post" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <h3 class="text-sm font-bold tracking-tight text-white">Create new post</h3>
+      </div>
+      <span id="post-mode-lbl" class="px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10.5px] font-semibold text-zinc-300">Feed · Profile Grid</span>
     </div>
-    <div id="post-prev" class="relative h-56 rounded-2xl border border-white/15 overflow-hidden bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-rose-500 flex items-center justify-center p-5 text-center">
-      <img id="post-prev-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
-      <video id="post-prev-vid" class="hidden absolute inset-0 w-full h-full object-cover" muted loop autoplay playsinline></video>
-      <p id="post-prev-txt" class="relative z-10 text-sm font-bold text-white drop-shadow line-clamp-5">Share a moment, photo carousel, or creator announcement…</p>
-    </div>
-    <div class="flex items-center justify-between gap-2">
-      <div id="post-bgs" class="flex gap-1.5"></div>
-      <div class="flex items-center gap-1.5 shrink-0">
-        <input type="file" id="post-file" accept="image/*,video/*" multiple class="hidden">
-        <button type="button" data-act="pickPostMedia" class="btn-ghost h-8 px-3 rounded-xl text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="image-plus" class="w-3.5 h-3.5 text-accent"></i><span id="post-media-lbl">Upload media</span></button>
-        <button type="button" id="post-media-clr" data-act="clearPostMedia" class="btn-ghost hidden w-8 h-8 rounded-xl grid place-items-center text-zinc-300" aria-label="Clear selected media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+
+    <div class="grid grid-cols-1 md:grid-cols-12">
+      <div class="md:col-span-6 bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] p-3.5 sm:p-5 flex flex-col items-center justify-center gap-2">
+        <div class="w-full max-w-[230px] sm:max-w-[300px] rounded-[18px] bg-[#121319] border border-white/[0.1] shadow-[0_24px_65px_-12px_rgba(0,0,0,.98)] overflow-hidden">
+          <div class="px-3 py-2.5 flex items-center justify-between gap-2 border-b border-white/[0.06]">
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="post-prev-av" class="w-7 h-7 rounded-full ig-ring p-[1.5px] grid place-items-center text-[10px] font-bold text-white shrink-0">Y</span>
+              <div class="min-w-0">
+                <div id="post-prev-user" class="text-[11px] font-bold text-white truncate leading-tight">you</div>
+                <div id="post-prev-loc" class="hidden text-[9.5px] text-zinc-400 truncate leading-tight"></div>
+              </div>
+            </div>
+            <i data-lucide="more-horizontal" class="w-4 h-4 text-zinc-400 shrink-0"></i>
+          </div>
+
+          <div id="post-prev" class="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-rose-500 flex items-center justify-center p-5 text-center select-none">
+            <img id="post-prev-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
+            <video id="post-prev-vid" class="hidden absolute inset-0 w-full h-full object-cover" muted loop autoplay playsinline></video>
+            <span id="post-prev-multi" class="hidden absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-bold text-white border border-white/15"></span>
+            <p id="post-prev-txt" class="relative z-10 text-[13px] font-extrabold text-white drop-shadow leading-snug line-clamp-6">Share a moment, photo carousel, or creator update…</p>
+          </div>
+
+          <div class="px-3 py-2.5 space-y-1.5">
+            <div class="flex items-center justify-between text-white">
+              <div class="flex items-center gap-3">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </div>
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+            </div>
+            <p id="post-prev-cap-sub" class="text-[11px] text-zinc-300 line-clamp-2 break-words leading-snug"></p>
+          </div>
+        </div>
+        <span class="text-[10.5px] text-zinc-500">1:1 Feed Preview · Drag photos or videos onto canvas</span>
+      </div>
+
+      <div class="md:col-span-6 p-4 sm:p-5 flex flex-col justify-between gap-3.5 bg-[#111218]">
+        <div class="space-y-3.5">
+          <div id="post-dropzone" class="rounded-2xl border border-dashed border-white/[0.14] hover:border-[#0095f6]/60 bg-white/[0.025] px-3.5 py-2.5 flex items-center justify-between gap-2.5 transition">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-xl bg-[#0095f6]/15 border border-[#0095f6]/30 text-[#0095f6] grid place-items-center shrink-0"><i data-lucide="images" class="w-4 h-4"></i></span>
+              <div class="min-w-0">
+                <div class="text-xs font-semibold text-white truncate" id="post-media-title">Photos or video (up to 4)</div>
+                <div class="text-[10.5px] text-zinc-500 truncate">Carousel, reel clip, or gradient card</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <input type="file" id="post-file" accept="image/*,video/*" multiple class="hidden">
+              <button type="button" data-act="pickPostMedia" class="h-8 px-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.1] text-xs font-semibold text-white transition" id="post-media-lbl">Upload</button>
+              <button type="button" id="post-media-clr" data-act="clearPostMedia" class="hidden w-8 h-8 rounded-xl bg-white/[0.06] hover:bg-white/[0.14] border border-white/[0.1] grid place-items-center text-zinc-300" aria-label="Clear selected media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[11px] font-semibold text-zinc-400">Card background</span>
+            <div id="post-bgs" class="flex items-center gap-2"></div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="post-cap" class="text-[11px] font-semibold text-zinc-400">Caption</label>
+              <div class="flex items-center gap-3">
+                <span id="post-cap-cnt" class="text-[10.5px] font-mono text-zinc-500">0/1200</span>
+                <button type="button" data-act="aiPostCaption" class="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0095f6] hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>AI caption &amp; tags</button>
+              </div>
+            </div>
+            <textarea id="post-cap" rows="3" data-input="postPreview" maxlength="1200" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Write a caption… use #tags and @mentions"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <input id="post-loc" data-input="postPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add location" maxlength="120">
+            <input id="post-tags" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Tag @people" maxlength="140">
+          </div>
+
+          <label class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] cursor-pointer hover:bg-white/[0.05] transition">
+            <span class="text-xs font-semibold text-zinc-200 inline-flex items-center gap-2"><i data-lucide="pin" class="w-3.5 h-3.5 text-[#0095f6]"></i>Pin to top of profile grid</span>
+            <input id="post-pin" type="checkbox" class="accent-[#0095f6] w-4 h-4">
+          </label>
+        </div>
+
+        <button id="post-submit" class="w-full h-10 rounded-xl bg-[#0095f6] hover:bg-[#1877f2] active:scale-[.99] text-white text-[13px] font-semibold shadow-[0_10px_28px_-10px_rgba(0,149,246,.75)] transition" data-act="createPost">Share post</button>
       </div>
     </div>
-    <div>
-      <div class="flex items-center justify-between mb-1">
-        <label class="text-[11px] font-medium text-zinc-400">Caption</label>
-        <button type="button" data-act="aiPostCaption" class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>AI caption &amp; tags</button>
-      </div>
-      <textarea id="post-cap" rows="3" data-input="postPreview" maxlength="1200" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Write a caption… use #tags and @mentions"></textarea>
-    </div>
-    <div class="grid grid-cols-2 gap-2.5">
-      <input id="post-loc" class="lux-input h-10 w-full rounded-xl px-3 text-[12.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add location (optional)" maxlength="120">
-      <input id="post-tags" class="lux-input h-10 w-full rounded-xl px-3 text-[12.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Tag @people (comma sep)" maxlength="140">
-    </div>
-    <label class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07] cursor-pointer">
-      <span class="text-xs font-semibold text-zinc-200 inline-flex items-center gap-2"><i data-lucide="pin" class="w-3.5 h-3.5 text-accent"></i>Pin to top of profile grid</span>
-      <input id="post-pin" type="checkbox" class="accent-[#0095f6] w-4 h-4">
-    </label>
-    <button id="post-submit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="createPost">Publish to Profile</button>
   </div>
 </div>
 
@@ -1726,7 +1795,7 @@ let ST=store.get('stories',null)||seedStories();
 let LOG=store.get('log',[]);
 let CUSTOM_REELS=store.get('custom_reels',[]);
 const getReels=()=>[...R,...CUSTOM_REELS];
-const RS=Object.assign({liked:[],saved:[],follow:['alex.rivera'],filter:0,extra:{}},store.get('reels',{}));
+const RS=Object.assign({liked:[],saved:[],follow:['alex.rivera'],filter:0,extra:{},cmLikes:[]},store.get('reels',{}));
 const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,reelMuted:true,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',aiLastErr:null,aiThread:store.get('ai_threads',{}),draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{}),profId:null,profPrevView:'chats',profTab:'posts',profSuggest:false,profTag:null,profData:null,profLoading:false,postViewId:null,postViewSlide:0,followListTab:'followers',followListQ:'',activity:store.get('wg_activity',[]),actUnread:0,postMedia:[],postBg:0,hlBg:0,hlMedia:null,hlView:null,epAvatarPath:null,epAvatarUrl:null,pendingProfileLink:null};
 const BLOBS={};const MEDIA_LOADING=new Set();let KEY=null,FP='';
 function notifyDesktop(title,body){if(!cfg.notify||typeof Notification==='undefined'||Notification.permission!=='granted'||!document.hidden)return;try{new Notification(title,{body:String(body||'').slice(0,120),icon:'/icon.svg'})}catch(e){}}
@@ -2544,12 +2613,13 @@ function renderList(){
 }
 
 function renderStories(){
+  const me=S.user?.displayName||S.user?.email||'You';
   $('#stories').innerHTML=`<button data-act="storyNew" class="group flex flex-col items-center gap-1.5 shrink-0 w-[68px]" aria-label="Create story">
-    <span class="relative w-[62px] h-[62px] rounded-full bg-white/[0.03] border border-dashed border-white/25 group-hover:border-white/50 group-hover:bg-white/[0.06] grid place-items-center text-zinc-300 transition-all">
-      ${ic('plus','w-5 h-5')}
-      <span class="btn-primary absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full ring-2 ring-[#070810] grid place-items-center">${ic('plus','w-3 h-3')}</span>
+    <span class="relative p-[2.5px] rounded-full bg-white/[0.12] group-hover:bg-white/[0.22] transition-all">
+      <span class="block p-[2px] rounded-full bg-[#070810]">${av(me,'w-[54px] h-[54px]')}</span>
+      <span class="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-[#0095f6] ring-2 ring-[#070810] grid place-items-center text-white shadow-md">${ic('plus','w-3 h-3 stroke-[2.8]')}</span>
     </span>
-    <span class="text-[11px] font-medium text-zinc-400 group-hover:text-zinc-200">Your story</span>
+    <span class="text-[11px] font-medium text-zinc-400 group-hover:text-zinc-200 truncate w-full text-center">Your story</span>
   </button>`+ST.map((s,i)=>`<button data-act="storyOpen" data-arg="${i}" class="group flex flex-col items-center gap-1.5 shrink-0 w-[68px]" aria-label="View ${esc(s.name)} story">
     <span class="p-[2.5px] rounded-full transition-transform group-hover:scale-[1.04] ${s.seen?'bg-zinc-700/80':'bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] shadow-[0_6px_18px_-6px_rgba(221,42,123,.65)]'}">
       <span class="block p-[2px] rounded-full bg-[#070810]">${av(s.name,'w-[54px] h-[54px]')}</span>
@@ -3228,9 +3298,35 @@ function burst(x,y){const st=$('#reel-stage'),b=st.getBoundingClientRect(),h=doc
 function likeReel(force){const r=getReels()[S.reel],i=RS.liked.indexOf(r.id);if(i<0)RS.liked.push(r.id);else if(!force)RS.liked.splice(i,1);saveR();renderReel(false)}
 function openComments(){
   const r=getReels()[S.reel],all=[...(r.com||[]),...(RS.extra[r.id]||[])];
+  const likedCnt=(r.likes||0)+(RS.liked.includes(r.id)?1:0);
   setTxt('#cm-title',`Comments (${all.length})`);
-  $('#cm-list').innerHTML=all.length?all.map(c=>`<div class="flex gap-2.5 items-start">${av(c.n,'w-8 h-8')}<div class="lux-card min-w-0 flex-1 rounded-2xl px-3.5 py-2.5"><div class="text-xs font-bold text-white">${esc(c.n)}</div><div class="text-xs text-zinc-300 mt-0.5 break-words">${esc(c.t)}</div></div></div>`).join(''):'<div class="text-xs text-zinc-500 text-center py-6">No comments yet. Start the thread.</div>';
-  openM('m-comments');$('#cm-list').scrollTop=1e9;
+  const ctx=$('#cm-ctx');
+  if(ctx){
+    ctx.innerHTML=`<span class="p-[1.5px] rounded-full ig-ring shrink-0">${av(r.author,'w-7 h-7')}</span>
+      <div class="min-w-0 flex-1">
+        <div class="text-xs font-bold text-white truncate">@${esc(r.author)}</div>
+        <div class="text-[11px] text-zinc-400 truncate">${esc(r.cap)}</div>
+      </div>
+      <span class="text-[10.5px] font-semibold text-zinc-400 inline-flex items-center gap-1 shrink-0">${ic('heart','w-3 h-3 text-rose-400 fill-rose-400')}${fmtCount(likedCnt)}</span>`;
+  }
+  const meAv=$('#cm-me-av');if(meAv)meAv.innerHTML=av(S.user?.displayName||'You','w-8 h-8');
+  const cmLikes=RS.cmLikes||(RS.cmLikes=[]);
+  $('#cm-list').innerHTML=all.length?all.map((c,i)=>{
+    const k=`${r.id}:${i}`,on=cmLikes.includes(k),v=['alex.rivera','sarah.chen','anas_dev'].includes(String(c.n).toLowerCase());
+    return `<div class="flex gap-2.5 items-start group">
+      ${av(c.n,'w-8 h-8')}
+      <div class="min-w-0 flex-1">
+        <div class="text-xs leading-snug break-words"><span class="font-bold text-white mr-1.5 inline-flex items-center gap-1">${esc(c.n)}${v?VERIFIED_BADGE_SVG:''}</span><span class="text-zinc-200">${renderBioText(c.t)}</span></div>
+        <div class="flex items-center gap-3 mt-1 text-[10.5px] text-zinc-500"><span>${c.id?'Just now':'Featured'}</span>${on?'<span class="text-rose-400 font-semibold">1 like</span>':''}</div>
+      </div>
+      <button type="button" data-act="cmLike" data-arg="${esc(k)}" class="w-7 h-7 rounded-full grid place-items-center shrink-0 transition ${on?'text-[#ff3040]':'text-zinc-500 hover:text-white'}" aria-label="Like comment">${ic('heart','w-3.5 h-3.5'+(on?' fill-current':''))}</button>
+    </div>`;
+  }).join(''):`<div class="py-10 text-center space-y-2">
+    <div class="w-12 h-12 mx-auto rounded-full bg-white/[0.04] border border-white/[0.1] grid place-items-center text-zinc-400">${ic('message-circle','w-5 h-5')}</div>
+    <div class="text-xs font-semibold text-white">No comments yet</div>
+    <p class="text-[11px] text-zinc-500">Start the conversation on @${esc(r.author)}’s reel.</p>
+  </div>`;
+  openM('m-comments');$('#cm-list').scrollTop=1e9;icons();
 }
 
 /* ---------- stories ---------- */
@@ -3762,22 +3858,38 @@ function renderPostPreview(){
   const bg=POST_BGS[S.postBg]||POST_BGS[0];
   const prev=$('#post-prev'),img=$('#post-prev-img'),vid=$('#post-prev-vid'),txt=$('#post-prev-txt'),clr=$('#post-media-clr');
   if(!prev)return;
-  prev.className=`relative h-56 rounded-2xl border border-white/15 overflow-hidden bg-gradient-to-br ${bg} flex items-center justify-center p-5 text-center`;
-  $('#post-bgs').innerHTML=POST_BGS.map((g,i)=>`<button type="button" data-act="postBg" data-arg="${i}" class="w-7 h-7 rounded-lg bg-gradient-to-br ${g} border-2 transition ${i===S.postBg?'border-white scale-105':'border-white/15 opacity-75 hover:opacity-100'}" aria-label="Gradient ${i+1}"></button>`).join('');
+  prev.className=`relative aspect-square w-full overflow-hidden bg-gradient-to-br ${bg} flex items-center justify-center p-5 text-center select-none`;
+  $('#post-bgs').innerHTML=POST_BGS.map((g,i)=>`<button type="button" data-act="postBg" data-arg="${i}" class="w-7 h-7 rounded-full bg-gradient-to-br ${g} border-2 transition ${i===S.postBg?'border-white scale-110 ring-2 ring-[#0095f6]/60':'border-white/15 opacity-75 hover:opacity-100'}" aria-label="Gradient ${i+1}"></button>`).join('');
   img.classList.add('hidden');vid.classList.add('hidden');vid.pause();
-  const cap=$('#post-cap')?.value.trim()||'Share a moment, photo carousel, or creator announcement…';
+  const meHandle=(S.user?.username||S.user?.displayName||S.user?.email||'you').toLowerCase().replace(/\s+/g,'');
+  const meInit=(S.user?.displayName||'Y')[0].toUpperCase();
+  setTxt('#post-prev-av',meInit);
+  setTxt('#post-prev-user',meHandle);
+  const loc=$('#post-loc')?.value.trim()||'';
+  const locEl=$('#post-prev-loc');
+  if(locEl){locEl.textContent=loc;locEl.classList.toggle('hidden',!loc)}
+  const rawCap=$('#post-cap')?.value||'';
+  const cap=rawCap.trim()||'Share a moment, photo carousel, or creator update…';
   txt.textContent=cap;
+  setTxt('#post-cap-cnt',`${rawCap.length}/1200`);
+  const capSub=$('#post-prev-cap-sub');
+  if(capSub)capSub.innerHTML=`<strong class="font-bold text-white mr-1.5">${esc(meHandle)}</strong>${esc(rawCap.trim()||'Write a caption to see how it appears in the feed…')}`;
+  const multi=$('#post-prev-multi');
   const first=S.postMedia[0];
   if(first){
     txt.classList.add('hidden');
     clr.classList.remove('hidden');clr.classList.add('grid');
-    setTxt('#post-media-lbl',S.postMedia.length>1?`${S.postMedia.length} slides selected`:'Change media');
+    setTxt('#post-media-title',S.postMedia.length>1?`${S.postMedia.length} media slides attached`:(first.file?.name||'Media attached'));
+    setTxt('#post-media-lbl',S.postMedia.length>1?`${S.postMedia.length} slides`:'Change');
+    if(multi){multi.textContent=S.postMedia.length>1?`1 / ${S.postMedia.length}`:'Video';multi.classList.toggle('hidden',S.postMedia.length<=1&&!first.mime?.startsWith('video/'))}
     if(first.mime?.startsWith('video/')){vid.src=first.url;vid.classList.remove('hidden');vid.play().catch(()=>{})}
     else{img.src=first.url;img.classList.remove('hidden')}
   }else{
     txt.classList.remove('hidden');
     clr.classList.add('hidden');clr.classList.remove('grid');
-    setTxt('#post-media-lbl','Upload media');
+    setTxt('#post-media-title','Photos or video (up to 4)');
+    setTxt('#post-media-lbl','Upload');
+    multi?.classList.add('hidden');
   }
 }
 
@@ -4582,6 +4694,7 @@ const A={
  setFilter(i){RS.filter=+i;saveR();$('#reel-bg').style.filter=FILTERS[RS.filter][1];setTxt('#filter-lbl',FILTERS[RS.filter][0])},
  studioFilter(i){RS.filter=+i;saveR();renderStudioPreview();if(S.view==='reels'){$('#reel-bg').style.filter=FILTERS[RS.filter][1];setTxt('#filter-lbl',FILTERS[RS.filter][0])}},
  reelComments:()=>openComments(),
+ cmLike(k){const ls=RS.cmLikes||(RS.cmLikes=[]),i=ls.indexOf(k);i<0?ls.push(k):ls.splice(i,1);saveR();openComments()},
  reelShare(){const u=`${location.href.split('#')[0]}#reel-${getReels()[S.reel].id}`;if(navigator.share)navigator.share({title:'WhatsGram reel',url:u}).catch(()=>{});else navigator.clipboard?.writeText(u).then(()=>toast('Reel link copied'),()=>toast('Copy blocked by browser','err'))},
  postComment(){const i=$('#cm-in'),t=i.value.trim();if(!t)return;const id=getReels()[S.reel].id,author=S.user?.displayName||'You';(RS.extra[id]=RS.extra[id]||[]).push({n:author,t});saveR();i.value='';openComments();renderReel(false);if(S.user)sbPost({action:'addReelComment',reelId:id,id:uid('rc'),authorName:author,text:t})},
  reelNew(){A.storyNew('reel')},
@@ -4841,7 +4954,7 @@ const A={
      S.profTab='posts';
      openProfile('self');
      toast('Post published');
-   }finally{if(btn){btn.disabled=false;btn.textContent='Publish to Profile'}}
+   }finally{if(btn){btn.disabled=false;btn.textContent='Share post'}}
  },
  viewPost(postId){S.postViewId=postId;S.postViewSlide=0;renderPostView();openM('m-post-view')},
  pvSlide(d){const p=findPostById(S.postViewId);const n=(p?.mediaUrls||[]).length;if(n<2)return;S.postViewSlide=(S.postViewSlide+(+d)+n)%n;renderPostView()},
@@ -5157,6 +5270,7 @@ $('#post-file')?.addEventListener('change',async e=>{
   }
   S.postMedia=items;renderPostPreview();
 });
+['#post-prev','#post-dropzone'].forEach(sel=>{const el=$(sel);if(!el)return;el.addEventListener('dragover',e=>{if(e.dataTransfer?.types?.includes('Files')){e.preventDefault();el.classList.add('ring-2','ring-[#0095f6]/70')}});el.addEventListener('dragleave',()=>el.classList.remove('ring-2','ring-[#0095f6]/70'));el.addEventListener('drop',async e=>{el.classList.remove('ring-2','ring-[#0095f6]/70');const files=[...(e.dataTransfer?.files||[])].filter(f=>f.type.startsWith('image/')||f.type.startsWith('video/')).slice(0,4);if(!files.length)return;e.preventDefault();const items=[];for(const f of files){let dataUrl=null;if(!S.user&&f.type.startsWith('image/')&&f.size<=1500000){dataUrl=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(String(r.result||''));r.onerror=()=>res(null);r.readAsDataURL(f)})}items.push({file:f,url:URL.createObjectURL(f),dataUrl,mime:f.type})}S.postMedia=items;renderPostPreview()})});
 $('#hl-file')?.addEventListener('change',e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   const r=new FileReader();
