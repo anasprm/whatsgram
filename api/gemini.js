@@ -1,7 +1,8 @@
 const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const FALLBACK_MODEL = 'gemini-2.0-flash';
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
-const GROQ_VISION_MODEL = process.env.GROQ_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
+const GROQ_FALLBACK_MODEL = 'openai/gpt-oss-20b';
+const GROQ_VISION_MODEL = (process.env.GROQ_VISION_MODEL || '').trim();
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'openrouter/free';
 
 function resolveProviders() {
@@ -320,13 +321,13 @@ function toOpenAIMessages(payload) {
   return msgs;
 }
 
-function buildOpenAIReqBody(pCfg, payload, stream = false) {
-  const model = pCfg.provider === 'groq' && hasImagePart(payload) ? GROQ_VISION_MODEL : pCfg.model;
+function buildOpenAIReqBody(pCfg, payload, stream = false, overrideModel = null) {
+  const model = overrideModel || (pCfg.provider === 'groq' && hasImagePart(payload) && GROQ_VISION_MODEL ? GROQ_VISION_MODEL : pCfg.model);
   const body = {
     model,
     messages: toOpenAIMessages(payload),
     temperature: payload.generationConfig?.temperature ?? 0.5,
-    max_tokens: payload.generationConfig?.maxOutputTokens ?? 1024,
+    max_tokens: Math.max(Number(payload.generationConfig?.maxOutputTokens) || 512, payload.wantsJson ? 650 : 512),
     stream
   };
   if (payload.wantsJson && !stream) body.response_format = { type: 'json_object' };
@@ -346,13 +347,22 @@ function openAIHeaders(pCfg) {
 }
 
 async function callOpenAIProvider(pCfg, payload) {
-  const { model, body } = buildOpenAIReqBody(pCfg, payload, false);
-  const response = await fetch(pCfg.url, {
+  let { model, body } = buildOpenAIReqBody(pCfg, payload, false);
+  let response = await fetch(pCfg.url, {
     method: 'POST',
     headers: openAIHeaders(pCfg),
     body: JSON.stringify(body)
   });
-  const data = await response.json().catch(() => ({}));
+  let data = await response.json().catch(() => ({}));
+  if (!response.ok && response.status === 404 && pCfg.provider === 'groq' && model !== GROQ_FALLBACK_MODEL) {
+    ({ model, body } = buildOpenAIReqBody(pCfg, payload, false, GROQ_FALLBACK_MODEL));
+    response = await fetch(pCfg.url, {
+      method: 'POST',
+      headers: openAIHeaders(pCfg),
+      body: JSON.stringify(body)
+    });
+    data = await response.json().catch(() => ({}));
+  }
   const rawText = String(data?.choices?.[0]?.message?.content || '').trim();
   return {
     ok: response.ok,
@@ -420,14 +430,24 @@ function parseFormattedJson(rawText, payload, model, provider) {
 
 async function openStreamResponse(providers, payload) {
   let lastErr = null;
+  const hasImg = hasImagePart(payload);
   for (const pCfg of providers) {
+    if (pCfg.provider === 'groq' && hasImg && !GROQ_VISION_MODEL && providers.length > 1) continue;
     if (pCfg.provider === 'groq' || pCfg.provider === 'openrouter') {
-      const { model, body } = buildOpenAIReqBody(pCfg, payload, true);
-      const response = await fetch(pCfg.url, {
+      let { model, body } = buildOpenAIReqBody(pCfg, payload, true);
+      let response = await fetch(pCfg.url, {
         method: 'POST',
         headers: openAIHeaders(pCfg),
         body: JSON.stringify(body)
       });
+      if (!response.ok && response.status === 404 && pCfg.provider === 'groq' && model !== GROQ_FALLBACK_MODEL) {
+        ({ model, body } = buildOpenAIReqBody(pCfg, payload, true, GROQ_FALLBACK_MODEL));
+        response = await fetch(pCfg.url, {
+          method: 'POST',
+          headers: openAIHeaders(pCfg),
+          body: JSON.stringify(body)
+        });
+      }
       if (response.ok) return { ok: true, response, model, provider: pCfg.provider, style: 'openai' };
       const errData = await response.json().catch(() => ({}));
       lastErr = { status: response.status, msg: errData?.error?.message || `${pCfg.provider} upstream error (${response.status})` };
@@ -577,7 +597,9 @@ module.exports = async function handler(req, res) {
 
     let lastFail = null;
     let winner = null;
+    const hasImg = hasImagePart(payload);
     for (const pCfg of providers) {
+      if (pCfg.provider === 'groq' && hasImg && !GROQ_VISION_MODEL && providers.length > 1) continue;
       const r = (pCfg.provider === 'groq' || pCfg.provider === 'openrouter')
         ? await callOpenAIProvider(pCfg, payload)
         : await callGoogleProvider(pCfg, payload);
