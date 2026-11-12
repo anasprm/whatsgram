@@ -6,7 +6,11 @@
   "scripts": {
     "build:css": "tailwindcss -i src/styles.css -o assets/app.css --minify",
     "build:js": "esbuild src/main.js --bundle --outfile=assets/app.js --format=iife --platform=browser --target=es2020 --minify",
-    "build": "npm run build:css && npm run build:js"
+    "build": "npm run build:css && npm run build:js",
+    "watch:js": "esbuild src/main.js --bundle --outfile=assets/app.js --format=iife --platform=browser --target=es2020 --watch",
+    "dev": "npx --yes vercel dev",
+    "check": "node -e \"const fs=require('fs'),cp=require('child_process');for(const p of ['package.json','vercel.json','manifest.webmanifest'])JSON.parse(fs.readFileSync(p,'utf8'));for(const d of ['api','lib'])for(const f of fs.readdirSync(d).filter(x=>x.endsWith('.js')))cp.execFileSync(process.execPath,['--check',d+'/'+f]);for(const f of ['sw.js','assets/app.js']){if(!fs.existsSync(f))throw new Error('Missing '+f);cp.execFileSync(process.execPath,['--check',f]);}for(const f of ['index.html','assets/app.css','.env.example','README.md']){if(!fs.existsSync(f))throw new Error('Missing '+f);}console.log('PROJECT_CHECK_OK');\"",
+    "test": "npm run check"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
