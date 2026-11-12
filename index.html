@@ -110,6 +110,28 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:9999px}
 ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.26)}
+.app-shell{height:100vh;height:100dvh}
+@media (max-height:620px){
+  #v-reels{padding:6px !important}
+  #reel-wrap{width:100% !important;height:100% !important;align-items:center !important;justify-content:center !important;gap:10px !important}
+  #reel-stage{height:100% !important;aspect-ratio:auto !important;width:min(calc(100vw - 140px),420px) !important;max-width:100% !important}
+  #reel-ui{padding:32px 14px 10px !important}
+  #reel-n > div:last-child{padding-bottom:76px !important}
+  #reel-n .reel-orb{width:64px !important;height:64px !important;margin-bottom:4px !important}
+  #reel-n .reel-orb-pad{height:28px !important;padding-left:8px !important;padding-right:8px !important}
+  #reel-actions{gap:4px !important;padding-bottom:0 !important;max-height:100%;overflow-y:auto;scrollbar-width:none}
+  #reel-actions button>span:first-child{width:28px !important;height:28px !important}
+  #reel-actions button svg{width:17px !important;height:17px !important}
+  #reel-actions button span+span{font-size:10px !important;line-height:1 !important}
+}
+@media (max-height:620px) and (max-width:639px){
+  #v-reels{padding:0 !important}
+  #reel-stage{width:100% !important;border-radius:0 !important;border:0 !important}
+  #reel-ui{padding-right:64px !important}
+}
+@media (max-height:620px) and (min-width:640px){
+  #reel-stage{max-width:calc(100vw - 130px) !important}
+}
 </style>
 </head>
 <body class="bg-black text-zinc-100 font-sans antialiased overflow-hidden selection:bg-accent/30 selection:text-white">
@@ -119,74 +141,74 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   Offline — outgoing messages are queued and will send on reconnect.
 </div>
 
-<div id="toasts" class="fixed z-[70] left-1/2 -translate-x-1/2 top-3.5 sm:top-4 flex flex-col gap-2 items-center pointer-events-none"></div>
+<div id="toasts" class="fixed z-[70] left-1/2 -translate-x-1/2 top-[72px] md:top-4 w-[calc(100vw-24px)] max-w-sm flex flex-col gap-2 items-center pointer-events-none"></div>
 
 <!-- INTERNATIONAL LANDING PAGE -->
 <div id="landing" class="landing-aura fixed inset-0 z-40 overflow-y-auto overflow-x-hidden">
   <!-- Sticky Top Navigation -->
   <header class="sticky top-0 z-30 border-b border-white/[0.07] bg-[#040509]/80 backdrop-blur-2xl">
-    <div class="max-w-7xl mx-auto h-16 px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-      <button data-act="landScroll" data-arg="l-hero" class="flex items-center gap-2.5 sm:gap-3 text-left group shrink-0">
-        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shadow-[0_8px_22px_-4px_rgba(221,42,123,.55),inset_0_1px_0_rgba(255,255,255,.35)] group-hover:scale-105 transition-transform">
+    <div class="max-w-7xl mx-auto h-16 px-3 min-[360px]:px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
+      <button data-act="landScroll" data-arg="l-hero" class="flex items-center gap-2 sm:gap-3 text-left group shrink-0">
+        <span class="w-7 h-7 min-[360px]:w-8 min-[360px]:h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] grid place-items-center text-white shadow-[0_8px_22px_-4px_rgba(221,42,123,.55),inset_0_1px_0_rgba(255,255,255,.35)] group-hover:scale-105 transition-transform">
           <i data-lucide="hexagon" class="w-4 h-4 stroke-[2.4]"></i>
         </span>
         <span class="flex items-center gap-1.5 sm:gap-2">
-          <span class="text-base sm:text-lg font-extrabold tracking-tight text-white">WhatsGram</span>
+          <span class="text-[15px] min-[360px]:text-base sm:text-lg font-extrabold tracking-tight text-white">WhatsGram</span>
           <span class="hidden sm:inline-block text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/[0.07] text-zinc-200 border border-white/[0.11]">OS</span>
         </span>
       </button>
-      <nav class="hidden md:flex items-center gap-1 text-[13px] font-medium text-zinc-400">
+      <nav class="hidden lg:flex items-center gap-1 text-[13px] font-medium text-zinc-400">
         <button data-act="landScroll" data-arg="l-features" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">Capabilities</button>
         <button data-act="landScroll" data-arg="l-security" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">E2EE Security</button>
         <button data-act="landScroll" data-arg="l-recovery" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">Identity &amp; Recovery</button>
         <button data-act="landScroll" data-arg="l-faq" class="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/[0.06] transition">FAQ</button>
       </nav>
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <button data-act="openAuth" data-arg="signin" class="btn-ghost h-9 px-3 sm:px-4 rounded-full text-xs font-semibold text-zinc-100 whitespace-nowrap">Sign in</button>
-        <button data-act="openAuth" data-arg="signup" class="btn-primary h-9 px-3 sm:px-4 rounded-full text-xs font-bold inline-flex items-center gap-1.5 whitespace-nowrap"><span>Create account</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+        <button data-act="openAuth" data-arg="signin" class="btn-ghost h-8 sm:h-9 px-2.5 min-[360px]:px-3 sm:px-4 rounded-full text-[11px] sm:text-xs font-semibold text-zinc-100 whitespace-nowrap">Sign in</button>
+        <button data-act="openAuth" data-arg="signup" class="btn-primary h-8 sm:h-9 px-2.5 min-[360px]:px-3 sm:px-4 rounded-full text-[11px] sm:text-xs font-bold inline-flex items-center gap-1.5 whitespace-nowrap"><span>Create account</span><i data-lucide="arrow-right" class="w-3.5 h-3.5 hidden min-[380px]:inline-block"></i></button>
       </div>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section id="l-hero" class="max-w-7xl mx-auto px-4 sm:px-8 pt-10 pb-14 lg:pt-20 lg:pb-24">
+  <section id="l-hero" class="max-w-7xl mx-auto px-4 sm:px-8 pt-8 sm:pt-10 pb-12 sm:pb-14 lg:pt-20 lg:pb-24">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-      <div class="lg:col-span-6 min-w-0 space-y-6">
+      <div class="lg:col-span-6 min-w-0 space-y-5 sm:space-y-6">
         <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-[11px] font-medium text-zinc-200 max-w-full shadow-[inset_0_1px_0_rgba(255,255,255,.08)]">
           <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>
           <span>ECDH P-256 · Meta-Style @AI · Postgres Cloud Sync</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl xl:text-[54px] font-extrabold tracking-tight text-white leading-[1.07]">
+        <h1 class="text-3xl min-[380px]:text-4xl sm:text-5xl xl:text-[54px] font-extrabold tracking-tight text-white leading-[1.07]">
           Sovereign messaging with <span class="bg-gradient-to-r from-[#38bdf8] via-[#a855f7] to-[#ec4899] bg-clip-text text-transparent">AI intelligence</span> and zero-noise identity.
         </h1>
         <p class="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-xl">
           Create your account in seconds with a <strong class="text-zinc-200 font-semibold">username and password</strong> — no phone number or mandatory tracking email. Chat with client-side WebCrypto E2EE, invoke <code class="text-zinc-200 font-mono text-xs px-1.5 py-0.5 rounded bg-white/[0.07]">@ai</code> anywhere, and add an optional recovery email solely for instant password reset links.
         </p>
-        <div class="flex flex-wrap items-center gap-3 pt-1">
-          <button data-act="openAuth" data-arg="signup" class="btn-primary h-11 px-6 rounded-full text-sm font-bold inline-flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1">
+          <button data-act="openAuth" data-arg="signup" class="btn-primary h-10 sm:h-11 px-5 sm:px-6 rounded-full text-xs sm:text-sm font-bold inline-flex items-center gap-2">
             <span>Get started free</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
-          <button data-act="openAuth" data-arg="signin" class="btn-ghost h-11 px-6 rounded-full text-sm font-semibold text-white inline-flex items-center gap-2">
+          <button data-act="openAuth" data-arg="signin" class="btn-ghost h-10 sm:h-11 px-5 sm:px-6 rounded-full text-xs sm:text-sm font-semibold text-white inline-flex items-center gap-2">
             <i data-lucide="log-in" class="w-4 h-4 text-accent"></i>
             <span>Sign in</span>
           </button>
-          <button data-act="enterDemo" class="h-11 px-4 rounded-full text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/[0.05] transition inline-flex items-center gap-1.5">
+          <button data-act="enterDemo" class="h-10 sm:h-11 px-4 rounded-full text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/[0.05] transition inline-flex items-center gap-1.5">
             <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
             <span>Try local sandbox</span>
           </button>
         </div>
-        <div class="grid grid-cols-3 gap-4 pt-5 border-t border-white/[0.08] max-w-lg">
+        <div class="grid grid-cols-3 gap-2.5 sm:gap-4 pt-5 border-t border-white/[0.08] max-w-lg">
           <div>
-            <div class="text-lg sm:text-xl font-extrabold text-white">P-256</div>
+            <div class="text-base sm:text-xl font-extrabold text-white">P-256</div>
             <div class="text-[11px] text-zinc-400 mt-0.5">Browser ECDH keys</div>
           </div>
           <div>
-            <div class="text-lg sm:text-xl font-extrabold text-white">Optional</div>
+            <div class="text-base sm:text-xl font-extrabold text-white">Optional</div>
             <div class="text-[11px] text-zinc-400 mt-0.5">Email only for resets</div>
           </div>
           <div>
-            <div class="text-lg sm:text-xl font-extrabold text-white">Gemini 2.5</div>
+            <div class="text-base sm:text-xl font-extrabold text-white">Gemini 2.5</div>
             <div class="text-[11px] text-zinc-400 mt-0.5">GK answers &amp; replies</div>
           </div>
         </div>
@@ -435,7 +457,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </footer>
 </div>
 
-<div id="app" class="hidden flex-col md:flex-row bg-[#040509] selection:bg-accent/30 selection:text-white" style="height:100dvh">
+<div id="app" class="hidden flex-col md:flex-row bg-[#040509] selection:bg-accent/30 selection:text-white app-shell">
   <!-- LEFT NAVIGATION RAIL (Instagram Web inspired) -->
   <aside class="hidden md:flex md:w-[76px] xl:w-[252px] shrink-0 flex-col justify-between py-6 px-3.5 border-r border-white/[0.07] bg-gradient-to-b from-[#080a12] via-[#06070c] to-[#05060a]">
     <div class="flex flex-col gap-2">
@@ -474,16 +496,16 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     <!-- MESSAGES VIEW -->
     <section id="v-chats" data-open="0" class="view group/chats absolute inset-0 hidden flex bg-[#05060b]">
       <!-- Inbox Column -->
-      <div id="list" class="w-full md:w-[340px] lg:w-[376px] shrink-0 flex flex-col min-h-0 border-r border-white/[0.07] bg-gradient-to-b from-[#080a12] to-[#05060b] max-md:group-data-[open='1']/chats:hidden">
-        <header class="h-16 px-5 flex items-center justify-between border-b border-white/[0.06] shrink-0 bg-white/[0.01]">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <h1 class="text-xl font-extrabold tracking-tight text-white">Messages</h1>
-            <button id="sb-pill" data-act="open" data-arg="m-auth" class="btn-ghost inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full text-[11px] font-medium text-zinc-200 shrink-0" title="Account &amp; Supabase Cloud Sync">
+      <div id="list" class="w-full md:w-[292px] lg:w-[340px] xl:w-[376px] shrink-0 flex flex-col min-h-0 border-r border-white/[0.07] bg-gradient-to-b from-[#080a12] to-[#05060b] max-md:group-data-[open='1']/chats:hidden">
+        <header class="h-16 px-4 lg:px-5 flex items-center justify-between gap-2 border-b border-white/[0.06] shrink-0 bg-white/[0.01]">
+          <div class="flex items-center gap-2 lg:gap-2.5 min-w-0">
+            <h1 class="text-lg lg:text-xl font-extrabold tracking-tight text-white">Messages</h1>
+            <button id="sb-pill" data-act="open" data-arg="m-auth" class="btn-ghost inline-flex items-center gap-1.5 h-6 px-2 lg:px-2.5 rounded-full text-[11px] font-medium text-zinc-200 shrink-0" title="Account &amp; Supabase Cloud Sync">
               <span id="sb-dot" class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]"></span>
-              <span id="sb-label" class="truncate max-w-[110px]">Local</span>
+              <span id="sb-label" class="truncate max-w-[78px] lg:max-w-[110px]">Local</span>
             </button>
           </div>
-          <button class="btn-ghost inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatsNew" aria-haspopup="menu" aria-expanded="false">
+          <button class="btn-ghost inline-flex items-center justify-center gap-1.5 h-9 px-2.5 lg:px-3.5 rounded-full text-xs font-semibold text-white shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatsNew" aria-haspopup="menu" aria-expanded="false">
             <i data-lucide="square-pen" class="w-3.5 h-3.5 text-accent"></i>
             <span>New</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
@@ -505,27 +527,27 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       <!-- Active Thread Pane -->
       <div id="thread" class="hidden md:flex group-data-[open='1']/chats:flex flex-1 min-w-0 min-h-0 relative isolate bg-[#05060b]">
         <div class="flex-1 min-w-0 min-h-0 flex flex-col">
-          <header class="h-16 px-3 sm:px-5 flex items-center justify-between gap-2 sm:gap-3 border-b border-white/[0.07] shrink-0 bg-[#080910]/80 backdrop-blur-2xl shadow-[0_8px_30px_-15px_rgba(0,0,0,.7)]">
-            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+          <header class="h-14 sm:h-16 px-2.5 sm:px-4 lg:px-5 flex items-center justify-between gap-1.5 sm:gap-3 border-b border-white/[0.07] shrink-0 bg-[#080910]/80 backdrop-blur-2xl shadow-[0_8px_30px_-15px_rgba(0,0,0,.7)]">
+            <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
               <button class="inline-flex md:hidden items-center justify-center w-8 h-8 rounded-full bg-white/[0.07] hover:bg-white/[0.14] text-zinc-200 transition-colors shrink-0" data-act="back" aria-label="Back to conversations">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
               </button>
-              <button type="button" class="flex items-center gap-2 sm:gap-3 min-w-0 text-left hover:opacity-85 transition shrink" data-act="openPeerProfile" title="View profile" aria-label="View conversation profile">
+              <button type="button" class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 text-left hover:opacity-85 transition" data-act="openPeerProfile" title="View profile" aria-label="View conversation profile">
                 <div id="th-av" class="shrink-0"></div>
-                <div class="min-w-0">
-                  <h2 id="th-name" class="text-[14px] font-bold tracking-tight text-white truncate">Select a conversation</h2>
+                <div class="min-w-0 flex-1">
+                  <h2 id="th-name" class="text-[13.5px] sm:text-[14px] font-bold tracking-tight text-white truncate">Select a conversation</h2>
                   <p id="th-status" class="text-[11px] text-zinc-400 truncate"></p>
                 </div>
               </button>
             </div>
-            <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-              <button id="th-search-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="toggleThreadSearch" aria-pressed="false" title="Search in thread" aria-label="Search in conversation"><i data-lucide="search" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+              <button id="th-search-btn" class="hidden min-[360px]:grid w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="toggleThreadSearch" aria-pressed="false" title="Search in thread" aria-label="Search in conversation"><i data-lucide="search" class="w-4 h-4"></i></button>
               <div class="inline-flex items-center rounded-full bg-white/[0.05] border border-white/[0.08] p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]" role="group" aria-label="Calls">
                 <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.1] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="call" data-arg="video" title="Video call" aria-label="Video call"><i data-lucide="video" class="w-4 h-4"></i></button>
                 <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.1] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="call" data-arg="voice" title="Voice call" aria-label="Voice call"><i data-lucide="phone" class="w-4 h-4"></i></button>
               </div>
-              <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatMore" aria-haspopup="menu" aria-expanded="false" title="More options" aria-label="More options"><i data-lucide="ellipsis" class="w-4 h-4"></i></button>
-              <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="info" aria-pressed="false" title="Conversation details" aria-label="Toggle thread tools"><i data-lucide="info" class="w-4 h-4"></i></button>
+              <button class="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="menu" data-arg="chatMore" aria-haspopup="menu" aria-expanded="false" title="More options" aria-label="More options"><i data-lucide="ellipsis" class="w-4 h-4"></i></button>
+              <button class="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="info" aria-pressed="false" title="Conversation details" aria-label="Toggle thread tools"><i data-lucide="info" class="w-4 h-4"></i></button>
             </div>
           </header>
 
@@ -567,7 +589,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </div>
           </div>
 
-          <div id="smart-chips" class="hidden px-3.5 md:px-8 pb-2 pt-1 overflow-x-auto no-scrollbar items-center gap-1.5 whitespace-nowrap"></div>
+          <div id="smart-chips" class="hidden max-w-full px-2.5 sm:px-4 md:px-8 pb-2 pt-1 overflow-x-auto no-scrollbar items-center gap-1.5 whitespace-nowrap"></div>
           <div id="mention-box" class="hidden mx-4 md:mx-8 mb-2 p-1.5 rounded-2xl lux-modal max-h-40 overflow-y-auto flex-col gap-0.5"></div>
 
           <div id="edit-pill" class="hidden mx-4 md:mx-8 mb-2 px-3.5 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs items-center justify-between gap-3 shadow-lg">
@@ -586,29 +608,29 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <button class="w-6 h-6 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/10" data-act="cancelReply" aria-label="Cancel reply"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
           </div>
 
-          <div class="px-3.5 md:px-8 pb-4 pt-2 border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-xl safe-b">
-            <div id="rec-bar" class="hidden mb-2.5 rounded-2xl bg-rose-950/50 border border-rose-500/30 px-3.5 py-2.5 items-center justify-between gap-3 text-xs">
-              <span class="flex items-center gap-3 min-w-0">
+          <div class="px-2.5 sm:px-4 lg:px-8 pb-3 sm:pb-4 pt-2 border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-xl safe-b">
+            <div id="rec-bar" class="hidden mb-2.5 rounded-2xl bg-rose-950/50 border border-rose-500/30 px-3 sm:px-3.5 py-2 sm:py-2.5 items-center justify-between gap-2 sm:gap-3 text-xs">
+              <span class="flex items-center gap-2 sm:gap-3 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0"></span>
-                <span id="rec-time" class="font-mono font-medium text-rose-200">00:00</span>
+                <span id="rec-time" class="font-mono font-medium text-rose-200 shrink-0">00:00</span>
                 <span id="rec-text" class="text-zinc-300 truncate italic">Listening…</span>
               </span>
               <span class="flex items-center gap-1.5 shrink-0">
-                <button class="h-8 px-3 rounded-full bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-zinc-200 transition-colors" data-act="recCancel">Cancel</button>
-                <button class="btn-primary h-8 px-3.5 rounded-full text-xs font-semibold" data-act="recSend">Send voice</button>
+                <button class="h-8 px-2.5 sm:px-3 rounded-full bg-white/[0.08] hover:bg-white/[0.15] text-xs font-semibold text-zinc-200 transition-colors" data-act="recCancel">Cancel</button>
+                <button class="btn-primary h-8 px-3 sm:px-3.5 rounded-full text-xs font-semibold" data-act="recSend">Send voice</button>
               </span>
             </div>
 
-            <div class="flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-[#10121b]/90 pl-1.5 pr-1.5 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_40px_-14px_rgba(0,0,0,.85)] focus-within:border-white/25 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_0_30px_-10px_rgb(var(--ac-rgb)/.3)] transition-all">
-              <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="compose" aria-haspopup="menu" aria-expanded="false" title="Attach and quick replies" aria-label="Attach and quick replies"><i data-lucide="plus" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-1 sm:gap-1.5 rounded-full border border-white/[0.12] bg-[#10121b]/90 p-1 sm:p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_40px_-14px_rgba(0,0,0,.85)] focus-within:border-white/25 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_0_30px_-10px_rgb(var(--ac-rgb)/.3)] transition-all">
+              <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="compose" aria-haspopup="menu" aria-expanded="false" title="Attach and quick replies" aria-label="Attach and quick replies"><i data-lucide="plus" class="w-4 h-4"></i></button>
               <input type="file" id="file" class="hidden">
               <input id="msg" data-enter="send" data-input="sentiment" class="flex-1 min-w-0 bg-transparent px-1 text-[13.5px] text-white focus:outline-none placeholder:text-zinc-500" placeholder="Message or @ai…" autocomplete="off">
-              <span id="sent" class="hidden text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0"></span>
-              <button id="ai-assist-btn" class="w-9 h-9 rounded-full grid place-items-center text-accent hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="aiAssist" aria-haspopup="menu" aria-expanded="false" title="AI Reply &amp; Writing Copilot" aria-label="AI Reply and Writing Copilot"><i data-lucide="sparkles" class="w-4 h-4"></i></button>
-              <button id="mic" class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="mic" title="Voice note" aria-label="Record voice note"><i data-lucide="mic" class="w-4 h-4"></i></button>
-              <button class="btn-primary inline-flex items-center justify-center gap-1.5 h-9 px-3.5 sm:px-4 rounded-full text-xs font-semibold shrink-0" data-act="send">
+              <span id="sent" class="hidden max-[420px]:!hidden text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0"></span>
+              <button id="ai-assist-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-accent hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="menu" data-arg="aiAssist" aria-haspopup="menu" aria-expanded="false" title="AI Reply &amp; Writing Copilot" aria-label="AI Reply and Writing Copilot"><i data-lucide="sparkles" class="w-4 h-4"></i></button>
+              <button id="mic" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition-colors shrink-0" data-act="mic" title="Voice note" aria-label="Record voice note"><i data-lucide="mic" class="w-4 h-4"></i></button>
+              <button class="btn-primary inline-flex items-center justify-center gap-1.5 h-8 sm:h-9 px-3 lg:px-4 rounded-full text-xs font-semibold shrink-0" data-act="send">
                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                <span class="hidden sm:inline">Send</span>
+                <span class="hidden lg:inline">Send</span>
               </button>
             </div>
           </div>
@@ -632,16 +654,16 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
           <div class="absolute inset-x-0 top-0 z-10 p-3.5 sm:p-4 bg-gradient-to-b from-black/75 via-black/30 to-transparent flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="text-[15px] font-bold tracking-tight text-white drop-shadow">Reels</span>
-              <button class="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-white/[0.12] hover:bg-white/[0.2] backdrop-blur-md border border-white/[0.12] text-[11px] font-semibold text-white transition" data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false" aria-label="AR filter">
+              <span class="text-[15px] font-bold tracking-tight text-white drop-shadow shrink-0">Reels</span>
+              <button class="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-white/[0.12] hover:bg-white/[0.2] backdrop-blur-md border border-white/[0.12] text-[11px] font-semibold text-white transition min-w-0" data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false" aria-label="AR filter">
                 <i data-lucide="sparkles" class="w-3 h-3 text-pink-400 shrink-0"></i>
-                <span id="filter-lbl" class="truncate max-w-[82px]">Normal</span>
+                <span id="filter-lbl" class="truncate max-w-[68px] sm:max-w-[82px]">Normal</span>
                 <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-300 shrink-0"></i>
               </button>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               <button class="w-8 h-8 rounded-full bg-black/45 hover:bg-white/20 backdrop-blur-md border border-white/[0.14] grid place-items-center text-white transition" data-act="reelMute" title="Toggle sound" aria-label="Toggle sound"><i id="reel-mute-ic" data-lucide="volume-x" class="w-4 h-4"></i></button>
-              <button class="h-8 px-2.5 sm:px-3 rounded-full bg-black/45 hover:bg-white/20 backdrop-blur-md border border-white/[0.14] inline-flex items-center gap-1 text-xs font-semibold text-white transition" data-act="reelNew" title="Create reel" aria-label="Upload reel"><i data-lucide="camera" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Create</span></button>
+              <button class="h-8 px-2.5 md:px-3 rounded-full bg-black/45 hover:bg-white/20 backdrop-blur-md border border-white/[0.14] inline-flex items-center gap-1 text-xs font-semibold text-white transition" data-act="reelNew" title="Create reel" aria-label="Upload reel"><i data-lucide="camera" class="w-3.5 h-3.5"></i><span class="hidden md:inline">Create</span></button>
             </div>
           </div>
 
@@ -664,28 +686,28 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
     <!-- AI ASSISTANT VIEW -->
     <section id="v-ai" class="ai-aura view absolute inset-0 hidden flex flex-col">
-      <header class="h-16 px-4 md:px-8 flex items-center justify-between gap-3 border-b border-white/[0.07] shrink-0 bg-[#07080f]/80 backdrop-blur-2xl">
-        <div class="flex items-center gap-3 min-w-0">
-          <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent/25 to-indigo-500/20 border border-accent/30 text-accent grid place-items-center shrink-0 shadow-[0_0_20px_-6px_rgb(var(--ac-rgb)/.6)]"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
+      <header class="h-14 sm:h-16 px-3 sm:px-4 md:px-8 flex items-center justify-between gap-2 sm:gap-3 border-b border-white/[0.07] shrink-0 bg-[#07080f]/80 backdrop-blur-2xl">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-accent/25 to-indigo-500/20 border border-accent/30 text-accent grid place-items-center shrink-0 shadow-[0_0_20px_-6px_rgb(var(--ac-rgb)/.6)]"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
           <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <h1 class="text-base md:text-lg font-bold tracking-tight text-white truncate">AI Assistant</h1>
-              <span id="ai-status" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10px] font-semibold text-zinc-300 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span><span>Local</span></span>
+              <h1 class="text-sm sm:text-base md:text-lg font-bold tracking-tight text-white truncate">AI Assistant</h1>
+              <span id="ai-status" class="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10px] font-semibold text-zinc-300 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span><span>Local</span></span>
             </div>
             <p id="ai-sub" class="text-[11px] text-zinc-400 truncate">General knowledge, writing, translations &amp; smart chat copilot</p>
           </div>
         </div>
-        <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-semibold text-white shrink-0" data-act="menu" data-arg="aiTools" aria-haspopup="menu" aria-expanded="false">
+        <button class="btn-ghost inline-flex items-center gap-1.5 h-8 sm:h-9 px-3 sm:px-3.5 rounded-full text-xs font-semibold text-white shrink-0" data-act="menu" data-arg="aiTools" aria-haspopup="menu" aria-expanded="false">
           <i data-lucide="wand-sparkles" class="w-3.5 h-3.5 text-accent"></i>
           <span>Tools</span>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
         </button>
       </header>
 
-      <div id="ai-warn" class="hidden border-b border-amber-500/25 bg-amber-500/10 px-4 md:px-8 py-2.5 text-xs items-center justify-between gap-3 shrink-0">
-        <span class="flex items-center gap-2 min-w-0 text-amber-200">
-          <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 shrink-0"></i>
-          <span id="ai-warn-t" class="truncate"></span>
+      <div id="ai-warn" class="hidden border-b border-amber-500/25 bg-amber-500/10 px-3 sm:px-4 md:px-8 py-2.5 text-xs items-start sm:items-center justify-between gap-2.5 sm:gap-3 shrink-0">
+        <span class="flex items-start sm:items-center gap-2 flex-1 min-w-0 text-amber-200">
+          <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400 shrink-0 max-sm:mt-0.5"></i>
+          <span id="ai-warn-t" class="break-words leading-snug"></span>
         </span>
         <span class="flex items-center gap-2 shrink-0">
           <a id="ai-warn-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden h-7 px-3 rounded-full bg-amber-400 text-black text-[11px] font-bold items-center gap-1 hover:brightness-105 transition">Enable API</a>
@@ -693,10 +715,10 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </span>
       </div>
 
-      <div id="ai-log" class="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4 max-w-3xl w-full mx-auto"></div>
+      <div id="ai-log" class="flex-1 overflow-y-auto px-3 sm:px-4 md:px-8 py-4 sm:py-6 space-y-4 max-w-3xl w-full mx-auto"></div>
 
-      <div class="border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-2xl px-4 md:px-8 py-4 safe-b">
-        <div class="max-w-3xl mx-auto space-y-3">
+      <div class="border-t border-white/[0.06] bg-gradient-to-t from-[#06070c]/95 via-[#07080f]/80 to-transparent backdrop-blur-2xl px-3 sm:px-4 md:px-8 py-3 sm:py-4 safe-b">
+        <div class="max-w-3xl mx-auto space-y-2.5 sm:space-y-3">
           <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="What is the scientific name of a lizard and 3 quick facts?">Ask GK</button>
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Summarize all conversations">Summarize all</button>
@@ -705,10 +727,10 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Explain how end-to-end encryption works simply">Explain E2EE</button>
             <button class="btn-ghost shrink-0 h-8 px-3.5 rounded-full text-xs font-medium text-zinc-200 hover:text-white" data-act="aiRun" data-arg="Search project documents in my chats">Search chats</button>
           </div>
-          <div class="flex items-center gap-2 rounded-full bg-[#10121b]/90 border border-white/[0.12] focus-within:border-accent/60 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.1),0_0_28px_-10px_rgb(var(--ac-rgb)/.35)] p-1.5 pl-4 shadow-[inset_0_1px_0_rgba(255,255,255,.07),0_18px_40px_-14px_rgba(0,0,0,.85)] transition-all">
+          <div class="flex items-center gap-2 rounded-full bg-[#10121b]/90 border border-white/[0.12] focus-within:border-accent/60 focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,.1),0_0_28px_-10px_rgb(var(--ac-rgb)/.35)] p-1 sm:p-1.5 pl-3 sm:pl-4 shadow-[inset_0_1px_0_rgba(255,255,255,.07),0_18px_40px_-14px_rgba(0,0,0,.85)] transition-all">
             <input id="ai-in" data-enter="aiSend" class="flex-1 min-w-0 bg-transparent text-[13.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Ask anything — general knowledge, math, coding, or chat replies…" autocomplete="off">
-            <button id="ai-send" class="btn-primary h-9 px-4 rounded-full text-xs font-semibold shrink-0" data-act="aiSend">Send</button>
-            <button id="ai-stop" class="btn-ghost hidden h-9 px-3.5 rounded-full text-xs font-semibold text-white items-center gap-1.5 shrink-0" data-act="aiStop"><i data-lucide="square" class="w-3 h-3 fill-current"></i>Stop</button>
+            <button id="ai-send" class="btn-primary h-8 sm:h-9 px-3.5 sm:px-4 rounded-full text-xs font-semibold shrink-0" data-act="aiSend">Send</button>
+            <button id="ai-stop" class="btn-ghost hidden h-8 sm:h-9 px-3.5 rounded-full text-xs font-semibold text-white items-center gap-1.5 shrink-0" data-act="aiStop"><i data-lucide="square" class="w-3 h-3 fill-current"></i>Stop</button>
           </div>
         </div>
       </div>
@@ -716,14 +738,14 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
     <!-- SECURITY VAULT VIEW -->
     <section id="v-vault" class="vault-aura view absolute inset-0 hidden overflow-y-auto">
-      <div class="max-w-3xl mx-auto p-5 md:p-8 space-y-5 pb-12">
+      <div class="max-w-3xl mx-auto p-3.5 sm:p-5 md:p-8 space-y-4 sm:space-y-5 pb-12">
         <div>
-          <h1 class="text-2xl font-extrabold tracking-tight text-white">Security Vault</h1>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">Security Vault</h1>
           <p class="text-xs text-zinc-400 mt-1">Locks, keys, ephemeral timers and privacy controls for this enclave.</p>
         </div>
 
-        <div class="lux-card rounded-[22px] bg-gradient-to-br from-emerald-500/15 via-emerald-950/20 to-[#0b0d14] border border-emerald-400/25 p-5 flex flex-wrap items-center justify-between gap-4 shadow-[inset_0_1px_0_rgba(52,211,153,.2),0_20px_50px_-20px_rgba(16,185,129,.25)]">
-          <div class="flex items-center gap-3.5 min-w-0">
+        <div class="lux-card rounded-[22px] bg-gradient-to-br from-emerald-500/15 via-emerald-950/20 to-[#0b0d14] border border-emerald-400/25 p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-[inset_0_1px_0_rgba(52,211,153,.2),0_20px_50px_-20px_rgba(16,185,129,.25)]">
+          <div class="flex items-center gap-3.5 flex-1 min-w-[200px]">
             <span class="w-11 h-11 rounded-2xl border border-emerald-400/35 bg-emerald-500/15 text-emerald-300 grid place-items-center shrink-0 shadow-[0_0_24px_-4px_rgba(52,211,153,.5)]">
               <i data-lucide="shield-check" class="w-5 h-5"></i>
             </span>
@@ -739,7 +761,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </div>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-access">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-access">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-accent/15 border border-accent/25 text-accent grid place-items-center shrink-0"><i data-lucide="key-round" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -749,17 +771,17 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
-          <div id="acc-access" class="px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Lock on launch</div><div class="text-xs text-zinc-400 mt-0.5">Show the lock screen whenever the app opens.</div></div>
+          <div id="acc-access" class="px-4 sm:px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Lock on launch</div><div class="text-xs text-zinc-400 mt-0.5">Show the lock screen whenever the app opens.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="lockLaunch" data-k="lockLaunch" aria-label="Lock on launch"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Auto-lock when idle</div><div class="text-xs text-zinc-400 mt-0.5">Lock after no input for the chosen duration.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Auto-lock when idle</div><div class="text-xs text-zinc-400 mt-0.5">Lock after no input for the chosen duration.</div></div>
               <select data-change="idle" id="idle" class="lux-input h-9 w-28 rounded-xl px-3 text-xs font-medium text-white focus:outline-none"><option value="0" class="bg-zinc-900">Never</option><option value="1" class="bg-zinc-900">1 min</option><option value="5" class="bg-zinc-900">5 min</option><option value="15" class="bg-zinc-900">15 min</option></select>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Passcode</div><div id="pin-state" class="text-xs text-zinc-400 mt-0.5"></div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Passcode</div><div id="pin-state" class="text-xs text-zinc-400 mt-0.5"></div></div>
               <div class="flex flex-wrap items-center gap-2">
                 <input id="pin-in" type="password" inputmode="numeric" class="lux-input h-9 w-28 rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="New code" autocomplete="off">
                 <button class="btn-ghost h-9 px-3.5 rounded-xl text-xs font-semibold text-white" data-act="savePin">Save</button>
@@ -770,7 +792,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </section>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-crypto">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-crypto">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 text-emerald-300 grid place-items-center shrink-0"><i data-lucide="lock" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -780,17 +802,17 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
-          <div id="acc-crypto" class="hidden px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">End-to-end encryption</div><div class="text-xs text-zinc-400 mt-0.5">Encrypt peer DMs with ECDH P-256 + AES-GCM 256 zero-knowledge ciphertexts.</div></div>
+          <div id="acc-crypto" class="hidden px-4 sm:px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">End-to-end encryption</div><div class="text-xs text-zinc-400 mt-0.5">Encrypt peer DMs with ECDH P-256 + AES-GCM 256 zero-knowledge ciphertexts.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="e2ee" data-k="e2ee" aria-label="End-to-end encryption"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Read receipts</div><div class="text-xs text-zinc-400 mt-0.5">Share double-check seen status with peer DM contacts.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Read receipts</div><div class="text-xs text-zinc-400 mt-0.5">Share double-check seen status with peer DM contacts.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="receipts" data-k="receipts" aria-label="Read receipts"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Vanish mode</div><div class="text-xs text-zinc-400 mt-0.5">Auto-expire new outgoing messages after the selected timer.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Vanish mode</div><div class="text-xs text-zinc-400 mt-0.5">Auto-expire new outgoing messages after the selected timer.</div></div>
               <div class="flex items-center gap-2 shrink-0">
                 <select id="vanish-sec" data-change="vanishSec" class="lux-input h-8 rounded-xl px-2.5 text-xs font-medium text-white focus:outline-none" aria-label="Vanish duration">
                   <option value="6" class="bg-zinc-900">6 sec</option>
@@ -800,8 +822,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
                 <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" role="switch" data-act="sw" data-arg="vanish" data-k="vanish" aria-label="Vanish mode"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
               </div>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">ECDH identity &amp; session key</div><div id="key-fp" class="text-xs font-mono text-emerald-300/90 mt-0.5 truncate">Generating…</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">ECDH identity &amp; session key</div><div id="key-fp" class="text-xs font-mono text-emerald-300/90 mt-0.5 truncate">Generating…</div></div>
               <div class="flex items-center gap-2 shrink-0">
                 <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl text-xs font-semibold text-white" data-act="copyFp"><i data-lucide="copy" class="w-3.5 h-3.5"></i>Copy</button>
                 <button class="btn-ghost inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl text-xs font-semibold text-white" data-act="rotateKey"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>Rotate</button>
@@ -811,7 +833,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </section>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-audit">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-audit">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-400/25 text-indigo-300 grid place-items-center shrink-0"><i data-lucide="scroll-text" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -822,13 +844,13 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
           <div id="acc-audit" class="hidden border-t border-white/[0.07]">
-            <div class="flex justify-end px-5 py-2.5 bg-black/35"><button class="btn-ghost h-8 px-3 rounded-lg text-xs font-semibold text-zinc-200" data-act="auditClear">Clear log</button></div>
+            <div class="flex justify-end px-4 sm:px-5 py-2.5 bg-black/35"><button class="btn-ghost h-8 px-3 rounded-lg text-xs font-semibold text-zinc-200" data-act="auditClear">Clear log</button></div>
             <ul id="audit" class="divide-y divide-white/[0.06] border-t border-white/[0.07] font-mono text-[11px] text-zinc-400 max-h-64 overflow-y-auto"></ul>
           </div>
         </section>
 
         <section class="lux-card rounded-[22px] border border-rose-500/25 overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-rose-500/[0.05] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-danger">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-rose-500/[0.05] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-danger">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-400/25 text-rose-400 grid place-items-center shrink-0"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -838,9 +860,9 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
-          <div id="acc-danger" class="hidden px-5 border-t border-white/[0.07]">
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-rose-400">Purge enclave</div><div class="text-xs text-zinc-400 mt-0.5">Erase all conversations, stories, settings and logs on this device.</div></div>
+          <div id="acc-danger" class="hidden px-4 sm:px-5 border-t border-white/[0.07]">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-rose-400">Purge enclave</div><div class="text-xs text-zinc-400 mt-0.5">Erase all conversations, stories, settings and logs on this device.</div></div>
               <button class="h-9 px-4 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/35 text-xs font-semibold text-rose-200 transition shrink-0" data-act="purge">Purge</button>
             </div>
           </div>
@@ -850,28 +872,28 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 
     <!-- SETTINGS VIEW -->
     <section id="v-settings" class="settings-aura view absolute inset-0 hidden overflow-y-auto">
-      <div class="max-w-3xl mx-auto p-5 md:p-8 space-y-5 pb-12">
+      <div class="max-w-3xl mx-auto p-3.5 sm:p-5 md:p-8 space-y-4 sm:space-y-5 pb-12">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-white">Settings</h1>
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">Settings</h1>
             <p class="text-xs text-zinc-400 mt-1">Account identity, overview, appearance, accessibility and runtime diagnostics.</p>
           </div>
           <button data-act="openLanding" class="btn-ghost h-9 px-3.5 rounded-full text-xs font-semibold text-zinc-200 inline-flex items-center gap-1.5"><i data-lucide="layout-template" class="w-3.5 h-3.5 text-accent"></i><span>Overview page</span></button>
         </div>
 
-        <section class="lux-card rounded-[22px] p-5 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-3.5 min-w-0">
+        <section class="lux-card rounded-[22px] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+          <div class="flex items-center gap-3.5 flex-1 min-w-[200px]">
             <span class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-400/25 text-sky-300 grid place-items-center shrink-0"><i data-lucide="user-check" class="w-5 h-5"></i></span>
             <div class="min-w-0">
               <div id="set-acct-title" class="text-sm font-bold text-white truncate">Local enclave session</div>
-              <div id="set-acct-sub" class="text-xs text-zinc-400 mt-0.5 truncate">Sign in with a username or link an optional email for password reset recovery.</div>
+              <div id="set-acct-sub" class="text-xs text-zinc-400 mt-0.5 break-words">Sign in with a username or link an optional email for password reset recovery.</div>
             </div>
           </div>
           <button data-act="open" data-arg="m-auth" class="btn-primary h-9 px-4 rounded-full text-xs font-semibold shrink-0">Account &amp; recovery</button>
         </section>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-overview">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="true" aria-controls="acc-overview">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-accent/15 border border-accent/25 text-accent grid place-items-center shrink-0"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -881,7 +903,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
-          <div id="acc-overview" class="px-5 border-t border-white/[0.07]">
+          <div id="acc-overview" class="px-4 sm:px-5 border-t border-white/[0.07]">
             <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4"></div>
             <div class="py-5">
               <div class="text-xs font-medium text-zinc-400 mb-3">Messages per conversation</div>
@@ -891,7 +913,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </section>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-look">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-look">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-400/25 text-pink-300 grid place-items-center shrink-0"><i data-lucide="palette" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -901,28 +923,28 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
-          <div id="acc-look" class="hidden px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Accent colour</div><div class="text-xs text-zinc-400 mt-0.5">Outgoing bubbles, focus rings and primary actions.</div></div>
+          <div id="acc-look" class="hidden px-4 sm:px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Accent colour</div><div class="text-xs text-zinc-400 mt-0.5">Outgoing bubbles, focus rings and primary actions.</div></div>
               <div id="accents" class="flex items-center gap-2.5"></div>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Ambient chat wallpaper</div><div class="text-xs text-zinc-400 mt-0.5">Subtle mesh gradient and micro-dot pattern behind active messages.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Ambient chat wallpaper</div><div class="text-xs text-zinc-400 mt-0.5">Subtle mesh gradient and micro-dot pattern behind active messages.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="wallpaper" data-k="wallpaper" aria-label="Ambient chat wallpaper"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">AI smart reply chips</div><div class="text-xs text-zinc-400 mt-0.5">Suggested one-tap replies above the message bar.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">AI smart reply chips</div><div class="text-xs text-zinc-400 mt-0.5">Suggested one-tap replies above the message bar.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="smartReplies" data-k="smartReplies" aria-label="AI smart reply chips"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Desktop notifications</div><div class="text-xs text-zinc-400 mt-0.5">Show browser alerts for incoming messages while backgrounded.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Desktop notifications</div><div class="text-xs text-zinc-400 mt-0.5">Show browser alerts for incoming messages while backgrounded.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="notify" data-k="notify" aria-label="Desktop notifications"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
           </div>
         </section>
 
         <section class="lux-card rounded-[22px] overflow-hidden">
-          <button class="group w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-a11y">
+          <button class="group w-full flex items-center justify-between gap-4 px-4 sm:px-5 py-4 text-left hover:bg-white/[0.03] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" data-act="acc" aria-expanded="false" aria-controls="acc-a11y">
             <span class="flex items-center gap-3.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-400/25 text-amber-300 grid place-items-center shrink-0"><i data-lucide="eye" class="w-4 h-4"></i></span>
               <span class="min-w-0">
@@ -932,21 +954,21 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"></i>
           </button>
-          <div id="acc-a11y" class="hidden px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Protanopia filter</div><div class="text-xs text-zinc-400 mt-0.5">Re-maps colours for red-weak vision.</div></div>
+          <div id="acc-a11y" class="hidden px-4 sm:px-5 border-t border-white/[0.07] divide-y divide-white/[0.07]">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Protanopia filter</div><div class="text-xs text-zinc-400 mt-0.5">Re-maps colours for red-weak vision.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="prot" data-k="prot" aria-label="Protanopia filter"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">High contrast</div><div class="text-xs text-zinc-400 mt-0.5">Raises contrast and border visibility.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">High contrast</div><div class="text-xs text-zinc-400 mt-0.5">Raises contrast and border visibility.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="hc" data-k="hc" aria-label="High contrast"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Reduced motion</div><div class="text-xs text-zinc-400 mt-0.5">Disables animations and transitions.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Reduced motion</div><div class="text-xs text-zinc-400 mt-0.5">Disables animations and transitions.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="rm" data-k="rm" aria-label="Reduced motion"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
-            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 py-4">
-              <div class="min-w-0"><div class="text-sm font-semibold text-zinc-100">Spatial audio cues</div><div class="text-xs text-zinc-400 mt-0.5">Plays a left-to-right panned tone when enabled.</div></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 py-4">
+              <div class="flex-1 min-w-[180px]"><div class="text-sm font-semibold text-zinc-100">Spatial audio cues</div><div class="text-xs text-zinc-400 mt-0.5">Plays a left-to-right panned tone when enabled.</div></div>
               <button class="lux-sw group relative w-11 h-6 rounded-full transition-all shrink-0" role="switch" data-act="sw" data-arg="spatial" data-k="spatial" aria-label="Spatial audio cues"><span class="pointer-events-none block w-5 h-5 rounded-full bg-white shadow-sm translate-x-0.5 transition-transform duration-200 group-aria-[checked=true]:translate-x-[21px]"></span></button>
             </div>
           </div>
@@ -992,13 +1014,13 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     <!-- INSTAGRAM-STYLE CREATOR PROFILE VIEW -->
     <section id="v-profile" class="view absolute inset-0 hidden overflow-y-auto bg-[#05060b]" aria-label="Creator Profile">
       <div class="sticky top-0 z-20 backdrop-blur-2xl bg-[#05060b]/85 border-b border-white/[0.07]">
-        <div class="max-w-[935px] mx-auto h-14 px-3 sm:px-6 flex items-center justify-between gap-2">
-          <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-            <button id="prof-back-btn" class="w-8 h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition shrink-0" data-act="profBack" title="Back" aria-label="Go back">
+        <div class="max-w-[935px] mx-auto h-14 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-2">
+          <div class="flex items-center gap-1 sm:gap-2.5 min-w-0 flex-1">
+            <button id="prof-back-btn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition shrink-0" data-act="profBack" title="Back" aria-label="Go back">
               <i data-lucide="chevron-left" class="w-5 h-5"></i>
             </button>
-            <button class="flex items-center gap-1.5 min-w-0 px-2 py-1 rounded-xl hover:bg-white/[0.06] transition" data-act="openProfilePicker" title="Switch or search profiles" aria-label="Switch or search profiles">
-              <span id="prof-top-handle" class="text-[15px] sm:text-base font-extrabold tracking-tight text-white truncate">@profile</span>
+            <button class="flex items-center gap-1 sm:gap-1.5 min-w-0 px-1.5 sm:px-2 py-1 rounded-xl hover:bg-white/[0.06] transition" data-act="openProfilePicker" title="Switch or search profiles" aria-label="Switch or search profiles">
+              <span id="prof-top-handle" class="text-sm sm:text-base font-extrabold tracking-tight text-white truncate">@profile</span>
               <span id="prof-top-verified" class="hidden shrink-0 text-sky-400" title="Verified account" aria-label="Verified account">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 1.9 3-.3 1.1 2.8 2.7 1.4-.3 3L22.5 13l-1.9 2.4.3 3-2.8 1.1-1.4 2.7-3-.3L12 23.5l-2.4-1.9-3 .3-1.1-2.8-2.7-1.4.3-3L1.5 13l1.9-2.4-.3-3 2.8-1.1L7.3 3.8l3 .3L12 2zm-1.1 13.6l5.3-5.3-1.4-1.4-3.9 3.9-1.9-1.9-1.4 1.4 3.3 3.3z"/></svg>
               </span>
@@ -1009,19 +1031,19 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
               <span id="prof-rt-lbl">Live Sync</span>
             </span>
           </div>
-          <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openProfilePicker" title="Search creators" aria-label="Search creators">
-              <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+          <div class="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+            <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openProfilePicker" title="Search creators" aria-label="Search creators">
+              <i data-lucide="search" class="w-[17px] h-[17px] sm:w-[18px] sm:h-[18px]"></i>
             </button>
-            <button class="relative w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openActivity" title="Notifications & activity" aria-label="Profile notifications">
-              <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
+            <button class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openActivity" title="Notifications & activity" aria-label="Profile notifications">
+              <i data-lucide="bell" class="w-[17px] h-[17px] sm:w-[18px] sm:h-[18px]"></i>
               <span id="prof-act-badge" class="hidden absolute top-1 right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold grid place-items-center ring-2 ring-[#05060b]"></span>
             </button>
-            <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openPostModal" title="Create post" aria-label="Create new post">
-              <i data-lucide="plus-square" class="w-[18px] h-[18px]"></i>
+            <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openPostModal" title="Create post" aria-label="Create new post">
+              <i data-lucide="plus-square" class="w-[17px] h-[17px] sm:w-[18px] sm:h-[18px]"></i>
             </button>
-            <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="menu" data-arg="profileMore" aria-haspopup="menu" aria-expanded="false" title="More profile actions" aria-label="More profile options">
-              <i data-lucide="ellipsis" class="w-[18px] h-[18px]"></i>
+            <button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="menu" data-arg="profileMore" aria-haspopup="menu" aria-expanded="false" title="More profile actions" aria-label="More profile options">
+              <i data-lucide="ellipsis" class="w-[17px] h-[17px] sm:w-[18px] sm:h-[18px]"></i>
             </button>
           </div>
         </div>
@@ -1036,8 +1058,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 </div>
 
 <!-- MODALS -->
-<div id="m-lock" class="modal lock-backdrop fixed inset-0 z-[80] hidden [&.open]:flex items-center justify-center backdrop-blur-2xl p-4">
-  <div class="lux-modal relative w-full max-w-[360px] rounded-[30px] p-8 text-center space-y-5">
+<div id="m-lock" class="modal lock-backdrop fixed inset-0 z-[80] hidden [&.open]:flex items-start sm:items-center justify-center backdrop-blur-2xl p-4 overflow-y-auto">
+  <div class="lux-modal relative w-full max-w-[360px] rounded-[30px] p-6 sm:p-8 text-center space-y-5 my-auto">
     <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.09] text-[10px] font-semibold tracking-wider uppercase text-zinc-300">
       <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i>
       <span>Zero-Knowledge Enclave</span>
@@ -1058,8 +1080,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-contact" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-  <div class="lux-modal w-full max-w-sm rounded-[28px] p-6 space-y-4">
+<div id="m-contact" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-sm rounded-[26px] sm:rounded-[28px] p-5 sm:p-6 space-y-4 my-auto">
     <div class="flex justify-between items-center">
       <h3 class="text-base font-bold tracking-tight text-white">New conversation</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-contact" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -1070,9 +1092,9 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     </div>
     <div id="dm-panel" class="space-y-3.5">
       <div id="dm-users" class="hidden space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Registered accounts (Live DM)</span>
-          <button data-act="refreshUsers" class="text-[11px] font-medium text-zinc-400 hover:text-white inline-flex items-center gap-1 transition"><i data-lucide="refresh-cw" class="w-3 h-3"></i>Refresh</button>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 truncate">Registered accounts (Live DM)</span>
+          <button data-act="refreshUsers" class="text-[11px] font-medium text-zinc-400 hover:text-white inline-flex items-center gap-1 shrink-0 transition"><i data-lucide="refresh-cw" class="w-3 h-3"></i>Refresh</button>
         </div>
         <div id="dm-users-list" class="max-h-40 overflow-y-auto space-y-1.5 pr-1"></div>
         <div class="flex items-center gap-2 pt-1"><div class="h-px flex-1 bg-white/[0.08]"></div><span class="text-[10px] uppercase tracking-wider text-zinc-500">or AI / local contact</span><div class="h-px flex-1 bg-white/[0.08]"></div></div>
@@ -1093,8 +1115,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-confirm" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-  <div class="lux-modal w-full max-w-sm rounded-[28px] p-6 space-y-4">
+<div id="m-confirm" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-md p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-sm rounded-[28px] p-5 sm:p-6 space-y-4 my-auto">
     <h3 id="cf-title" class="text-base font-bold text-white"></h3>
     <p id="cf-body" class="text-xs text-zinc-400 leading-relaxed"></p>
     <div class="flex justify-end gap-2 pt-1">
@@ -1105,7 +1127,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 </div>
 
 <div id="m-comments" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-end md:items-center justify-center bg-black/80 backdrop-blur-lg p-0 md:p-4">
-  <div class="w-full max-w-[440px] rounded-t-[24px] md:rounded-[20px] bg-[#16171f] border border-white/[0.11] shadow-[0_32px_90px_-14px_rgba(0,0,0,.98)] flex flex-col max-h-[80vh] overflow-hidden">
+  <div class="w-full max-w-[440px] rounded-t-[24px] md:rounded-[20px] bg-[#16171f] border border-white/[0.11] shadow-[0_32px_90px_-14px_rgba(0,0,0,.98)] flex flex-col max-h-[85dvh] overflow-hidden">
     <div class="pt-2.5 pb-3 px-4 border-b border-white/[0.08] shrink-0">
       <div class="w-9 h-1 rounded-full bg-white/20 mx-auto mb-2.5 md:hidden"></div>
       <div class="flex items-center justify-between">
@@ -1116,30 +1138,30 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     </div>
     <div id="cm-ctx" class="px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02] flex items-center gap-2.5 shrink-0"></div>
     <div id="cm-list" class="flex-1 overflow-y-auto px-4 py-3.5 space-y-3.5"></div>
-    <div class="px-3.5 py-3 border-t border-white/[0.08] bg-[#121319] flex items-center gap-2.5 shrink-0 safe-b">
+    <div class="px-3.5 py-3 border-t border-white/[0.08] bg-[#121319] flex items-center gap-2 shrink-0 safe-b">
       <span id="cm-me-av" class="shrink-0"></span>
-      <input id="cm-in" data-enter="postComment" class="lux-input flex-1 h-9 rounded-full px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
+      <input id="cm-in" data-enter="postComment" class="lux-input flex-1 min-w-0 h-9 rounded-full px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
       <button class="h-9 px-3.5 rounded-full bg-[#0095f6] hover:bg-[#1877f2] text-xs font-semibold text-white transition shrink-0" data-act="postComment">Post</button>
     </div>
   </div>
 </div>
 
-<div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/85 backdrop-blur-xl p-2.5 sm:p-5 overflow-y-auto">
-  <div class="w-full max-w-[760px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] overflow-hidden my-auto">
-    <div class="px-4 py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5 min-w-0">
+<div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/85 backdrop-blur-xl p-2 sm:p-5 overflow-y-auto">
+  <div class="w-full max-w-[760px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] max-h-[94dvh] flex flex-col overflow-hidden my-auto">
+    <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-2 sm:gap-3 shrink-0">
+      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
         <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition shrink-0" data-act="closeModal" data-arg="m-studio" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
         <h3 id="studio-title" class="text-sm font-bold tracking-tight text-white truncate">Create story</h3>
       </div>
       <div class="inline-flex items-center gap-0.5 p-0.5 rounded-full bg-black/55 border border-white/[0.09] shrink-0">
-        <button id="st-tab-story" data-act="studioMode" data-arg="story" class="h-7 px-3.5 rounded-full text-xs font-semibold bg-white text-black transition-all">Story</button>
-        <button id="st-tab-reel" data-act="studioMode" data-arg="reel" class="h-7 px-3.5 rounded-full text-xs font-semibold text-zinc-400 hover:text-white transition-all">Reel</button>
+        <button id="st-tab-story" data-act="studioMode" data-arg="story" class="h-7 px-3 sm:px-3.5 rounded-full text-xs font-semibold bg-white text-black transition-all">Story</button>
+        <button id="st-tab-reel" data-act="studioMode" data-arg="reel" class="h-7 px-3 sm:px-3.5 rounded-full text-xs font-semibold text-zinc-400 hover:text-white transition-all">Reel</button>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-12">
-      <div class="md:col-span-5 bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] p-4 sm:p-5 flex flex-col items-center justify-center gap-3">
-        <div id="st-prev" class="relative w-[196px] sm:w-[224px] aspect-[9/16] rounded-[20px] overflow-hidden border border-white/[0.14] shadow-[0_24px_65px_-12px_rgba(0,0,0,.98)] flex flex-col justify-between p-3 select-none transition-all">
+    <div class="flex-1 min-h-0 overflow-y-auto grid grid-cols-1 md:grid-cols-12">
+      <div class="md:col-span-5 bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] p-3 sm:p-5 flex flex-col items-center justify-center gap-2 sm:gap-3">
+        <div id="st-prev" class="relative w-[132px] min-[390px]:w-[152px] md:w-[216px] aspect-[9/16] rounded-[18px] sm:rounded-[20px] overflow-hidden border border-white/[0.14] shadow-[0_24px_65px_-12px_rgba(0,0,0,.98)] flex flex-col justify-between p-2.5 sm:p-3 select-none transition-all">
           <div id="st-prev-bg" class="absolute inset-0 transition-all duration-300">
             <img id="st-media-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
             <video id="st-media-vid" class="hidden absolute inset-0 w-full h-full object-cover" muted loop autoplay playsinline></video>
@@ -1194,12 +1216,12 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <span class="inline-flex items-center gap-1.5"><i data-lucide="heart" class="w-3.5 h-3.5"></i><i data-lucide="send" class="w-3.5 h-3.5"></i></span>
           </div>
         </div>
-        <span class="text-[10.5px] text-zinc-500">9:16 Live Preview · Drag photo or video onto canvas</span>
+        <span class="text-[10px] sm:text-[10.5px] text-zinc-500 text-center">9:16 Live Preview · Drag photo or video onto canvas</span>
       </div>
 
-      <div class="md:col-span-7 p-4 sm:p-5 flex flex-col justify-between gap-3.5 bg-[#111218]">
+      <div class="md:col-span-7 p-3.5 sm:p-5 flex flex-col justify-between gap-3.5 bg-[#111218]">
         <div class="space-y-3.5">
-          <div id="st-dropzone" class="rounded-2xl border border-dashed border-white/[0.14] hover:border-[#0095f6]/60 bg-white/[0.025] px-3.5 py-2.5 flex items-center justify-between gap-2.5 transition">
+          <div id="st-dropzone" class="rounded-2xl border border-dashed border-white/[0.14] hover:border-[#0095f6]/60 bg-white/[0.025] px-3 sm:px-3.5 py-2.5 flex items-center justify-between gap-2.5 transition">
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="w-8 h-8 rounded-xl bg-[#0095f6]/15 border border-[#0095f6]/30 text-[#0095f6] grid place-items-center shrink-0"><i data-lucide="image-plus" class="w-4 h-4"></i></span>
               <div class="min-w-0">
@@ -1215,49 +1237,50 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
           </div>
 
           <div class="space-y-2">
-            <div class="flex items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
               <span class="text-[11px] font-semibold text-zinc-400">Backdrop gradient</span>
-              <div id="st-bgs" class="flex items-center gap-2"></div>
+              <div id="st-bgs" class="flex flex-wrap items-center gap-2"></div>
             </div>
             <div class="flex flex-wrap items-center gap-1.5 pt-0.5" id="st-filters"></div>
           </div>
 
           <div>
-            <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center justify-between gap-2 mb-1.5">
               <label for="st-in" id="st-in-lbl" class="text-[11px] font-semibold text-zinc-400">Poll question</label>
-              <button type="button" data-act="aiStudioSuggest" class="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0095f6] hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>AI suggest</button>
+              <button type="button" data-act="aiStudioSuggest" class="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0095f6] hover:underline shrink-0"><i data-lucide="sparkles" class="w-3 h-3"></i>AI suggest</button>
             </div>
             <textarea id="st-in" rows="2" data-input="storyPreview" class="lux-input w-full rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Ask a poll question…"></textarea>
           </div>
 
           <div id="st-story-extra" class="space-y-2.5">
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input id="st-opt1" data-input="storyPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Option 1 (Yes)" maxlength="24" autocomplete="off">
               <input id="st-opt2" data-input="storyPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Option 2 (No)" maxlength="24" autocomplete="off">
             </div>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input id="st-url" data-input="storyPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Link sticker URL" autocomplete="off">
               <select id="st-co" class="lux-input h-9 w-full rounded-xl px-2.5 text-xs text-zinc-300 focus:outline-none"><option value="" class="bg-zinc-900">Tag co-author</option></select>
             </div>
           </div>
         </div>
-
-        <button id="st-submit" class="w-full h-10 rounded-xl bg-[#0095f6] hover:bg-[#1877f2] active:scale-[.99] text-white text-[13px] font-semibold shadow-[0_10px_28px_-10px_rgba(0,149,246,.75)] transition" data-act="publish">Share to story</button>
       </div>
+    </div>
+    <div class="px-3.5 sm:px-5 py-3 border-t border-white/[0.08] bg-[#111218] shrink-0 safe-b">
+      <button id="st-submit" class="w-full h-10 rounded-xl bg-[#0095f6] hover:bg-[#1877f2] active:scale-[.99] text-white text-[13px] font-semibold shadow-[0_10px_28px_-10px_rgba(0,149,246,.75)] transition" data-act="publish">Share to story</button>
     </div>
   </div>
 </div>
 
 <div id="m-story" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/95 backdrop-blur-xl p-0 sm:p-4">
-  <div id="sv" class="relative w-full max-w-[400px] h-full sm:h-[min(88vh,740px)] overflow-hidden sm:rounded-[20px] sm:border sm:border-white/[0.14] shadow-[0_32px_90px_-15px_rgba(0,0,0,.95)]"></div>
+  <div id="sv" class="relative w-full max-w-[400px] h-full sm:h-[min(92dvh,740px)] overflow-hidden sm:rounded-[20px] sm:border sm:border-white/[0.14] shadow-[0_32px_90px_-15px_rgba(0,0,0,.95)]"></div>
 </div>
 
-<div id="m-call" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/90 backdrop-blur-2xl p-3 sm:p-5">
-  <div class="relative w-full max-w-[440px] rounded-[28px] bg-[#0b0c12] border border-white/[0.11] shadow-[0_36px_110px_-14px_rgba(0,0,0,.98)] overflow-hidden p-6 sm:p-7 text-center space-y-5">
+<div id="m-call" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/90 backdrop-blur-2xl p-2.5 sm:p-5 overflow-y-auto">
+  <div class="relative w-full max-w-[440px] rounded-[26px] sm:rounded-[28px] bg-[#0b0c12] border border-white/[0.11] shadow-[0_36px_110px_-14px_rgba(0,0,0,.98)] overflow-hidden p-5 sm:p-7 text-center space-y-4 sm:space-y-5 my-auto">
     <div class="pointer-events-none absolute -top-24 inset-x-0 h-56 opacity-45 blur-3xl" style="background:radial-gradient(circle at 50% 45%, rgba(0,149,246,.32), rgba(221,42,123,.2) 55%, transparent 75%)"></div>
     <div id="call-media" class="relative z-10 hidden">
-      <video id="call-v" class="w-full h-64 sm:h-72 object-cover rounded-[20px] bg-black border border-white/[0.12] shadow-2xl" autoplay playsinline></video>
-      <video id="call-local" class="hidden absolute bottom-3 right-3 w-24 h-32 object-cover rounded-xl bg-zinc-950 border border-white/25 shadow-2xl" autoplay muted playsinline></video>
+      <video id="call-v" class="w-full h-44 sm:h-72 object-cover rounded-[20px] bg-black border border-white/[0.12] shadow-2xl" autoplay playsinline></video>
+      <video id="call-local" class="hidden absolute bottom-2.5 right-2.5 w-20 h-28 sm:w-24 sm:h-32 object-cover rounded-xl bg-zinc-950 border border-white/25 shadow-2xl" autoplay muted playsinline></video>
     </div>
     <audio id="call-a" class="hidden" autoplay></audio>
     <div class="relative z-10 flex justify-center">
@@ -1277,101 +1300,105 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       <button class="flex flex-col items-center gap-1.5 group" data-act="rejectCall"><span class="w-14 h-14 rounded-full bg-[#ff3040] hover:brightness-110 grid place-items-center text-white shadow-xl shadow-rose-600/35 group-hover:scale-105 transition"><i data-lucide="phone-off" class="w-6 h-6"></i></span><span class="text-[11px] font-semibold text-zinc-300">Decline</span></button>
       <button class="flex flex-col items-center gap-1.5 group" data-act="acceptCall"><span class="w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 grid place-items-center text-black shadow-xl shadow-emerald-500/35 group-hover:scale-105 transition"><i data-lucide="phone" class="w-6 h-6"></i></span><span class="text-[11px] font-semibold text-zinc-300">Accept</span></button>
     </div>
-    <div id="call-live-acts" class="relative z-10 inline-flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-full bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] mx-auto">
-      <button id="call-mute" class="w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callMute" aria-label="Mute microphone"><i data-lucide="mic" class="w-5 h-5"></i></button>
-      <button id="call-cam" class="w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callCam" aria-label="Toggle camera"><i data-lucide="video" class="w-5 h-5"></i></button>
-      <button id="call-flip" class="hidden w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callFlip" title="Switch camera" aria-label="Switch camera"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-      <button id="call-share" class="hidden w-11 h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callShare" title="Share screen" aria-label="Share screen"><i data-lucide="monitor-up" class="w-4 h-4"></i></button>
-      <button class="w-12 h-11 rounded-full bg-[#ff3040] hover:brightness-110 grid place-items-center text-white shadow-lg shadow-rose-600/40 transition" data-act="endCall" aria-label="End call"><i data-lucide="phone-off" class="w-5 h-5"></i></button>
+    <div id="call-live-acts" class="relative z-10 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-3xl sm:rounded-full bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] mx-auto max-w-full">
+      <button id="call-mute" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callMute" aria-label="Mute microphone"><i data-lucide="mic" class="w-5 h-5"></i></button>
+      <button id="call-cam" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callCam" aria-label="Toggle camera"><i data-lucide="video" class="w-5 h-5"></i></button>
+      <button id="call-flip" class="hidden w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callFlip" title="Switch camera" aria-label="Switch camera"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+      <button id="call-share" class="hidden w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/[0.08] hover:bg-white/[0.18] grid place-items-center text-white transition" data-act="callShare" title="Share screen" aria-label="Share screen"><i data-lucide="monitor-up" class="w-4 h-4"></i></button>
+      <button class="w-12 h-10 sm:h-11 rounded-full bg-[#ff3040] hover:brightness-110 grid place-items-center text-white shadow-lg shadow-rose-600/40 transition" data-act="endCall" aria-label="End call"><i data-lucide="phone-off" class="w-5 h-5"></i></button>
     </div>
   </div>
 </div>
 
 <!-- PROFILE & POST MODALS -->
-<div id="m-edit-profile" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto">
-  <div class="lux-modal w-full max-w-lg rounded-[26px] p-5 sm:p-6 space-y-4 my-auto">
-    <div class="flex items-center justify-between">
+<div id="m-edit-profile" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/80 backdrop-blur-xl p-2.5 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-lg rounded-[24px] sm:rounded-[26px] max-h-[94dvh] flex flex-col overflow-hidden my-auto">
+    <div class="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 border-b border-white/[0.07] flex items-center justify-between shrink-0">
       <h3 class="text-base font-bold text-white">Edit profile</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-edit-profile" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
-    <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
-      <div id="ep-av-prev" class="w-16 h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-white/15"></div>
-      <div class="min-w-0 flex-1 space-y-1.5">
-        <div id="ep-handle-lbl" class="text-xs font-bold text-white truncate">@user</div>
-        <div class="flex flex-wrap gap-2">
-          <input type="file" id="ep-av-file" accept="image/*" class="hidden">
-          <button type="button" data-act="pickAvatar" class="btn-primary h-8 px-3.5 rounded-xl text-[11px] font-semibold">Change photo</button>
-          <button type="button" id="ep-av-clear" data-act="clearAvatar" class="btn-ghost hidden h-8 px-3 rounded-xl text-[11px] font-semibold text-zinc-300">Remove</button>
+    <div class="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 space-y-3.5">
+      <div class="flex items-center gap-3.5 sm:gap-4 p-3 sm:p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
+        <div id="ep-av-prev" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-white/15"></div>
+        <div class="min-w-0 flex-1 space-y-1.5">
+          <div id="ep-handle-lbl" class="text-xs font-bold text-white truncate">@user</div>
+          <div class="flex flex-wrap gap-2">
+            <input type="file" id="ep-av-file" accept="image/*" class="hidden">
+            <button type="button" data-act="pickAvatar" class="btn-primary h-8 px-3.5 rounded-xl text-[11px] font-semibold">Change photo</button>
+            <button type="button" id="ep-av-clear" data-act="clearAvatar" class="btn-ghost hidden h-8 px-3 rounded-xl text-[11px] font-semibold text-zinc-300">Remove</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Display name</label>
+          <input id="ep-name" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Your public name" maxlength="60">
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Category</label>
+          <input id="ep-cat" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Creator · Digital Art" maxlength="60">
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+          <label class="text-[11px] font-medium text-zinc-400">Bio (supports @mentions &amp; #tags)</label>
+          <button type="button" data-act="aiBioSuggest" class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>Polish with Gemini AI</button>
+        </div>
+        <textarea id="ep-bio" rows="3" maxlength="300" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Tell people what you build or share…"></textarea>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Primary Website URL</label>
+          <input id="ep-web" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="https://example.com" maxlength="200">
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Extra Links (Title | URL per line)</label>
+          <textarea id="ep-links" rows="2" class="lux-input w-full rounded-xl p-2.5 text-[12px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Portfolio | https://...&#10;Newsletter | https://..."></textarea>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Location / Address</label>
+          <input id="ep-loc" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="New York, NY" maxlength="120">
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Public Contact Email (optional)</label>
+          <input id="ep-email" type="email" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="hello@creator.com" maxlength="120">
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Threads / Secondary Handle</label>
+          <input id="ep-threads" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="username" maxlength="32">
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-zinc-400 mb-1">Availability Status</label>
+          <input id="ep-status" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Online" maxlength="60">
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Display name</label>
-        <input id="ep-name" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Your public name" maxlength="60">
-      </div>
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Category</label>
-        <input id="ep-cat" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Creator · Digital Art" maxlength="60">
-      </div>
+    <div class="px-4 sm:px-6 py-3.5 border-t border-white/[0.07] bg-[#0e1018]/90 shrink-0 safe-b">
+      <button id="ep-save" class="btn-ac btn-primary w-full h-11 rounded-xl text-xs font-bold" data-act="saveProfile">Save profile changes</button>
     </div>
-    <div>
-      <div class="flex items-center justify-between mb-1">
-        <label class="text-[11px] font-medium text-zinc-400">Bio (supports @mentions &amp; #tags)</label>
-        <button type="button" data-act="aiBioSuggest" class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>Polish with Gemini AI</button>
-      </div>
-      <textarea id="ep-bio" rows="3" maxlength="300" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Tell people what you build or share…"></textarea>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Primary Website URL</label>
-        <input id="ep-web" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="https://example.com" maxlength="200">
-      </div>
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Extra Links (Title | URL per line)</label>
-        <textarea id="ep-links" rows="2" class="lux-input w-full rounded-xl p-2.5 text-[12px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Portfolio | https://...&#10;Newsletter | https://..."></textarea>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Location / Address</label>
-        <input id="ep-loc" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="New York, NY" maxlength="120">
-      </div>
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Public Contact Email (optional)</label>
-        <input id="ep-email" type="email" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="hello@creator.com" maxlength="120">
-      </div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Threads / Secondary Handle</label>
-        <input id="ep-threads" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="username" maxlength="32">
-      </div>
-      <div>
-        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Availability Status</label>
-        <input id="ep-status" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Online" maxlength="60">
-      </div>
-    </div>
-    <button id="ep-save" class="btn-ac btn-primary w-full h-11 rounded-xl text-xs font-bold" data-act="saveProfile">Save profile changes</button>
   </div>
 </div>
 
-<div id="m-post" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/85 backdrop-blur-xl p-2.5 sm:p-5 overflow-y-auto">
-  <div class="w-full max-w-[780px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] overflow-hidden my-auto">
-    <div class="px-4 py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5">
-        <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition" data-act="closeModal" data-arg="m-post" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
-        <h3 class="text-sm font-bold tracking-tight text-white">Create new post</h3>
+<div id="m-post" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/85 backdrop-blur-xl p-2 sm:p-5 overflow-y-auto">
+  <div class="w-full max-w-[780px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] max-h-[94dvh] flex flex-col overflow-hidden my-auto">
+    <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-2 sm:gap-3 shrink-0">
+      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+        <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition shrink-0" data-act="closeModal" data-arg="m-post" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <h3 class="text-sm font-bold tracking-tight text-white truncate">Create new post</h3>
       </div>
-      <span id="post-mode-lbl" class="px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10.5px] font-semibold text-zinc-300">Feed · Profile Grid</span>
+      <span id="post-mode-lbl" class="px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[10px] sm:text-[10.5px] font-semibold text-zinc-300 shrink-0">Feed · Profile Grid</span>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-12">
-      <div class="md:col-span-6 bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] p-3.5 sm:p-5 flex flex-col items-center justify-center gap-2">
-        <div class="w-full max-w-[230px] sm:max-w-[300px] rounded-[18px] bg-[#121319] border border-white/[0.1] shadow-[0_24px_65px_-12px_rgba(0,0,0,.98)] overflow-hidden">
-          <div class="px-3 py-2.5 flex items-center justify-between gap-2 border-b border-white/[0.06]">
+    <div class="flex-1 min-h-0 overflow-y-auto grid grid-cols-1 md:grid-cols-12">
+      <div class="md:col-span-6 bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] p-3 sm:p-5 flex flex-col items-center justify-center gap-2">
+        <div class="w-full max-w-[168px] min-[390px]:max-w-[196px] md:max-w-[300px] rounded-[16px] sm:rounded-[18px] bg-[#121319] border border-white/[0.1] shadow-[0_24px_65px_-12px_rgba(0,0,0,.98)] overflow-hidden">
+          <div class="px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center justify-between gap-2 border-b border-white/[0.06]">
             <div class="flex items-center gap-2 min-w-0">
-              <span id="post-prev-av" class="w-7 h-7 rounded-full ig-ring p-[1.5px] grid place-items-center text-[10px] font-bold text-white shrink-0">Y</span>
+              <span id="post-prev-av" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full ig-ring p-[1.5px] grid place-items-center text-[10px] font-bold text-white shrink-0">Y</span>
               <div class="min-w-0">
                 <div id="post-prev-user" class="text-[11px] font-bold text-white truncate leading-tight">you</div>
                 <div id="post-prev-loc" class="hidden text-[9.5px] text-zinc-400 truncate leading-tight"></div>
@@ -1380,14 +1407,14 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <i data-lucide="more-horizontal" class="w-4 h-4 text-zinc-400 shrink-0"></i>
           </div>
 
-          <div id="post-prev" class="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-rose-500 flex items-center justify-center p-5 text-center select-none">
+          <div id="post-prev" class="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-rose-500 flex items-center justify-center p-3.5 sm:p-5 text-center select-none">
             <img id="post-prev-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
             <video id="post-prev-vid" class="hidden absolute inset-0 w-full h-full object-cover" muted loop autoplay playsinline></video>
             <span id="post-prev-multi" class="hidden absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-bold text-white border border-white/15"></span>
-            <p id="post-prev-txt" class="relative z-10 text-[13px] font-extrabold text-white drop-shadow leading-snug line-clamp-6">Share a moment, photo carousel, or creator update…</p>
+            <p id="post-prev-txt" class="relative z-10 text-xs sm:text-[13px] font-extrabold text-white drop-shadow leading-snug line-clamp-5 sm:line-clamp-6">Share a moment, photo carousel, or creator update…</p>
           </div>
 
-          <div class="px-3 py-2.5 space-y-1.5">
+          <div class="px-2.5 sm:px-3 py-2 sm:py-2.5 space-y-1.5">
             <div class="flex items-center justify-between text-white">
               <div class="flex items-center gap-3">
                 <i data-lucide="heart" class="w-4 h-4"></i>
@@ -1399,12 +1426,12 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <p id="post-prev-cap-sub" class="text-[11px] text-zinc-300 line-clamp-2 break-words leading-snug"></p>
           </div>
         </div>
-        <span class="text-[10.5px] text-zinc-500">1:1 Feed Preview · Drag photos or videos onto canvas</span>
+        <span class="text-[10px] sm:text-[10.5px] text-zinc-500 text-center">1:1 Feed Preview · Drag photos or videos onto canvas</span>
       </div>
 
-      <div class="md:col-span-6 p-4 sm:p-5 flex flex-col justify-between gap-3.5 bg-[#111218]">
-        <div class="space-y-3.5">
-          <div id="post-dropzone" class="rounded-2xl border border-dashed border-white/[0.14] hover:border-[#0095f6]/60 bg-white/[0.025] px-3.5 py-2.5 flex items-center justify-between gap-2.5 transition">
+      <div class="md:col-span-6 p-3.5 sm:p-5 flex flex-col justify-between gap-3.5 bg-[#111218]">
+        <div class="space-y-3 sm:space-y-3.5">
+          <div id="post-dropzone" class="rounded-2xl border border-dashed border-white/[0.14] hover:border-[#0095f6]/60 bg-white/[0.025] px-3 sm:px-3.5 py-2.5 flex items-center justify-between gap-2.5 transition">
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="w-8 h-8 rounded-xl bg-[#0095f6]/15 border border-[#0095f6]/30 text-[#0095f6] grid place-items-center shrink-0"><i data-lucide="images" class="w-4 h-4"></i></span>
               <div class="min-w-0">
@@ -1419,13 +1446,13 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             </div>
           </div>
 
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-[11px] font-semibold text-zinc-400">Card background</span>
-            <div id="post-bgs" class="flex items-center gap-2"></div>
+            <div id="post-bgs" class="flex flex-wrap items-center gap-2"></div>
           </div>
 
           <div>
-            <div class="flex items-center justify-between mb-1.5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
               <label for="post-cap" class="text-[11px] font-semibold text-zinc-400">Caption</label>
               <div class="flex items-center gap-3">
                 <span id="post-cap-cnt" class="text-[10.5px] font-mono text-zinc-500">0/1200</span>
@@ -1435,7 +1462,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <textarea id="post-cap" rows="3" data-input="postPreview" maxlength="1200" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Write a caption… use #tags and @mentions"></textarea>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input id="post-loc" data-input="postPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add location" maxlength="120">
             <input id="post-tags" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Tag @people" maxlength="140">
           </div>
@@ -1445,24 +1472,25 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
             <input id="post-pin" type="checkbox" class="accent-[#0095f6] w-4 h-4">
           </label>
         </div>
-
-        <button id="post-submit" class="w-full h-10 rounded-xl bg-[#0095f6] hover:bg-[#1877f2] active:scale-[.99] text-white text-[13px] font-semibold shadow-[0_10px_28px_-10px_rgba(0,149,246,.75)] transition" data-act="createPost">Share post</button>
       </div>
+    </div>
+    <div class="px-3.5 sm:px-5 py-3 border-t border-white/[0.08] bg-[#111218] shrink-0 safe-b">
+      <button id="post-submit" class="w-full h-10 rounded-xl bg-[#0095f6] hover:bg-[#1877f2] active:scale-[.99] text-white text-[13px] font-semibold shadow-[0_10px_28px_-10px_rgba(0,149,246,.75)] transition" data-act="createPost">Share post</button>
     </div>
   </div>
 </div>
 
-<div id="m-post-view" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/90 backdrop-blur-2xl p-2 sm:p-5 overflow-y-auto">
-  <div id="pv-shell" class="lux-modal w-full max-w-4xl rounded-[24px] overflow-hidden grid grid-cols-1 md:grid-cols-12 my-auto max-h-[92vh]">
-    <div id="pv-media-box" data-act="dblLikePost" class="md:col-span-7 relative bg-black flex items-center justify-center min-h-[280px] sm:min-h-[380px] max-h-[58vh] md:max-h-[82vh] select-none overflow-hidden"></div>
-    <div class="md:col-span-5 flex flex-col min-h-0 max-h-[54vh] md:max-h-[82vh] bg-[#0a0c14] border-t md:border-t-0 md:border-l border-white/[0.08]">
-      <div id="pv-hdr" class="px-4 py-3 border-b border-white/[0.07] flex items-center justify-between gap-2 shrink-0"></div>
-      <div id="pv-body" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-      <div class="border-t border-white/[0.07] p-3.5 space-y-2.5 shrink-0 bg-[#080a10]">
+<div id="m-post-view" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start md:items-center justify-center bg-black/90 backdrop-blur-2xl p-2 sm:p-5 overflow-y-auto">
+  <div id="pv-shell" class="lux-modal w-full max-w-4xl rounded-[22px] sm:rounded-[24px] overflow-hidden flex flex-col md:grid md:grid-cols-12 my-auto max-h-[92dvh]">
+    <div id="pv-media-box" data-act="dblLikePost" class="md:col-span-7 relative bg-black flex items-center justify-center min-h-[160px] sm:min-h-[260px] max-h-[38dvh] md:max-h-[82dvh] shrink-0 md:shrink select-none overflow-hidden"></div>
+    <div class="md:col-span-5 flex-1 flex flex-col min-h-0 max-h-[54dvh] md:max-h-[82dvh] bg-[#0a0c14] border-t md:border-t-0 md:border-l border-white/[0.08]">
+      <div id="pv-hdr" class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-white/[0.07] flex items-center justify-between gap-2 shrink-0"></div>
+      <div id="pv-body" class="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3"></div>
+      <div class="border-t border-white/[0.07] p-3 sm:p-3.5 space-y-2 sm:space-y-2.5 shrink-0 bg-[#080a10] safe-b">
         <div id="pv-acts" class="flex items-center justify-between gap-2"></div>
         <div id="pv-meta" class="text-xs font-bold text-white"></div>
         <div class="flex items-center gap-2">
-          <input id="pv-cm-in" data-enter="addPostComment" class="lux-input flex-1 h-9 rounded-full px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
+          <input id="pv-cm-in" data-enter="addPostComment" class="lux-input flex-1 min-w-0 h-9 rounded-full px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
           <button type="button" data-act="aiPostComment" class="btn-ghost w-9 h-9 rounded-full grid place-items-center text-accent shrink-0" title="Suggest reply with Gemini AI" aria-label="Suggest comment with AI"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i></button>
           <button type="button" data-act="addPostComment" class="h-9 px-3.5 rounded-full bg-[#0095f6] hover:bg-[#1aa3ff] text-xs font-bold text-white shrink-0">Post</button>
         </div>
@@ -1471,8 +1499,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-follow-list" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4">
-  <div class="lux-modal w-full max-w-md rounded-[26px] p-5 space-y-3.5 max-h-[84vh] flex flex-col">
+<div id="m-follow-list" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/80 backdrop-blur-xl p-2.5 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-md rounded-[24px] sm:rounded-[26px] p-4 sm:p-5 space-y-3.5 max-h-[88dvh] flex flex-col my-auto">
     <div class="flex items-center justify-between shrink-0">
       <h3 id="fl-title" class="text-base font-bold text-white">Connections</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-follow-list" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -1483,20 +1511,20 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       <button id="fl-tab-suggested" data-act="followListTab" data-arg="suggested" class="h-8 rounded-xl text-xs font-semibold transition-all">Discover</button>
     </div>
     <input id="fl-search" data-input="followSearch" class="lux-input h-9 w-full rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none shrink-0" placeholder="Search people by name or @username…" autocomplete="off">
-    <div id="fl-body" class="flex-1 overflow-y-auto space-y-2 pr-0.5 min-h-[180px]"></div>
+    <div id="fl-body" class="flex-1 overflow-y-auto space-y-2 pr-0.5 min-h-[120px]"></div>
   </div>
 </div>
 
-<div id="m-highlight" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-4">
-  <div class="lux-modal w-full max-w-sm rounded-[26px] p-6 space-y-4">
+<div id="m-highlight" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-sm rounded-[26px] p-5 sm:p-6 space-y-4 my-auto">
     <div class="flex items-center justify-between">
       <h3 class="text-base font-bold text-white">New Story Highlight</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-highlight" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
     <input id="hl-title" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Highlight title (e.g. Behind the scenes)" maxlength="36">
     <textarea id="hl-text" rows="2" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Highlight story note or announcement…" maxlength="240"></textarea>
-    <div class="flex items-center justify-between gap-2">
-      <div id="hl-bgs" class="flex gap-1.5"></div>
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <div id="hl-bgs" class="flex flex-wrap gap-1.5"></div>
       <div>
         <input type="file" id="hl-file" accept="image/*" class="hidden">
         <button type="button" data-act="pickHighlightMedia" class="btn-ghost h-8 px-3 rounded-xl text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="image" class="w-3.5 h-3.5 text-accent"></i><span id="hl-media-lbl">Cover photo</span></button>
@@ -1506,8 +1534,8 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-links" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-4">
-  <div class="lux-modal w-full max-w-sm rounded-[26px] p-6 space-y-3.5">
+<div id="m-links" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-sm rounded-[26px] p-5 sm:p-6 space-y-3.5 my-auto">
     <div class="flex items-center justify-between">
       <h3 class="text-base font-bold text-white">Links</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-links" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -1516,18 +1544,18 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-activity" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-4">
-  <div class="lux-modal w-full max-w-md rounded-[26px] p-5 space-y-3.5 max-h-[82vh] flex flex-col">
+<div id="m-activity" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-start sm:items-center justify-center bg-black/80 backdrop-blur-xl p-2.5 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-md rounded-[24px] sm:rounded-[26px] p-4 sm:p-5 space-y-3.5 max-h-[88dvh] flex flex-col my-auto">
     <div class="flex items-center justify-between shrink-0">
       <h3 class="text-base font-bold text-white">Notifications &amp; Live Activity</h3>
       <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-activity" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
-    <div id="act-list" class="flex-1 overflow-y-auto space-y-2 min-h-[160px]"></div>
+    <div id="act-list" class="flex-1 overflow-y-auto space-y-2 min-h-[120px]"></div>
   </div>
 </div>
 
-<div id="m-auth" class="modal fixed inset-0 z-[60] hidden [&.open]:flex items-center justify-center bg-[#030408]/85 backdrop-blur-xl p-3 sm:p-6 overflow-y-auto">
-  <div id="auth-dialog" class="lux-modal w-full max-w-[900px] rounded-[28px] overflow-hidden my-auto">
+<div id="m-auth" class="modal fixed inset-0 z-[60] hidden [&.open]:flex items-start md:items-center justify-center bg-[#030408]/85 backdrop-blur-xl p-2.5 sm:p-6 overflow-y-auto">
+  <div id="auth-dialog" class="lux-modal w-full max-w-[900px] rounded-[24px] sm:rounded-[28px] overflow-hidden my-auto">
     <div id="auth-logged-out" class="grid grid-cols-1 md:grid-cols-12">
       <!-- Left International Architecture Panel -->
       <div class="hidden md:flex md:col-span-5 auth-aura p-7 flex-col justify-between border-r border-white/[0.08]">
@@ -1553,7 +1581,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       </div>
 
       <!-- Right Interactive Form Pane -->
-      <div class="md:col-span-7 p-6 sm:p-8 space-y-4">
+      <div class="md:col-span-7 p-4 sm:p-8 space-y-4">
         <div class="flex justify-between items-start gap-3">
           <div>
             <h3 id="auth-heading" class="text-lg font-extrabold text-white leading-tight">Sign in to WhatsGram</h3>
@@ -1656,7 +1684,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     </div>
 
     <!-- SIGNED-IN ACCOUNT & RECOVERY MANAGEMENT -->
-    <div id="auth-logged-in" class="hidden p-6 sm:p-7 space-y-4">
+    <div id="auth-logged-in" class="hidden p-4 sm:p-7 space-y-4">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/25 grid place-items-center text-emerald-300"><i data-lucide="cloud" class="w-4 h-4"></i></div>
@@ -1681,13 +1709,13 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       </div>
 
       <!-- Optional Recovery Email Card -->
-      <div class="p-4 rounded-2xl bg-white/[0.025] border border-white/[0.08] space-y-2.5">
+      <div class="p-3.5 sm:p-4 rounded-2xl bg-white/[0.025] border border-white/[0.08] space-y-2.5">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="text-xs font-bold text-white flex items-center gap-1.5"><i data-lucide="mail-check" class="w-3.5 h-3.5 text-sky-400"></i><span>Optional recovery email</span></div>
           <span id="auth-rec-status" class="text-[11px] text-zinc-400">Not configured</span>
         </div>
         <div class="flex flex-wrap sm:flex-nowrap gap-2">
-          <input id="auth-rec-in" type="email" data-enter="saveRecoveryEmail" class="lux-input h-9 flex-1 min-w-[180px] rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="you@example.com (for password reset links)">
+          <input id="auth-rec-in" type="email" data-enter="saveRecoveryEmail" class="lux-input h-9 flex-1 min-w-0 rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="you@example.com (for password reset links)">
           <button data-act="saveRecoveryEmail" class="btn-primary h-9 px-3.5 rounded-xl text-xs font-semibold shrink-0">Save email</button>
           <button id="auth-rec-clear" data-act="clearRecoveryEmail" class="hidden btn-ghost h-9 px-3 rounded-xl text-xs font-semibold text-zinc-300 shrink-0">Remove</button>
         </div>
@@ -1698,7 +1726,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         <div id="auth-self-link-box" class="hidden p-3 rounded-xl bg-black/50 border border-sky-400/25 space-y-2">
           <div id="auth-self-link-msg" class="text-[11px] text-sky-200"></div>
           <div class="flex flex-wrap items-center gap-2">
-            <input id="auth-self-url" readonly class="lux-input h-8 flex-1 min-w-[160px] rounded-lg px-2.5 font-mono text-[10px] text-zinc-300 focus:outline-none">
+            <input id="auth-self-url" readonly class="lux-input h-8 flex-1 min-w-0 rounded-lg px-2.5 font-mono text-[10px] text-zinc-300 focus:outline-none">
             <button data-act="copySelfReset" class="btn-ghost h-8 px-2.5 rounded-lg text-[11px] font-semibold text-white">Copy link</button>
             <a id="auth-self-mailto" href="#" target="_blank" rel="noopener" class="btn-ghost h-8 px-2.5 rounded-lg text-[11px] font-semibold text-sky-300 inline-flex items-center">Open Mail</a>
             <button data-act="openSelfReset" class="btn-primary h-8 px-2.5 rounded-lg text-[11px] font-semibold">Open Reset</button>
@@ -1707,7 +1735,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       </div>
 
       <!-- Change Password Row -->
-      <div class="p-4 rounded-2xl bg-white/[0.025] border border-white/[0.08] space-y-2.5">
+      <div class="p-3.5 sm:p-4 rounded-2xl bg-white/[0.025] border border-white/[0.08] space-y-2.5">
         <div class="text-xs font-bold text-white flex items-center gap-1.5"><i data-lucide="key-round" class="w-3.5 h-3.5 text-amber-300"></i><span>Change password</span></div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <input id="auth-chg-cur" type="password" class="lux-input h-9 rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Current password">
@@ -1724,7 +1752,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-media" class="modal fixed inset-0 z-[75] hidden [&.open]:flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl p-4">
+<div id="m-media" class="modal fixed inset-0 z-[75] hidden [&.open]:flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl p-3 sm:p-4 overflow-y-auto">
   <div class="w-full max-w-4xl flex items-center justify-between gap-3 pb-3">
     <span id="lb-cap" class="text-xs font-medium text-zinc-300 truncate"></span>
     <div class="flex items-center gap-2 shrink-0">
@@ -1732,17 +1760,17 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
       <button data-act="closeModal" data-arg="m-media" class="btn-ghost w-9 h-9 rounded-full grid place-items-center text-white" aria-label="Close lightbox"><i data-lucide="x" class="w-4 h-4"></i></button>
     </div>
   </div>
-  <div class="relative max-w-4xl max-h-[82vh] flex items-center justify-center">
-    <img id="lb-img" class="hidden max-w-full max-h-[80vh] rounded-2xl border border-white/10 shadow-2xl object-contain" alt="">
-    <video id="lb-vid" class="hidden max-w-full max-h-[80vh] rounded-2xl border border-white/10 shadow-2xl" controls autoplay playsinline></video>
+  <div class="relative max-w-4xl max-h-[82dvh] flex items-center justify-center">
+    <img id="lb-img" class="hidden max-w-full max-h-[80dvh] rounded-2xl border border-white/10 shadow-2xl object-contain" alt="">
+    <video id="lb-vid" class="hidden max-w-full max-h-[80dvh] rounded-2xl border border-white/10 shadow-2xl" controls autoplay playsinline></video>
   </div>
 </div>
 
-<div id="m-cmd" class="modal fixed inset-0 z-[65] hidden [&.open]:flex items-start justify-center bg-black/75 backdrop-blur-md pt-20 p-4">
-  <div class="lux-modal w-full max-w-lg rounded-[26px] overflow-hidden">
-    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.08] bg-white/[0.02]">
+<div id="m-cmd" class="modal fixed inset-0 z-[65] hidden [&.open]:flex items-start justify-center bg-black/75 backdrop-blur-md pt-6 sm:pt-20 p-3 sm:p-4">
+  <div class="lux-modal w-full max-w-lg rounded-[26px] overflow-hidden max-h-[88dvh] flex flex-col">
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
       <i data-lucide="search" class="w-4 h-4 text-accent shrink-0"></i>
-      <input id="cmd-in" data-input="cmd" class="flex-1 bg-transparent text-sm text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Jump to conversation, view, or action…" autocomplete="off">
+      <input id="cmd-in" data-input="cmd" class="flex-1 min-w-0 bg-transparent text-sm text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Jump to conversation, view, or action…" autocomplete="off">
       <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-white/[0.07] border border-white/[0.10] text-zinc-400">Esc</kbd>
     </div>
     <div id="cmd-list" class="max-h-80 overflow-y-auto p-2 space-y-0.5"></div>
@@ -1765,7 +1793,7 @@ const ic=(n,c='w-4 h-4')=>`<i data-lucide="${n}" class="${c}"></i>`;
 const icons=()=>{try{window.lucide&&window.lucide.createIcons()}catch(e){}};
 const setTxt=(s,t)=>{const e=$(s);if(e)e.textContent=t};
 const show=(el,on,disp='flex')=>{if(typeof el==='string')el=$(el);if(!el)return;el.classList.toggle('hidden',!on);if(disp)el.classList.toggle(disp,on)};
-function toast(msg,kind){const t=document.createElement('div');t.className=`px-4 py-2.5 rounded-full text-xs font-semibold backdrop-blur-2xl shadow-[0_16px_36px_-8px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.16)] border ${kind==='err'?'bg-rose-600/90 border-rose-400/35 text-white':'bg-[#12141e]/95 border-white/[0.14] text-white'}`;t.textContent=msg;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2800)}
+function toast(msg,kind){const t=document.createElement('div');t.className=`max-w-full text-center px-3.5 py-2 rounded-2xl sm:rounded-full text-xs font-semibold backdrop-blur-2xl shadow-[0_16px_36px_-8px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.16)] border ${kind==='err'?'bg-rose-600/90 border-rose-400/35 text-white':'bg-[#12141e]/95 border-white/[0.14] text-white'}`;t.textContent=msg;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2800)}
 let AC=null;function tone(f=620,d=.03,pan=0,v=.03){try{const c=AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(c.state==='suspended')c.resume();const o=c.createOscillator(),g=c.createGain();g.gain.value=v;o.frequency.value=f;o.connect(g);if(c.createStereoPanner){const p=c.createStereoPanner();p.pan.value=pan;g.connect(p);p.connect(c.destination)}else g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
 async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return 'x'+h}}
 const STOP_W=new Set(['a','an','the','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','can','may','might','of','in','on','at','to','for','with','by','from','as','into','like','through','after','over','between','out','against','during','without','before','under','around','among','what','which','who','whom','whose','where','when','why','how','this','that','these','those','it','its','i','me','my','you','your','we','they','them','and','or','but','if','not','no','yes','so','than','too','very','just','about']);
@@ -2582,7 +2610,7 @@ function ask(title,body,fn){S.confirm=fn;setTxt('#cf-title',title);setTxt('#cf-b
 /* ---------- conversations ---------- */
 function renderFolders(){
   const un=D.filter(c=>c.unread).length;
-  $('#folders').innerHTML=[['all','All'],['work','Work'],['personal','Personal'],['unread','Unread'+(un?` ${un}`:'')]].map(([k,l])=>`<button role="tab" class="h-8 px-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-200 border border-transparent aria-[selected=true]:bg-gradient-to-b aria-[selected=true]:from-white/[0.15] aria-[selected=true]:to-white/[0.07] aria-[selected=true]:text-white aria-[selected=true]:border-white/[0.14] aria-[selected=true]:shadow-[inset_0_1px_0_rgba(255,255,255,.2),0_4px_12px_-4px_rgba(0,0,0,.6)] transition-all truncate" data-act="folder" data-arg="${k}" aria-selected="${S.folder===k}">${l}</button>`).join('');
+  $('#folders').innerHTML=[['all','All'],['work','Work'],['personal','Personal'],['unread','Unread'+(un?` ${un}`:'')]].map(([k,l])=>`<button role="tab" class="h-8 px-1 lg:px-1.5 rounded-xl text-[11px] lg:text-xs font-semibold text-zinc-400 hover:text-zinc-200 border border-transparent aria-[selected=true]:bg-gradient-to-b aria-[selected=true]:from-white/[0.15] aria-[selected=true]:to-white/[0.07] aria-[selected=true]:text-white aria-[selected=true]:border-white/[0.14] aria-[selected=true]:shadow-[inset_0_1px_0_rgba(255,255,255,.2),0_4px_12px_-4px_rgba(0,0,0,.6)] transition-all truncate" data-act="folder" data-arg="${k}" aria-selected="${S.folder===k}">${l}</button>`).join('');
 }
 const prev=m=>!m?'No messages':m.type==='voice'?'🎙 Voice note':m.type==='file'?'📎 '+m.name:m.text;
 
@@ -3229,10 +3257,10 @@ function renderReelCanvas(r){
     <div class="absolute bottom-16 -right-14 w-64 h-64 rounded-full bg-black/35 blur-3xl" style="animation:drift 11s ease-in-out infinite reverse"></div>
     <div class="absolute inset-0 opacity-[0.06]" style="background-image:radial-gradient(rgba(255,255,255,.75) 1px,transparent 1px);background-size:22px 22px"></div>
     <div class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pointer-events-none">
-      <div class="relative w-36 h-36 flex items-center justify-center mb-4">
+      <div class="reel-orb relative w-36 h-36 flex items-center justify-center mb-4">
         <span class="absolute inset-0 rounded-full border border-white/[0.15] animate-ping opacity-20" style="animation-duration:4s"></span>
         <span class="absolute inset-3 rounded-full border border-white/[0.2] bg-black/25 backdrop-blur-md shadow-[0_0_40px_rgba(255,255,255,.06)]"></span>
-        <span class="relative z-10 flex items-center justify-center gap-1 h-16 px-4">${bars}</span>
+        <span class="reel-orb-pad relative z-10 flex items-center justify-center gap-1 h-16 px-4 overflow-hidden">${bars}</span>
       </div>
       <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/[0.14] text-[10px] font-semibold uppercase tracking-[0.14em] text-white/85">${ic('clapperboard','w-3 h-3')}<span>@${esc(r.author)}</span></span>
     </div>`;
@@ -3676,16 +3704,16 @@ function renderProfile(){
   const schemaBanner=(S.user&&data.schemaReady===false)?`<div class="mx-4 mt-4 rounded-2xl border border-amber-500/35 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-200 flex items-center justify-between gap-2"><span>Run updated <code class="font-mono text-amber-100">supabase/schema.sql</code> in Supabase SQL Editor to enable Postgres posts, highlights &amp; follows.</span><button data-act="refreshProfileNow" class="shrink-0 h-7 px-3 rounded-lg bg-amber-400 text-black font-bold text-[11px]">Retry</button></div>`:'';
 
   const actionRow=p.isOwn
-    ?`<div class="flex items-center gap-2 pt-3">
-        <button data-act="openEditProfile" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Edit profile</button>
-        <button data-act="openPostModal" class="flex-1 h-9 rounded-xl bg-[#0095f6] hover:bg-[#1aa3ff] text-xs font-bold text-white shadow-[0_6px_18px_-4px_rgba(0,149,246,.5)] transition">Create post</button>
-        <button data-act="profShare" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Share profile</button>
+    ?`<div class="flex items-center gap-1.5 sm:gap-2 pt-3">
+        <button data-act="openEditProfile" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-[11px] sm:text-xs font-bold text-white whitespace-nowrap truncate transition">Edit profile</button>
+        <button data-act="openPostModal" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl bg-[#0095f6] hover:bg-[#1aa3ff] text-[11px] sm:text-xs font-bold text-white shadow-[0_6px_18px_-4px_rgba(0,149,246,.5)] whitespace-nowrap truncate transition"><span class="hidden min-[350px]:inline">Create post</span><span class="min-[350px]:hidden">Post</span></button>
+        <button data-act="profShare" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-[11px] sm:text-xs font-bold text-white whitespace-nowrap truncate transition"><span>Share<span class="hidden min-[390px]:inline"> profile</span></span></button>
         <button data-act="toggleSuggest" aria-pressed="${S.profSuggest}" class="w-9 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] grid place-items-center text-white shrink-0 transition" title="Discover people" aria-label="Discover suggested people">${ic('user-plus','w-4 h-4')}</button>
       </div>`
-    :`<div class="flex items-center gap-2 pt-3">
-        <button data-act="profFollow" class="flex-1 h-9 rounded-xl text-xs font-bold transition inline-flex items-center justify-center gap-1 ${p.isFollowing?'bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.12] text-white':'bg-[#0095f6] hover:bg-[#1aa3ff] text-white shadow-[0_6px_18px_-4px_rgba(0,149,246,.5)]'}">${p.isFollowing?`Following ${ic('chevron-down','w-3.5 h-3.5')}`:(p.followsMe?'Follow Back':'Follow')}</button>
-        <button data-act="profMsg" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Message</button>
-        ${p.contact_email?`<button data-act="profEmail" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Email</button>`:`<button data-act="profShare" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Share</button>`}
+    :`<div class="flex items-center gap-1.5 sm:gap-2 pt-3">
+        <button data-act="profFollow" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold whitespace-nowrap truncate transition inline-flex items-center justify-center gap-1 ${p.isFollowing?'bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.12] text-white':'bg-[#0095f6] hover:bg-[#1aa3ff] text-white shadow-[0_6px_18px_-4px_rgba(0,149,246,.5)]'}">${p.isFollowing?`Following ${ic('chevron-down','w-3.5 h-3.5')}`:(p.followsMe?'Follow Back':'Follow')}</button>
+        <button data-act="profMsg" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-[11px] sm:text-xs font-bold text-white whitespace-nowrap truncate transition">Message</button>
+        ${p.contact_email?`<button data-act="profEmail" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-[11px] sm:text-xs font-bold text-white whitespace-nowrap truncate transition">Email</button>`:`<button data-act="profShare" class="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-[11px] sm:text-xs font-bold text-white whitespace-nowrap truncate transition">Share</button>`}
         <button data-act="toggleSuggest" aria-pressed="${S.profSuggest}" class="w-9 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] grid place-items-center text-white shrink-0 transition" title="Suggested creators" aria-label="Toggle suggested creators">${ic('user-plus','w-4 h-4')}</button>
       </div>`;
 
@@ -3762,17 +3790,17 @@ function renderProfile(){
   }
 
   root.innerHTML=`${schemaBanner}
-  <div class="px-4 sm:px-6 pt-5 pb-3 space-y-4">
-    <div class="flex items-center gap-5 sm:gap-9">
+  <div class="px-3.5 sm:px-6 pt-4 sm:pt-5 pb-3 space-y-3.5 sm:space-y-4">
+    <div class="flex items-center gap-3.5 sm:gap-9">
       <button type="button" data-act="profAvatarTap" class="relative shrink-0 group" title="${p.isOwn?'Change photo or view Story':'View Story'}">
         <span class="block p-[3px] rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] group-hover:scale-[1.03] transition">
           <span class="block p-[2.5px] rounded-full bg-[#05060b]">
-            ${renderAvatarCircle(p,'w-20 h-20 sm:w-28 sm:h-28')}
+            ${renderAvatarCircle(p,'w-[72px] h-[72px] min-[380px]:w-20 min-[380px]:h-20 sm:w-28 sm:h-28')}
           </span>
         </span>
         ${online?'<span class="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-400 ring-[3px] ring-[#05060b] shadow-[0_0_10px_rgba(52,211,153,.9)]" title="Online now"></span>':''}
       </button>
-      <div class="flex-1 min-w-0 space-y-3">
+      <div class="flex-1 min-w-0 space-y-2.5 sm:space-y-3">
         <div class="hidden sm:flex items-center gap-2">
           <h1 class="text-lg font-extrabold text-white tracking-tight truncate">${esc(p.display_name||handleTxt)}</h1>
           ${p.verified?VERIFIED_BADGE_SVG:''}
@@ -4306,12 +4334,12 @@ async function rewriteComposerDraft(tone){
 /* ---------- vault / settings ---------- */
 function renderAudit(){
   const u=$('#audit');
-  if(u)u.innerHTML=LOG.length?LOG.map(l=>`<li class="px-5 py-2.5 flex gap-3"><span class="text-zinc-500 shrink-0">${esc(l.t)}</span><span class="text-zinc-200">${esc(l.m)}</span></li>`).join(''):'<li class="px-5 py-4 text-zinc-500">No events recorded yet.</li>';
+  if(u)u.innerHTML=LOG.length?LOG.map(l=>`<li class="px-4 sm:px-5 py-2.5 flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-3"><span class="text-zinc-500 text-[10px] sm:text-[11px] shrink-0">${esc(l.t)}</span><span class="text-zinc-200 break-words">${esc(l.m)}</span></li>`).join(''):'<li class="px-5 py-4 text-zinc-500">No events recorded yet.</li>';
 }
 function renderStats(){
   const sent=D.reduce((a,c)=>a+c.msgs.filter(m=>m.from==='me').length,0),rec=D.reduce((a,c)=>a+c.msgs.filter(m=>m.from==='them').length,0),mx=Math.max(1,...D.map(c=>c.msgs.length));
   $('#stats').innerHTML=[['Conversations',D.length],['Sent',sent],['Received',rec],['Reels liked',RS.liked.length]].map(([l,v])=>`<div class="rounded-2xl bg-gradient-to-b from-white/[0.045] to-white/[0.015] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,.06)] p-3.5"><div class="text-[11px] font-medium text-zinc-400">${l}</div><div class="text-2xl font-extrabold tracking-tight text-white mt-1 font-mono tabular-nums">${v}</div></div>`).join('');
-  $('#bars').innerHTML=D.length?D.map(c=>`<div class="flex items-center gap-3 text-xs"><span class="w-28 truncate text-zinc-300 font-medium">${esc(c.name)}</span><div class="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden"><div class="h-full rounded-full transition-all duration-300 shadow-[0_0_10px_rgb(var(--ac-rgb)/.6)]" style="width:${c.msgs.length/mx*100}%;background:linear-gradient(90deg,var(--ac),rgb(var(--ac-rgb)/.65))"></div></div><span class="font-mono w-6 text-right text-zinc-300 tabular-nums">${c.msgs.length}</span></div>`).join(''):'<div class="text-xs text-zinc-500">No data.</div>';
+  $('#bars').innerHTML=D.length?D.map(c=>`<div class="flex items-center gap-2.5 sm:gap-3 text-xs"><span class="w-20 sm:w-28 truncate text-zinc-300 font-medium">${esc(c.name)}</span><div class="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden"><div class="h-full rounded-full transition-all duration-300 shadow-[0_0_10px_rgb(var(--ac-rgb)/.6)]" style="width:${c.msgs.length/mx*100}%;background:linear-gradient(90deg,var(--ac),rgb(var(--ac-rgb)/.65))"></div></div><span class="font-mono w-6 text-right text-zinc-300 tabular-nums">${c.msgs.length}</span></div>`).join(''):'<div class="text-xs text-zinc-500">No data.</div>';
   $('#accents').innerHTML=ACCENTS.map(([n,c])=>`<button data-act="accent" data-arg="${c}" aria-label="${n}" title="${n}" aria-pressed="${cfg.accent===c}" class="w-7 h-7 rounded-full border-2 border-[#080a12] ring-1 ring-white/20 aria-[pressed=true]:ring-2 aria-[pressed=true]:ring-white aria-[pressed=true]:scale-110 transition-transform shadow-sm" style="background:${c}"></button>`).join('');
   icons();
 }
