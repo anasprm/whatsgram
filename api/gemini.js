@@ -1,8 +1,19 @@
 const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const FALLBACK_MODEL = 'gemini-2.0-flash';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_VISION_MODEL = process.env.GROQ_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'openrouter/free';
 
-function getApiKey() {
-  return (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+function resolveProviders() {
+  const rawGem = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+  const groqKey = (process.env.GROQ_API_KEY || (rawGem.startsWith('gsk_') ? rawGem : '')).trim();
+  const orKey = (process.env.OPENROUTER_API_KEY || (rawGem.startsWith('sk-or-') ? rawGem : '')).trim();
+  const googKey = (rawGem && !rawGem.startsWith('gsk_') && !rawGem.startsWith('sk-or-') ? rawGem : '').trim();
+  const list = [];
+  if (groqKey) list.push({ provider: 'groq', apiKey: groqKey, model: GROQ_MODEL, url: 'https://api.groq.com/openai/v1/chat/completions' });
+  if (orKey) list.push({ provider: 'openrouter', apiKey: orKey, model: OPENROUTER_MODEL, url: 'https://openrouter.ai/api/v1/chat/completions' });
+  if (googKey) list.push({ provider: googKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio', apiKey: googKey, model: DEFAULT_MODEL });
+  return list;
 }
 
 function getEndpoint(apiKey, model, stream = false) {
@@ -274,52 +285,195 @@ function classifyUpstreamError(status, errMsg) {
   return { code, actionUrl };
 }
 
-async function callModel(apiKey, model, payload) {
-  const response = await fetch(getEndpoint(apiKey, model, false), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-goog-api-key': apiKey
-    },
-    body: JSON.stringify(buildUpstreamReqBody(model, payload))
-  });
-  const data = await response.json().catch(() => ({}));
-  return { ok: response.ok, status: response.status, data };
+function hasImagePart(payload) {
+  return (payload.contents || []).some(c =>
+    (c.parts || []).some(p => p.inlineData && String(p.inlineData.mimeType || '').startsWith('image/'))
+  );
 }
 
-async function streamModel(apiKey, initialModel, payload, res) {
-  let model = initialModel;
-  let response = await fetch(getEndpoint(apiKey, model, true), {
+function toOpenAIMessages(payload) {
+  const msgs = [];
+  const sysText = (payload.systemInstruction?.parts || []).map(p => p.text || '').join('\n').trim();
+  if (sysText) msgs.push({ role: 'system', content: sysText });
+  for (const c of payload.contents || []) {
+    const role = c.role === 'model' ? 'assistant' : 'user';
+    const parts = c.parts || [];
+    const hasInline = parts.some(p => p.inlineData);
+    if (!hasInline) {
+      msgs.push({ role, content: parts.map(p => p.text || '').join('\n') });
+      continue;
+    }
+    const content = [];
+    for (const p of parts) {
+      if (p.text) content.push({ type: 'text', text: p.text });
+      else if (p.inlineData) {
+        const mime = String(p.inlineData.mimeType || '');
+        if (mime.startsWith('image/')) {
+          content.push({ type: 'image_url', image_url: { url: `data:${mime};base64,${p.inlineData.data}` } });
+        } else {
+          content.push({ type: 'text', text: `[Attached ${mime || 'media'} binary omitted for text model]` });
+        }
+      }
+    }
+    msgs.push({ role, content });
+  }
+  return msgs;
+}
+
+function buildOpenAIReqBody(pCfg, payload, stream = false) {
+  const model = pCfg.provider === 'groq' && hasImagePart(payload) ? GROQ_VISION_MODEL : pCfg.model;
+  const body = {
+    model,
+    messages: toOpenAIMessages(payload),
+    temperature: payload.generationConfig?.temperature ?? 0.5,
+    max_tokens: payload.generationConfig?.maxOutputTokens ?? 1024,
+    stream
+  };
+  if (payload.wantsJson && !stream) body.response_format = { type: 'json_object' };
+  return { model, body };
+}
+
+function openAIHeaders(pCfg) {
+  const hdrs = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${pCfg.apiKey}`
+  };
+  if (pCfg.provider === 'openrouter') {
+    hdrs['HTTP-Referer'] = process.env.APP_URL || 'https://whatsgram-seven.vercel.app';
+    hdrs['X-Title'] = 'WhatsGram OS';
+  }
+  return hdrs;
+}
+
+async function callOpenAIProvider(pCfg, payload) {
+  const { model, body } = buildOpenAIReqBody(pCfg, payload, false);
+  const response = await fetch(pCfg.url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+    headers: openAIHeaders(pCfg),
+    body: JSON.stringify(body)
+  });
+  const data = await response.json().catch(() => ({}));
+  const rawText = String(data?.choices?.[0]?.message?.content || '').trim();
+  return {
+    ok: response.ok,
+    status: response.status,
+    data,
+    rawText,
+    model: data?.model || model,
+    provider: pCfg.provider
+  };
+}
+
+async function callGoogleProvider(pCfg, payload) {
+  let model = pCfg.model;
+  let response = await fetch(getEndpoint(pCfg.apiKey, model, false), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': pCfg.apiKey },
     body: JSON.stringify(buildUpstreamReqBody(model, payload))
   });
+  let data = await response.json().catch(() => ({}));
   if (!response.ok && response.status === 404 && model !== FALLBACK_MODEL) {
     model = FALLBACK_MODEL;
-    response = await fetch(getEndpoint(apiKey, model, true), {
+    response = await fetch(getEndpoint(pCfg.apiKey, model, false), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': pCfg.apiKey },
       body: JSON.stringify(buildUpstreamReqBody(model, payload))
     });
+    data = await response.json().catch(() => ({}));
   }
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    const errMsg = errData?.error?.message || `Gemini upstream error (${response.status})`;
-    const { code, actionUrl } = classifyUpstreamError(response.status, errMsg);
-    return res.status(response.status >= 400 && response.status < 600 ? response.status : 502).json({
+  const rawText = (data?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
+  return { ok: response.ok, status: response.status, data, rawText, model, provider: pCfg.provider };
+}
+
+function parseFormattedJson(rawText, payload, model, provider) {
+  try {
+    const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
+    const parsed = JSON.parse(cleaned);
+    if (payload.wantsSuggestions) {
+      const suggestions = Array.isArray(parsed.suggestions)
+        ? parsed.suggestions.slice(0, 3).map(x => String(x || '').trim()).filter(Boolean)
+        : [];
+      return { text: suggestions[0] || rawText, suggestions, model, provider };
+    }
+    if (payload.wantsCaption) {
+      const caption = String(parsed.caption || rawText).trim();
+      const hashtags = Array.isArray(parsed.hashtags)
+        ? parsed.hashtags.map(h => String(h || '').replace(/^#+/, '').toLowerCase().trim()).filter(Boolean).slice(0, 8)
+        : [];
+      const altText = String(parsed.altText || '').trim();
+      return { ok: true, caption, hashtags, altText, text: caption, model, provider };
+    }
+    const cleanDraft = parsed.draft && String(parsed.draft).trim().toLowerCase() !== 'null'
+      ? String(parsed.draft).trim()
+      : null;
+    return { text: String(parsed.answer || cleanDraft || rawText), draft: cleanDraft, model, provider };
+  } catch {
+    return {
+      text: rawText,
+      draft: payload.wantsSuggestions ? null : rawText,
+      ...(payload.wantsSuggestions ? { suggestions: [] } : {}),
+      model,
+      provider
+    };
+  }
+}
+
+async function openStreamResponse(providers, payload) {
+  let lastErr = null;
+  for (const pCfg of providers) {
+    if (pCfg.provider === 'groq' || pCfg.provider === 'openrouter') {
+      const { model, body } = buildOpenAIReqBody(pCfg, payload, true);
+      const response = await fetch(pCfg.url, {
+        method: 'POST',
+        headers: openAIHeaders(pCfg),
+        body: JSON.stringify(body)
+      });
+      if (response.ok) return { ok: true, response, model, provider: pCfg.provider, style: 'openai' };
+      const errData = await response.json().catch(() => ({}));
+      lastErr = { status: response.status, msg: errData?.error?.message || `${pCfg.provider} upstream error (${response.status})` };
+    } else {
+      let model = pCfg.model;
+      let response = await fetch(getEndpoint(pCfg.apiKey, model, true), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': pCfg.apiKey },
+        body: JSON.stringify(buildUpstreamReqBody(model, payload))
+      });
+      if (!response.ok && response.status === 404 && model !== FALLBACK_MODEL) {
+        model = FALLBACK_MODEL;
+        response = await fetch(getEndpoint(pCfg.apiKey, model, true), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': pCfg.apiKey },
+          body: JSON.stringify(buildUpstreamReqBody(model, payload))
+        });
+      }
+      if (response.ok) return { ok: true, response, model, provider: pCfg.provider, style: 'google' };
+      const errData = await response.json().catch(() => ({}));
+      lastErr = { status: response.status, msg: errData?.error?.message || `Gemini upstream error (${response.status})` };
+    }
+  }
+  return { ok: false, lastErr };
+}
+
+async function streamProviders(providers, payload, res) {
+  const opened = await openStreamResponse(providers, payload);
+  if (!opened.ok) {
+    const errMsg = opened.lastErr?.msg || 'All AI upstream providers failed.';
+    const status = opened.lastErr?.status || 502;
+    const { code, actionUrl } = classifyUpstreamError(status, errMsg);
+    return res.status(status >= 400 && status < 600 ? status : 502).json({
       error: errMsg,
       code,
       ...(actionUrl ? { actionUrl } : {})
     });
   }
 
+  const { response, model, provider, style } = opened;
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
   res.status(200);
   if (typeof res.flushHeaders === 'function') res.flushHeaders();
 
-  const provider = apiKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio';
   let fullText = '';
   let buf = '';
   const decoder = new TextDecoder();
@@ -339,7 +493,9 @@ async function streamModel(apiKey, initialModel, payload, res) {
       if (!jsonStr || jsonStr === '[DONE]') continue;
       try {
         const parsed = JSON.parse(jsonStr);
-        const delta = (parsed?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+        const delta = style === 'openai'
+          ? String(parsed?.choices?.[0]?.delta?.content || '')
+          : (parsed?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
         emitChunk(delta);
       } catch {}
     }
@@ -382,14 +538,16 @@ module.exports = async function handler(req, res) {
     return res.status(204).end();
   }
 
-  const apiKey = getApiKey();
+  const providers = resolveProviders();
+  const primary = providers[0] || null;
 
   if (req.method === 'GET') {
     return res.status(200).json({
       ok: true,
-      configured: Boolean(apiKey),
-      provider: apiKey ? (apiKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio') : 'none',
-      model: DEFAULT_MODEL
+      configured: Boolean(primary),
+      provider: primary ? primary.provider : 'none',
+      providers: providers.map(p => p.provider),
+      model: primary ? primary.model : DEFAULT_MODEL
     });
   }
 
@@ -398,8 +556,8 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!apiKey) {
-    return res.status(503).json({ error: 'GEMINI_API_KEY is not configured in environment variables.' });
+  if (!providers.length) {
+    return res.status(503).json({ error: 'No AI API key configured (set GROQ_API_KEY, OPENROUTER_API_KEY, or GEMINI_API_KEY).' });
   }
 
   let body;
@@ -414,82 +572,44 @@ module.exports = async function handler(req, res) {
 
   try {
     if (wantsStream && !payload.wantsJson) {
-      return await streamModel(apiKey, DEFAULT_MODEL, payload, res);
+      return await streamProviders(providers, payload, res);
     }
 
-    let model = DEFAULT_MODEL;
-    let result = await callModel(apiKey, model, payload);
-
-    if (!result.ok && result.status === 404 && model !== FALLBACK_MODEL) {
-      model = FALLBACK_MODEL;
-      result = await callModel(apiKey, model, payload);
+    let lastFail = null;
+    let winner = null;
+    for (const pCfg of providers) {
+      const r = (pCfg.provider === 'groq' || pCfg.provider === 'openrouter')
+        ? await callOpenAIProvider(pCfg, payload)
+        : await callGoogleProvider(pCfg, payload);
+      if (r.ok && r.rawText) {
+        winner = r;
+        break;
+      }
+      lastFail = r;
     }
 
-    if (!result.ok) {
-      const errMsg = result.data?.error?.message || `Gemini upstream error (${result.status})`;
-      const { code, actionUrl } = classifyUpstreamError(result.status, errMsg);
-      return res.status(result.status >= 400 && result.status < 600 ? result.status : 502).json({
+    if (!winner) {
+      const errMsg = lastFail?.data?.error?.message || (lastFail?.ok ? 'Empty response from AI upstream.' : `AI upstream error (${lastFail?.status || 502})`);
+      const status = lastFail?.status || 502;
+      const { code, actionUrl } = classifyUpstreamError(status, errMsg);
+      return res.status(status >= 400 && status < 600 ? status : 502).json({
         error: errMsg,
         code,
         ...(actionUrl ? { actionUrl } : {})
       });
     }
 
-    const rawText = (result.data?.candidates?.[0]?.content?.parts || [])
-      .map(p => p.text || '')
-      .join('')
-      .trim();
-
-    if (!rawText) {
-      return res.status(502).json({ error: 'Empty response from Gemini API.' });
-    }
-
     if (payload.wantsJson) {
-      const provider = apiKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio';
-      try {
-        const cleaned = rawText.replace(/^```json\s*|\s*```$/g, '').trim();
-        const parsed = JSON.parse(cleaned);
-        if (payload.wantsSuggestions) {
-          const suggestions = Array.isArray(parsed.suggestions)
-            ? parsed.suggestions.slice(0, 3).map(x => String(x || '').trim()).filter(Boolean)
-            : [];
-          return res.status(200).json({ text: suggestions[0] || rawText, suggestions, model, provider });
-        }
-        if (payload.wantsCaption) {
-          const caption = String(parsed.caption || rawText).trim();
-          const hashtags = Array.isArray(parsed.hashtags)
-            ? parsed.hashtags.map(h => String(h || '').replace(/^#+/, '').toLowerCase().trim()).filter(Boolean).slice(0, 8)
-            : [];
-          const altText = String(parsed.altText || '').trim();
-          return res.status(200).json({ ok: true, caption, hashtags, altText, text: caption, model, provider });
-        }
-        const cleanDraft = parsed.draft && String(parsed.draft).trim().toLowerCase() !== 'null'
-          ? String(parsed.draft).trim()
-          : null;
-        return res.status(200).json({
-          text: String(parsed.answer || cleanDraft || rawText),
-          draft: cleanDraft,
-          model,
-          provider
-        });
-      } catch {
-        return res.status(200).json({
-          text: rawText,
-          draft: payload.wantsSuggestions ? null : rawText,
-          ...(payload.wantsSuggestions ? { suggestions: [] } : {}),
-          model,
-          provider
-        });
-      }
+      return res.status(200).json(parseFormattedJson(winner.rawText, payload, winner.model, winner.provider));
     }
 
     return res.status(200).json({
-      text: rawText,
-      draft: payload.isRewrite ? rawText : null,
-      model,
-      provider: apiKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio'
+      text: winner.rawText,
+      draft: payload.isRewrite ? winner.rawText : null,
+      model: winner.model,
+      provider: winner.provider
     });
   } catch (err) {
-    return res.status(502).json({ error: err?.message || 'Failed to reach Gemini API.' });
+    return res.status(502).json({ error: err?.message || 'Failed to reach AI API.' });
   }
 };
