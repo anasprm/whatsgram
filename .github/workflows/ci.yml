@@ -1,0 +1,25 @@
+name: WhatsGram CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Check serverless & lib Node syntax
+        run: |
+          for f in api/*.js lib/*.js sw.js; do
+            node --check "$f"
+          done
+      - name: Check HTML shell integrity
+        run: test -f index.html && test -f assets/app.js && test -f assets/app.css

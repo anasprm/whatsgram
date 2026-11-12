@@ -1,0 +1,6 @@
+node_modules/
+.tmp_*
+.vercel/
+.env
+.env.local
+assets/*.map

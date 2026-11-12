@@ -5,11 +5,23 @@ function getApiKey() {
   return (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
 }
 
-function getEndpoint(apiKey, model) {
+function getEndpoint(apiKey, model, stream = false) {
+  const action = stream ? 'streamGenerateContent?alt=sse' : 'generateContent';
   if (apiKey.startsWith('AQ.')) {
-    return `https://aiplatform.googleapis.com/v1/publishers/google/models/${encodeURIComponent(model)}:generateContent`;
+    return `https://aiplatform.googleapis.com/v1/publishers/google/models/${encodeURIComponent(model)}:${action}`;
   }
-  return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+  return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:${action}`;
+}
+
+const AI_MEDIA_RE = /^(image\/(png|jpeg|jpg|webp|gif)|audio\/(webm|mp3|mpeg|wav|ogg|aac))$/i;
+
+function buildMediaPart(media) {
+  if (!media || typeof media !== 'object' || !media.dataBase64) return null;
+  const mimeType = String(media.mimeType || '').split(';')[0].trim().toLowerCase();
+  if (!AI_MEDIA_RE.test(mimeType)) return null;
+  const data = String(media.dataBase64).replace(/^data:[^;]+;base64,/i, '').trim();
+  if (!data || data.length > 6 * 1024 * 1024) return null;
+  return { inlineData: { mimeType: mimeType === 'image/jpg' ? 'image/jpeg' : mimeType, data } };
 }
 
 async function readBody(req) {
@@ -132,6 +144,56 @@ function buildPayload(body) {
     };
   }
 
+  if (mode === 'translate') {
+    const srcText = String(body.text || body.prompt || '').trim().slice(0, 2000);
+    const targetLang = String(body.targetLang || 'English').slice(0, 40);
+    return {
+      wantsJson: false,
+      isRewrite: true,
+      systemInstruction: {
+        parts: [{ text: `Translate the following message cleanly and naturally into ${targetLang}. Return ONLY the translated text without quotes or commentary.` }]
+      },
+      contents: [{ role: 'user', parts: [{ text: srcText }] }],
+      generationConfig: { temperature: 0.2, maxOutputTokens: 320 }
+    };
+  }
+
+  if (mode === 'transcribe') {
+    const mediaPart = buildMediaPart(body.media);
+    const parts = [{ text: 'Transcribe all spoken words from this voice note cleanly and concisely. Return only the transcript.' }];
+    if (mediaPart) parts.push(mediaPart);
+    return {
+      wantsJson: false,
+      systemInstruction: { parts: [{ text: 'You accurately transcribe voice messages for WhatsGram OS.' }] },
+      contents: [{ role: 'user', parts }],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 400 }
+    };
+  }
+
+  if (mode === 'caption') {
+    const seed = String(body.prompt || body.text || '').trim().slice(0, 600);
+    const mediaPart = buildMediaPart(body.media);
+    const parts = [{
+      text: `${seed ? `Draft idea/context: ${seed}\n` : ''}Write a punchy, authentic social post caption (1-2 sentences), 3-5 lowercase hashtags, and concise accessible altText. Return strictly JSON: {"caption":"...","hashtags":["tag1","tag2"],"altText":"..."}.`
+    }];
+    if (mediaPart) parts.push(mediaPart);
+    return {
+      wantsJson: true,
+      wantsCaption: true,
+      systemInstruction: {
+        parts: [{
+          text: 'You generate social post captions, clean hashtags (without # prefix), and accessible alt-text for WhatsGram OS. Respond strictly with valid JSON.'
+        }]
+      },
+      contents: [{ role: 'user', parts }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 280,
+        responseMimeType: 'application/json'
+      }
+    };
+  }
+
   const prompt = String(body.prompt || '').trim().slice(0, 4000);
   const activeChat = body.activeChatName ? String(body.activeChatName).slice(0, 80) : null;
   const contextText = formatConversations(body.conversations);
@@ -142,6 +204,11 @@ function buildPayload(body) {
     /\b(respond\s+to\s+(them|him|her|this|the\s+message|chat|conversation)|write\s+back)\b/i.test(prompt) ||
     /\b(rewrite|rephrase|polish|shorten|proofread)\s+(this|my\s+(draft|message|reply|text)|it)\b/i.test(prompt);
   const history = Array.isArray(body.history) ? body.history.slice(-10) : [];
+  const mediaPart = buildMediaPart(body.media);
+  const userParts = [{
+    text: `[WhatsGram Inbox Context — use ONLY when the user asks about their chats, contacts, or drafting replies]\n${activeChat ? `Active open conversation: ${activeChat}\n\n` : ''}${contextText}\n\n[User Request]\n${prompt || (mediaPart ? 'Describe and analyze this attachment concisely.' : '')}`
+  }];
+  if (mediaPart) userParts.push(mediaPart);
 
   const contents = [
     ...history
@@ -149,9 +216,7 @@ function buildPayload(body) {
       .map(h => ({ role: h.role, parts: [{ text: String(h.text).slice(0, 3000) }] })),
     {
       role: 'user',
-      parts: [{
-        text: `[WhatsGram Inbox Context — use ONLY when the user asks about their chats, contacts, or drafting replies]\n${activeChat ? `Active open conversation: ${activeChat}\n\n` : ''}${contextText}\n\n[User Request]\n${prompt}`
-      }]
+      parts: userParts
     }
   ];
 
@@ -176,7 +241,7 @@ function buildPayload(body) {
     wantsJson: false,
     systemInstruction: {
       parts: [{
-        text: 'You are WhatsGram AI, an all-purpose intelligent assistant inside WhatsGram OS (just like Meta AI in WhatsApp). Answer ALL general knowledge questions (science, biology, history, geography, technology, trivia, definitions), math, coding, explanations, translations, brainstorming, and writing tasks directly, accurately, and concisely using your full knowledge—never refuse general questions or force unrelated local chat messages into the answer. When the user asks about their WhatsGram chats, contacts, summaries, action items, or drafting replies, use the provided inbox context accurately without inventing messages. Keep responses clear, conversational, and formatted with plain text or simple bullet points (•) instead of cluttered raw markdown asterisks.'
+        text: 'You are WhatsGram AI, an all-purpose intelligent assistant inside WhatsGram OS (just like Meta AI in WhatsApp). Answer ALL general knowledge questions (science, biology, history, geography, technology, trivia, definitions), math, coding, explanations, translations, brainstorming, and writing tasks directly, accurately, and concisely using your full knowledge—never refuse general questions or force unrelated local chat messages into the answer. When the user asks about their WhatsGram chats, contacts, summaries, action items, or drafting replies, use the provided inbox context accurately without inventing messages. Format code using fenced markdown code blocks (```lang) and keep explanations crisp with **bold** highlights and clean bullet points.'
       }]
     },
     contents,
@@ -184,7 +249,7 @@ function buildPayload(body) {
   };
 }
 
-async function callModel(apiKey, model, payload) {
+function buildUpstreamReqBody(model, payload) {
   const reqBody = {
     systemInstruction: payload.systemInstruction,
     contents: payload.contents,
@@ -193,17 +258,120 @@ async function callModel(apiKey, model, payload) {
   if (model.startsWith('gemini-2.5')) {
     reqBody.generationConfig.thinkingConfig = { thinkingBudget: 0 };
   }
+  return reqBody;
+}
 
-  const response = await fetch(getEndpoint(apiKey, model), {
+function classifyUpstreamError(status, errMsg) {
+  const urlMatch = errMsg.match(/https:\/\/console\.[^\s"'<>]+/);
+  const actionUrl = urlMatch ? urlMatch[0] : null;
+  const code = status === 403 && /disabled|not been used/i.test(errMsg)
+    ? 'API_DISABLED'
+    : status === 401 || /api key not valid|invalid.*key/i.test(errMsg)
+      ? 'INVALID_KEY'
+      : status === 429
+        ? 'RATE_LIMITED'
+        : 'UPSTREAM_ERROR';
+  return { code, actionUrl };
+}
+
+async function callModel(apiKey, model, payload) {
+  const response = await fetch(getEndpoint(apiKey, model, false), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-goog-api-key': apiKey
     },
-    body: JSON.stringify(reqBody)
+    body: JSON.stringify(buildUpstreamReqBody(model, payload))
   });
   const data = await response.json().catch(() => ({}));
   return { ok: response.ok, status: response.status, data };
+}
+
+async function streamModel(apiKey, initialModel, payload, res) {
+  let model = initialModel;
+  let response = await fetch(getEndpoint(apiKey, model, true), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify(buildUpstreamReqBody(model, payload))
+  });
+  if (!response.ok && response.status === 404 && model !== FALLBACK_MODEL) {
+    model = FALLBACK_MODEL;
+    response = await fetch(getEndpoint(apiKey, model, true), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+      body: JSON.stringify(buildUpstreamReqBody(model, payload))
+    });
+  }
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    const errMsg = errData?.error?.message || `Gemini upstream error (${response.status})`;
+    const { code, actionUrl } = classifyUpstreamError(response.status, errMsg);
+    return res.status(response.status >= 400 && response.status < 600 ? response.status : 502).json({
+      error: errMsg,
+      code,
+      ...(actionUrl ? { actionUrl } : {})
+    });
+  }
+
+  res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.status(200);
+  if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+  const provider = apiKey.startsWith('AQ.') ? 'vertex-express' : 'ai-studio';
+  let fullText = '';
+  let buf = '';
+  const decoder = new TextDecoder();
+
+  const emitChunk = delta => {
+    if (!delta) return;
+    fullText += delta;
+    res.write(`event: chunk\ndata: ${JSON.stringify({ text: delta })}\n\n`);
+  };
+
+  const drainLines = (flushAll = false) => {
+    const lines = buf.split(/\r?\n/);
+    buf = flushAll ? '' : (lines.pop() || '');
+    for (const line of lines) {
+      if (!line.startsWith('data:')) continue;
+      const jsonStr = line.slice(5).trim();
+      if (!jsonStr || jsonStr === '[DONE]') continue;
+      try {
+        const parsed = JSON.parse(jsonStr);
+        const delta = (parsed?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+        emitChunk(delta);
+      } catch {}
+    }
+  };
+
+  try {
+    if (response.body && typeof response.body.getReader === 'function') {
+      const reader = response.body.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        drainLines(false);
+      }
+    } else if (response.body) {
+      for await (const chunk of response.body) {
+        buf += typeof chunk === 'string' ? chunk : decoder.decode(chunk, { stream: true });
+        drainLines(false);
+      }
+    }
+    if (buf.trim()) drainLines(true);
+    res.write(`event: done\ndata: ${JSON.stringify({
+      text: fullText.trim(),
+      draft: payload.isRewrite ? fullText.trim() : null,
+      model,
+      provider
+    })}\n\n`);
+    return res.end();
+  } catch (err) {
+    res.write(`event: error\ndata: ${JSON.stringify({ error: err?.message || 'Stream interrupted' })}\n\n`);
+    return res.end();
+  }
 }
 
 module.exports = async function handler(req, res) {
@@ -242,8 +410,13 @@ module.exports = async function handler(req, res) {
   }
 
   const payload = buildPayload(body);
+  const wantsStream = Boolean(body.stream) || String(req.headers?.accept || '').includes('text/event-stream');
 
   try {
+    if (wantsStream && !payload.wantsJson) {
+      return await streamModel(apiKey, DEFAULT_MODEL, payload, res);
+    }
+
     let model = DEFAULT_MODEL;
     let result = await callModel(apiKey, model, payload);
 
@@ -254,15 +427,7 @@ module.exports = async function handler(req, res) {
 
     if (!result.ok) {
       const errMsg = result.data?.error?.message || `Gemini upstream error (${result.status})`;
-      const urlMatch = errMsg.match(/https:\/\/console\.[^\s"'<>]+/);
-      const actionUrl = urlMatch ? urlMatch[0] : null;
-      const code = result.status === 403 && /disabled|not been used/i.test(errMsg)
-        ? 'API_DISABLED'
-        : result.status === 401 || /api key not valid|invalid.*key/i.test(errMsg)
-          ? 'INVALID_KEY'
-          : result.status === 429
-            ? 'RATE_LIMITED'
-            : 'UPSTREAM_ERROR';
+      const { code, actionUrl } = classifyUpstreamError(result.status, errMsg);
       return res.status(result.status >= 400 && result.status < 600 ? result.status : 502).json({
         error: errMsg,
         code,
@@ -289,6 +454,14 @@ module.exports = async function handler(req, res) {
             ? parsed.suggestions.slice(0, 3).map(x => String(x || '').trim()).filter(Boolean)
             : [];
           return res.status(200).json({ text: suggestions[0] || rawText, suggestions, model, provider });
+        }
+        if (payload.wantsCaption) {
+          const caption = String(parsed.caption || rawText).trim();
+          const hashtags = Array.isArray(parsed.hashtags)
+            ? parsed.hashtags.map(h => String(h || '').replace(/^#+/, '').toLowerCase().trim()).filter(Boolean).slice(0, 8)
+            : [];
+          const altText = String(parsed.altText || '').trim();
+          return res.status(200).json({ ok: true, caption, hashtags, altText, text: caption, model, provider });
         }
         const cleanDraft = parsed.draft && String(parsed.draft).trim().toLowerCase() !== 'null'
           ? String(parsed.draft).trim()

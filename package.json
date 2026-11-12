@@ -1,0 +1,20 @@
+{
+  "name": "whatsgram",
+  "version": "2.0.0",
+  "private": true,
+  "description": "WhatsGram — Encrypted Messaging, Feed & Explore, Reels, Story Highlights & Gemini AI",
+  "scripts": {
+    "build:css": "tailwindcss -i src/styles.css -o assets/app.css --minify",
+    "build:js": "esbuild src/main.js --bundle --outfile=assets/app.js --format=iife --platform=browser --target=es2020 --minify",
+    "build": "npm run build:css && npm run build:js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "lucide": "^0.460.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "tailwindcss": "^3.4.17"
+  }
+}
