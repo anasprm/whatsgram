@@ -507,11 +507,13 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
               <button class="inline-flex md:hidden items-center justify-center w-8 h-8 rounded-full bg-white/[0.07] hover:bg-white/[0.14] text-zinc-200 transition-colors shrink-0" data-act="back" aria-label="Back to conversations">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
               </button>
-              <div id="th-av" class="shrink-0"></div>
-              <div class="min-w-0">
-                <h2 id="th-name" class="text-[14px] font-bold tracking-tight text-white truncate">Select a conversation</h2>
-                <p id="th-status" class="text-[11px] text-zinc-400 truncate"></p>
-              </div>
+              <button type="button" class="flex items-center gap-2 sm:gap-3 min-w-0 text-left hover:opacity-85 transition shrink" data-act="openPeerProfile" title="View profile" aria-label="View conversation profile">
+                <div id="th-av" class="shrink-0"></div>
+                <div class="min-w-0">
+                  <h2 id="th-name" class="text-[14px] font-bold tracking-tight text-white truncate">Select a conversation</h2>
+                  <p id="th-status" class="text-[11px] text-zinc-400 truncate"></p>
+                </div>
+              </button>
             </div>
             <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
               <button id="th-search-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] aria-[pressed=true]:bg-white/[0.14] aria-[pressed=true]:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent" data-act="toggleThreadSearch" aria-pressed="false" title="Search in thread" aria-label="Search in conversation"><i data-lucide="search" class="w-4 h-4"></i></button>
@@ -979,6 +981,47 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         </section>
       </div>
     </section>
+
+    <!-- INSTAGRAM-STYLE CREATOR PROFILE VIEW -->
+    <section id="v-profile" class="view absolute inset-0 hidden overflow-y-auto bg-[#05060b]" aria-label="Creator Profile">
+      <div class="sticky top-0 z-20 backdrop-blur-2xl bg-[#05060b]/85 border-b border-white/[0.07]">
+        <div class="max-w-[935px] mx-auto h-14 px-3 sm:px-6 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+            <button id="prof-back-btn" class="w-8 h-8 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition shrink-0" data-act="profBack" title="Back" aria-label="Go back">
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <button class="flex items-center gap-1.5 min-w-0 px-2 py-1 rounded-xl hover:bg-white/[0.06] transition" data-act="openProfilePicker" title="Switch or search profiles" aria-label="Switch or search profiles">
+              <span id="prof-top-handle" class="text-[15px] sm:text-base font-extrabold tracking-tight text-white truncate">@profile</span>
+              <span id="prof-top-verified" class="hidden shrink-0 text-sky-400" title="Verified account" aria-label="Verified account">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 1.9 3-.3 1.1 2.8 2.7 1.4-.3 3L22.5 13l-1.9 2.4.3 3-2.8 1.1-1.4 2.7-3-.3L12 23.5l-2.4-1.9-3 .3-1.1-2.8-2.7-1.4.3-3L1.5 13l1.9-2.4-.3-3 2.8-1.1L7.3 3.8l3 .3L12 2zm-1.1 13.6l5.3-5.3-1.4-1.4-3.9 3.9-1.9-1.9-1.4 1.4 3.3 3.3z"/></svg>
+              </span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400 shrink-0"></i>
+            </button>
+            <span id="prof-rt-chip" class="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-400/20 text-[10px] font-semibold text-emerald-300 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="prof-rt-lbl">Live Sync</span>
+            </span>
+          </div>
+          <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openProfilePicker" title="Search creators" aria-label="Search creators">
+              <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+            </button>
+            <button class="relative w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openActivity" title="Notifications & activity" aria-label="Profile notifications">
+              <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
+              <span id="prof-act-badge" class="hidden absolute top-1 right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold grid place-items-center ring-2 ring-[#05060b]"></span>
+            </button>
+            <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="openPostModal" title="Create post" aria-label="Create new post">
+              <i data-lucide="plus-square" class="w-[18px] h-[18px]"></i>
+            </button>
+            <button class="w-9 h-9 rounded-full grid place-items-center text-zinc-300 hover:text-white hover:bg-white/[0.08] transition" data-act="menu" data-arg="profileMore" aria-haspopup="menu" aria-expanded="false" title="More profile actions" aria-label="More profile options">
+              <i data-lucide="ellipsis" class="w-[18px] h-[18px]"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="prof-root" class="max-w-[935px] mx-auto pb-16"></div>
+    </section>
   </main>
 
   <!-- MOBILE BOTTOM DOCK -->
@@ -1141,6 +1184,187 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
+<!-- PROFILE & POST MODALS -->
+<div id="m-edit-profile" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-lg rounded-[26px] p-5 sm:p-6 space-y-4 my-auto">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-white">Edit profile</h3>
+      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-edit-profile" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
+      <div id="ep-av-prev" class="w-16 h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-white/15"></div>
+      <div class="min-w-0 flex-1 space-y-1.5">
+        <div id="ep-handle-lbl" class="text-xs font-bold text-white truncate">@user</div>
+        <div class="flex flex-wrap gap-2">
+          <input type="file" id="ep-av-file" accept="image/*" class="hidden">
+          <button type="button" data-act="pickAvatar" class="btn-primary h-8 px-3.5 rounded-xl text-[11px] font-semibold">Change photo</button>
+          <button type="button" id="ep-av-clear" data-act="clearAvatar" class="btn-ghost hidden h-8 px-3 rounded-xl text-[11px] font-semibold text-zinc-300">Remove</button>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Display name</label>
+        <input id="ep-name" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Your public name" maxlength="60">
+      </div>
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Category</label>
+        <input id="ep-cat" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Creator · Digital Art" maxlength="60">
+      </div>
+    </div>
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="text-[11px] font-medium text-zinc-400">Bio (supports @mentions &amp; #tags)</label>
+        <button type="button" data-act="aiBioSuggest" class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>Polish with Gemini AI</button>
+      </div>
+      <textarea id="ep-bio" rows="3" maxlength="300" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Tell people what you build or share…"></textarea>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Primary Website URL</label>
+        <input id="ep-web" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="https://example.com" maxlength="200">
+      </div>
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Extra Links (Title | URL per line)</label>
+        <textarea id="ep-links" rows="2" class="lux-input w-full rounded-xl p-2.5 text-[12px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Portfolio | https://...&#10;Newsletter | https://..."></textarea>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Location / Address</label>
+        <input id="ep-loc" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="New York, NY" maxlength="120">
+      </div>
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Public Contact Email (optional)</label>
+        <input id="ep-email" type="email" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="hello@creator.com" maxlength="120">
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Threads / Secondary Handle</label>
+        <input id="ep-threads" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="username" maxlength="32">
+      </div>
+      <div>
+        <label class="block text-[11px] font-medium text-zinc-400 mb-1">Availability Status</label>
+        <input id="ep-status" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Online" maxlength="60">
+      </div>
+    </div>
+    <button id="ep-save" class="btn-ac btn-primary w-full h-11 rounded-xl text-xs font-bold" data-act="saveProfile">Save profile changes</button>
+  </div>
+</div>
+
+<div id="m-post" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4 overflow-y-auto">
+  <div class="lux-modal w-full max-w-md rounded-[26px] p-5 sm:p-6 space-y-4 my-auto">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-white">Create new post</h3>
+      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-post" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div id="post-prev" class="relative h-56 rounded-2xl border border-white/15 overflow-hidden bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-rose-500 flex items-center justify-center p-5 text-center">
+      <img id="post-prev-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
+      <video id="post-prev-vid" class="hidden absolute inset-0 w-full h-full object-cover" muted loop autoplay playsinline></video>
+      <p id="post-prev-txt" class="relative z-10 text-sm font-bold text-white drop-shadow line-clamp-5">Share a moment, photo carousel, or creator announcement…</p>
+    </div>
+    <div class="flex items-center justify-between gap-2">
+      <div id="post-bgs" class="flex gap-1.5"></div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <input type="file" id="post-file" accept="image/*,video/*" multiple class="hidden">
+        <button type="button" data-act="pickPostMedia" class="btn-ghost h-8 px-3 rounded-xl text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="image-plus" class="w-3.5 h-3.5 text-accent"></i><span id="post-media-lbl">Upload media</span></button>
+        <button type="button" id="post-media-clr" data-act="clearPostMedia" class="btn-ghost hidden w-8 h-8 rounded-xl grid place-items-center text-zinc-300" aria-label="Clear selected media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+      </div>
+    </div>
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="text-[11px] font-medium text-zinc-400">Caption</label>
+        <button type="button" data-act="aiPostCaption" class="inline-flex items-center gap-1 text-[11px] font-semibold text-accent hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>AI caption &amp; tags</button>
+      </div>
+      <textarea id="post-cap" rows="3" data-input="postPreview" maxlength="1200" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Write a caption… use #tags and @mentions"></textarea>
+    </div>
+    <div class="grid grid-cols-2 gap-2.5">
+      <input id="post-loc" class="lux-input h-10 w-full rounded-xl px-3 text-[12.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add location (optional)" maxlength="120">
+      <input id="post-tags" class="lux-input h-10 w-full rounded-xl px-3 text-[12.5px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Tag @people (comma sep)" maxlength="140">
+    </div>
+    <label class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07] cursor-pointer">
+      <span class="text-xs font-semibold text-zinc-200 inline-flex items-center gap-2"><i data-lucide="pin" class="w-3.5 h-3.5 text-accent"></i>Pin to top of profile grid</span>
+      <input id="post-pin" type="checkbox" class="accent-[#0095f6] w-4 h-4">
+    </label>
+    <button id="post-submit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="createPost">Publish to Profile</button>
+  </div>
+</div>
+
+<div id="m-post-view" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/90 backdrop-blur-2xl p-2 sm:p-5 overflow-y-auto">
+  <div id="pv-shell" class="lux-modal w-full max-w-4xl rounded-[24px] overflow-hidden grid grid-cols-1 md:grid-cols-12 my-auto max-h-[92vh]">
+    <div id="pv-media-box" data-act="dblLikePost" class="md:col-span-7 relative bg-black flex items-center justify-center min-h-[280px] sm:min-h-[380px] max-h-[58vh] md:max-h-[82vh] select-none overflow-hidden"></div>
+    <div class="md:col-span-5 flex flex-col min-h-0 max-h-[54vh] md:max-h-[82vh] bg-[#0a0c14] border-t md:border-t-0 md:border-l border-white/[0.08]">
+      <div id="pv-hdr" class="px-4 py-3 border-b border-white/[0.07] flex items-center justify-between gap-2 shrink-0"></div>
+      <div id="pv-body" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+      <div class="border-t border-white/[0.07] p-3.5 space-y-2.5 shrink-0 bg-[#080a10]">
+        <div id="pv-acts" class="flex items-center justify-between gap-2"></div>
+        <div id="pv-meta" class="text-xs font-bold text-white"></div>
+        <div class="flex items-center gap-2">
+          <input id="pv-cm-in" data-enter="addPostComment" class="lux-input flex-1 h-9 rounded-full px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Add a comment…" autocomplete="off">
+          <button type="button" data-act="aiPostComment" class="btn-ghost w-9 h-9 rounded-full grid place-items-center text-accent shrink-0" title="Suggest reply with Gemini AI" aria-label="Suggest comment with AI"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i></button>
+          <button type="button" data-act="addPostComment" class="h-9 px-3.5 rounded-full bg-[#0095f6] hover:bg-[#1aa3ff] text-xs font-bold text-white shrink-0">Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="m-follow-list" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-3 sm:p-4">
+  <div class="lux-modal w-full max-w-md rounded-[26px] p-5 space-y-3.5 max-h-[84vh] flex flex-col">
+    <div class="flex items-center justify-between shrink-0">
+      <h3 id="fl-title" class="text-base font-bold text-white">Connections</h3>
+      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-follow-list" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div class="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-black/45 border border-white/[0.08] shrink-0">
+      <button id="fl-tab-followers" data-act="followListTab" data-arg="followers" class="h-8 rounded-xl text-xs font-semibold transition-all">Followers</button>
+      <button id="fl-tab-following" data-act="followListTab" data-arg="following" class="h-8 rounded-xl text-xs font-semibold transition-all">Following</button>
+      <button id="fl-tab-suggested" data-act="followListTab" data-arg="suggested" class="h-8 rounded-xl text-xs font-semibold transition-all">Discover</button>
+    </div>
+    <input id="fl-search" data-input="followSearch" class="lux-input h-9 w-full rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none shrink-0" placeholder="Search people by name or @username…" autocomplete="off">
+    <div id="fl-body" class="flex-1 overflow-y-auto space-y-2 pr-0.5 min-h-[180px]"></div>
+  </div>
+</div>
+
+<div id="m-highlight" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-4">
+  <div class="lux-modal w-full max-w-sm rounded-[26px] p-6 space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-white">New Story Highlight</h3>
+      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-highlight" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <input id="hl-title" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Highlight title (e.g. Behind the scenes)" maxlength="36">
+    <textarea id="hl-text" rows="2" class="lux-input w-full rounded-xl p-3 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Highlight story note or announcement…" maxlength="240"></textarea>
+    <div class="flex items-center justify-between gap-2">
+      <div id="hl-bgs" class="flex gap-1.5"></div>
+      <div>
+        <input type="file" id="hl-file" accept="image/*" class="hidden">
+        <button type="button" data-act="pickHighlightMedia" class="btn-ghost h-8 px-3 rounded-xl text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="image" class="w-3.5 h-3.5 text-accent"></i><span id="hl-media-lbl">Cover photo</span></button>
+      </div>
+    </div>
+    <button class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="createHighlight">Save Highlight</button>
+  </div>
+</div>
+
+<div id="m-links" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-4">
+  <div class="lux-modal w-full max-w-sm rounded-[26px] p-6 space-y-3.5">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-white">Links</h3>
+      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-links" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div id="links-list" class="space-y-2 max-h-72 overflow-y-auto"></div>
+  </div>
+</div>
+
+<div id="m-activity" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-xl p-4">
+  <div class="lux-modal w-full max-w-md rounded-[26px] p-5 space-y-3.5 max-h-[82vh] flex flex-col">
+    <div class="flex items-center justify-between shrink-0">
+      <h3 class="text-base font-bold text-white">Notifications &amp; Live Activity</h3>
+      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-activity" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div id="act-list" class="flex-1 overflow-y-auto space-y-2 min-h-[160px]"></div>
+  </div>
+</div>
+
 <div id="m-auth" class="modal fixed inset-0 z-[60] hidden [&.open]:flex items-center justify-center bg-[#030408]/85 backdrop-blur-xl p-3 sm:p-6 overflow-y-auto">
   <div id="auth-dialog" class="lux-modal w-full max-w-[900px] rounded-[28px] overflow-hidden my-auto">
     <div id="auth-logged-out" class="grid grid-cols-1 md:grid-cols-12">
@@ -1162,7 +1386,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
           </div>
         </div>
         <div class="p-3.5 rounded-2xl bg-black/40 border border-white/[0.08] text-[11px] text-zinc-400">
-          <div class="text-zinc-200 font-semibold mb-0.5">Connected to Postgres Enclave</div>
+          <div id="auth-side-title" class="text-zinc-200 font-semibold mb-0.5">Checking Postgres Enclave…</div>
           <div id="auth-side-status">HttpOnly session cookies + Row-Level Security</div>
         </div>
       </div>
@@ -1266,6 +1490,7 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
         <div id="auth-err" class="hidden rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs text-rose-300"></div>
         <button id="auth-submit" data-act="authSubmit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold">Sign in to Cloud Enclave</button>
         <p id="auth-cfg-msg" class="text-[11px] text-zinc-500 leading-relaxed">Sign in to persist chats, stories, Vault settings, and live peer-to-peer DMs in Supabase.</p>
+        <button id="auth-sandbox-btn" data-act="enterDemo" class="hidden w-full h-9 rounded-xl btn-ghost text-xs font-semibold text-zinc-200">Continue in Local Sandbox Mode (No account needed)</button>
       </div>
     </div>
 
@@ -1401,7 +1626,7 @@ const R=[
  {id:111,author:'alex.rivera',cap:'Behind the scenes: designing the vault',g:'linear-gradient(160deg,#9f1239,#1a0509 65%,#1e3a8a)',likes:2105,com:[{n:'Dev Master',t:'Passkeys everywhere.'}]}];
 const FILTERS=[['Normal','none'],['Sepia','sepia(1) contrast(1.1)'],['Cyberpunk','hue-rotate(90deg) saturate(1.8) contrast(1.2)'],['Mono','grayscale(1) contrast(1.15)'],['Vignette','brightness(.85) contrast(1.25) saturate(1.2)']];
 const ACCENTS=[['Azure','#0095f6'],['Violet','#8b5cf6'],['Sunset','#e1306c'],['Emerald','#10b981']];
-const NAV=[['chats','message-circle','Messages'],['reels','clapperboard','Reels'],['ai','sparkles','Assistant'],['vault','shield-check','Vault'],['settings','settings','Settings']];
+const NAV=[['chats','message-circle','Messages'],['reels','clapperboard','Reels'],['ai','sparkles','Assistant'],['profile','user','Profile'],['vault','shield-check','Vault'],['settings','settings','Settings']];
 
 let cfg=Object.assign({accent:'#0095f6',lockLaunch:true,idle:0,e2ee:false,receipts:true,vanish:false,vanishSec:6,wallpaper:true,smartReplies:true,notify:false,hc:false,rm:false,prot:false,spatial:false,pin:null},store.get('cfg',{}));
 let D=store.get('chats',null)||seedChats();
@@ -1410,7 +1635,7 @@ let LOG=store.get('log',[]);
 let CUSTOM_REELS=store.get('custom_reels',[]);
 const getReels=()=>[...R,...CUSTOM_REELS];
 const RS=Object.assign({liked:[],saved:[],follow:['alex.rivera'],filter:0,extra:{}},store.get('reels',{}));
-const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',aiLastErr:null,aiThread:store.get('ai_threads',{}),draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{})};
+const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',aiLastErr:null,aiThread:store.get('ai_threads',{}),draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{}),profId:null,profPrevView:'chats',profTab:'posts',profSuggest:false,profTag:null,profData:null,profLoading:false,postViewId:null,postViewSlide:0,followListTab:'followers',followListQ:'',activity:store.get('wg_activity',[]),actUnread:0,postMedia:[],postBg:0,hlBg:0,hlMedia:null,hlView:null,epAvatarPath:null,epAvatarUrl:null,pendingProfileLink:null};
 const BLOBS={};const MEDIA_LOADING=new Set();let KEY=null,FP='';
 function notifyDesktop(title,body){if(!cfg.notify||typeof Notification==='undefined'||Notification.permission!=='granted'||!document.hidden)return;try{new Notification(title,{body:String(body||'').slice(0,120),icon:'/icon.svg'})}catch(e){}}
 const saveD=()=>store.set('chats',D),saveAiThread=()=>store.set('ai_threads',S.aiThread),saveCfg=()=>{store.set('cfg',cfg);if(S.user&&!S.bootstrapping)sbPost({action:'saveSettings',cfg})},saveR=()=>{store.set('reels',RS);if(S.user&&!S.bootstrapping)sbPost({action:'saveReelsPrefs',reels:{liked:RS.liked,saved:RS.saved,follow:RS.follow,filter:RS.filter}})},saveS=()=>store.set('stories',ST);
@@ -1615,10 +1840,17 @@ function connectRealtime(rt){
           });
           decAllMessages().then(()=>{renderThread();if($('#info')?.classList.contains('open'))renderInfo()});
         }else{scheduleCloudRefresh(300)}
+        scheduleProfileRefresh(260);
       })
       .on('postgres_changes',{event:'*',schema:'public',table:'wg_stories'},()=>scheduleCloudRefresh(260))
       .on('postgres_changes',{event:'*',schema:'public',table:'wg_story_votes'},()=>scheduleCloudRefresh(260))
-      .on('postgres_changes',{event:'*',schema:'public',table:'wg_reels'},()=>scheduleCloudRefresh(260))
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_reels'},()=>{scheduleCloudRefresh(260);scheduleProfileRefresh(260)})
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_follows'},p=>{noteRealtimeActivity('follow',p);scheduleProfileRefresh(220)})
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_highlights'},()=>scheduleProfileRefresh(220))
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_posts'},p=>{noteRealtimeActivity('post',p);scheduleProfileRefresh(220)})
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_post_likes'},p=>{noteRealtimeActivity('like',p);scheduleProfileRefresh(220)})
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_post_comments'},p=>{noteRealtimeActivity('comment',p);scheduleProfileRefresh(220)})
+      .on('postgres_changes',{event:'*',schema:'public',table:'wg_post_saves'},()=>scheduleProfileRefresh(220))
       .subscribe(status=>{
         if(status==='SUBSCRIBED'){clearInterval(S.pollTm);S.pollTm=null;renderAccountUI()}
         else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){startPoll();renderAccountUI()}
@@ -1727,6 +1959,8 @@ function setShell(mode){
 function parseHashOrSearchParams(){
   const hp=new URLSearchParams((location.hash||'').replace(/^#/, ''));
   const sp=new URLSearchParams(location.search||'');
+  const profParam=hp.get('wg-profile')||sp.get('profile')||'';
+  if(profParam)S.pendingProfileLink=profParam.replace(/^@/,'').trim();
   const rawToken=hp.get('wg-reset')||sp.get('reset')||'';
   const type=hp.get('type')||sp.get('type')||'';
   const accessToken=type==='recovery'?(hp.get('access_token')||''):'';
@@ -1756,6 +1990,7 @@ async function checkSupabaseSession(){
   const st=await sbGet('status');
   S.sbConfigured=Boolean(st?.configured);
   S.sbRealtime=Boolean(st?.hasRealtime);
+  S.sbMissing=Array.isArray(st?.missing)?st.missing:[];
   renderAccountUI();
   if(!S.sbConfigured){
     if(!S.recovery&&localStorage.getItem('wg_local_mode')!=='1')setShell('landing');
@@ -1768,8 +2003,13 @@ async function checkSupabaseSession(){
     connectRealtime(sess.realtime);
     if(!S.recovery){
       setShell('app');
-      setView('chats');
-      if(window.matchMedia('(min-width:768px)').matches&&D.length&&(!S.chat||!D.some(c=>c.id===S.chat)))openChat(D[0].id);
+      if(S.pendingProfileLink){
+        const pRef=S.pendingProfileLink;S.pendingProfileLink=null;
+        openProfile(pRef);
+      }else{
+        setView('chats');
+        if(window.matchMedia('(min-width:768px)').matches&&D.length&&(!S.chat||!D.some(c=>c.id===S.chat)))openChat(D[0].id);
+      }
       if(cfg.lockLaunch)lock();else audit('Cloud session verified');
     }
   }else{
@@ -1903,10 +2143,14 @@ function renderAccountUI(){
     if($('#auth-rec-clear'))$('#auth-rec-clear').classList.toggle('hidden',!recEmail);
     if(rtBadge)rtBadge.textContent=S.syncing?'Syncing…':(live?'Realtime Live':'Cloud Synced');
   }
+  const missList=(S.sbMissing&&S.sbMissing.length)?S.sbMissing:['SUPABASE_URL','SUPABASE_SECRET_KEY'];
+  if($('#auth-side-title'))$('#auth-side-title').textContent=S.sbConfigured?'Connected to Postgres Enclave':'Local Enclave Mode';
+  if($('#auth-side-status'))$('#auth-side-status').textContent=S.sbConfigured?'HttpOnly session cookies + Row-Level Security':`Cloud sync awaits Vercel env vars (${missList.join(', ')})`;
+  if($('#auth-sandbox-btn'))$('#auth-sandbox-btn').classList.toggle('hidden',Boolean(S.sbConfigured));
   if(cfgMsg){
     cfgMsg.textContent=S.sbConfigured
       ?'Accounts are stored in Supabase Postgres with Row-Level Security. Recovery emails remain completely private and optional.'
-      :'SUPABASE_URL / SUPABASE_SECRET_KEY env vars are not detected on /api/supabase. Local sandbox mode remains available.';
+      :`Missing on /api/supabase: ${missList.join(', ')} (also accepts NEXT_PUBLIC_SUPABASE_URL & SUPABASE_SERVICE_ROLE_KEY). Add them in Vercel Project Settings → Environment Variables & redeploy, or use Local Sandbox below.`;
   }
   const tab=S.authTab||'signin';
   const heading=$('#auth-heading'),tabs=$('#auth-tabs'),sTab=$('#auth-tab-signin'),uTab=$('#auth-tab-signup'),subBtn=$('#auth-submit');
@@ -2150,11 +2394,14 @@ function renderNav(){
 }
 
 function setView(v){
-  closeMenu();S.view=v;
+  closeMenu();
+  if(S.view&&S.view!=='profile'&&v==='profile')S.profPrevView=S.view;
+  S.view=v;
   $$('.view').forEach(e=>e.classList.toggle('hidden',e.id!=='v-'+v));
   $$('[data-act="nav"]').forEach(b=>{if(b.classList.contains('nav-btn')||b.classList.contains('dock-btn'))b.setAttribute('aria-current',b.dataset.arg===v?'page':'false')});
   if(v==='chats')renderList();
   if(v==='reels')renderReel();else{pauseBar(true);const rv=$('#reel-vid');if(rv)rv.pause()}
+  if(v==='profile'){loadProfileData(S.profId||'self')}
   if(v==='vault')renderAudit();
   if(v==='settings')renderStats();
   if(v==='ai'&&!$('#ai-log').children.length)aiWelcome();
@@ -2168,7 +2415,7 @@ function badge(){
 }
 
 const openM=id=>{closeMenu();$('#'+id).classList.add('open');icons();const f=$('#'+id+' input,#'+id+' button.btn-ac');if(f&&id!=='m-story')setTimeout(()=>f.focus(),30)};
-const closeM=id=>{const el=$('#'+id);if(!el)return;el.classList.remove('open');if(id==='m-media'){const v=$('#lb-vid');if(v){v.pause();v.removeAttribute('src');v.load()}S.lbMsgId=null}if(id==='m-studio'){const v=$('#st-media-vid');if(v){v.pause();v.removeAttribute('src');v.load()}}};
+const closeM=id=>{const el=$('#'+id);if(!el)return;el.classList.remove('open');if(id==='m-media'){const v=$('#lb-vid');if(v){v.pause();v.removeAttribute('src');v.load()}S.lbMsgId=null}if(id==='m-studio'){const v=$('#st-media-vid');if(v){v.pause();v.removeAttribute('src');v.load()}}if(id==='m-post-view'){$$('video',$('#pv-media-box')).forEach(v=>{v.pause();v.removeAttribute('src');v.load()});S.postViewId=null}if(id==='m-post'){const v=$('#post-prev-vid');if(v){v.pause()}}if(id==='m-story'){S.hlView=null}};
 function ask(title,body,fn){S.confirm=fn;setTxt('#cf-title',title);setTxt('#cf-body',body);openM('m-confirm')}
 
 /* ---------- conversations ---------- */
@@ -2448,6 +2695,7 @@ function renderInfo(){
     <span class="p-1 rounded-full ring-1 ring-white/[0.1] shadow-[0_12px_30px_-8px_rgba(0,0,0,.8)]">${av(c.name,'w-16 h-16')}</span>
     <div class="text-sm font-bold text-white mt-1.5">${esc(c.name)}</div>
     <div class="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-zinc-300">${online?'<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.8)]"></span>':''}${online?'Online':esc(c.status)}</div>
+    ${!c.isGroup?`<button data-act="openPeerProfile" class="mt-1.5 btn-ghost h-8 px-3.5 rounded-full text-[11px] font-semibold text-white inline-flex items-center gap-1.5">${ic('user','w-3.5 h-3.5 text-sky-400')}View Profile</button>`:''}
   </div>
   <div class="p-5 space-y-5">
     ${c.peerUserId?`<div class="lux-card rounded-2xl ${c.keyChanged?'border-amber-500/40':'border-emerald-400/20'} p-3.5 space-y-1.5"><div class="flex items-center justify-between text-xs"><span class="font-semibold text-zinc-200 inline-flex items-center gap-1.5">${ic('shield-check','w-3.5 h-3.5 text-emerald-400')}ECDH P-256 E2EE</span><span class="text-[10px] font-semibold ${c.keyChanged?'text-amber-300':(c.peerPublicKey&&S.ecdhId?'text-emerald-400':'text-amber-300')}">${c.keyChanged?'Key rotated':(c.peerPublicKey&&S.ecdhId?'Key verified':'Pending peer')}</span></div><div class="text-[11px] text-zinc-400">Peer key: <span class="font-mono text-zinc-200">${esc(c.peerKeyFp||'not published yet')}</span></div><div id="info-safety" class="text-[11px] font-mono text-emerald-300 bg-emerald-500/10 border border-emerald-400/20 rounded-lg px-2.5 py-1 mt-1 inline-block"></div>${c.keyChanged?'<button data-act="verifyPeerKey" class="mt-1 h-7 px-3 rounded-lg bg-amber-400 text-black text-[11px] font-bold">Verify new key</button>':''}</div>`:''}
@@ -2829,7 +3077,7 @@ function renderReel(reset=true){
   else if(r.mediaPath&&S.user)resolveSocialMediaUrl('reel',r).then(applyReelUrl);
   const sb=(act,i,l,on,col='text-rose-500')=>`<button data-act="${act}" class="group flex flex-col items-center gap-1" aria-label="${l}"><span class="w-11 h-11 rounded-full bg-black/45 backdrop-blur-xl border border-white/[0.16] shadow-[inset_0_1px_0_rgba(255,255,255,.15),0_8px_20px_-6px_rgba(0,0,0,.6)] grid place-items-center group-hover:scale-110 group-hover:bg-white/[0.14] transition-all ${on?col:'text-white'}">${ic(i,'w-5 h-5'+(on?' fill-current':''))}</span><span class="text-[11px] font-semibold text-white drop-shadow tabular-nums">${l}</span></button>`;
   $('#reel-ui').innerHTML=`<div class="min-w-0 space-y-2.5">
-    <div class="flex items-center gap-2.5">${av(r.author,'w-8 h-8')}<span class="text-xs font-bold text-white drop-shadow">${esc(r.author)}</span><button data-act="reelFollow" class="h-7 px-3 rounded-full border text-[11px] font-semibold backdrop-blur-md transition-all ${f?'bg-white/[0.16] border-white/25 text-white':'bg-white/[0.08] border-white/20 text-white hover:bg-white/[0.2]'}">${f?'Following':'Follow'}</button></div>
+    <div class="flex items-center gap-2.5"><button data-act="openAuthorProfile" data-arg="${esc(r.author)}" class="flex items-center gap-2 min-w-0 hover:opacity-85 transition text-left">${av(r.author,'w-8 h-8')}<span class="text-xs font-bold text-white drop-shadow truncate">${esc(r.author)}</span></button><button data-act="reelFollow" class="h-7 px-3 rounded-full border text-[11px] font-semibold backdrop-blur-md transition-all shrink-0 ${f?'bg-white/[0.16] border-white/25 text-white':'bg-white/[0.08] border-white/20 text-white hover:bg-white/[0.2]'}">${f?'Following':'Follow'}</button></div>
     <p class="text-[13px] text-white/95 leading-snug drop-shadow">${esc(r.cap)}</p>
     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 text-[10px] text-zinc-200"><span class="inline-flex items-end gap-0.5 h-2.5 text-pink-400"><i class="eq-bar h-2"></i><i class="eq-bar h-2.5" style="animation-delay:.18s"></i><i class="eq-bar h-1.5" style="animation-delay:.36s"></i></span><span>Original Audio · WhatsGram Studio</span></div>
   </div>
@@ -2906,6 +3154,585 @@ function renderStory(){
     resolveSocialMediaUrl('story',s).then(url=>{if(url&&ST[S.story]?.id===curId&&!$('.sv-media',$('#sv')))$('#sv').insertAdjacentHTML('afterbegin',bgTag(url))});
   }
   s.seen=true;saveS();renderStories();$('#sv-bar').addEventListener('animationend',()=>A.storyNext());icons();
+}
+
+/* ---------- instagram-style creator profile, highlights, posts & realtime social ---------- */
+const POST_BGS=[
+  'from-indigo-600 via-fuchsia-600 to-rose-500',
+  'from-sky-500 via-blue-600 to-indigo-700',
+  'from-emerald-500 via-teal-600 to-cyan-700',
+  'from-amber-500 via-orange-600 to-rose-600',
+  'from-zinc-800 via-neutral-900 to-black'
+];
+const VERIFIED_BADGE_SVG='<svg class="w-4 h-4 text-sky-400 inline-block shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified"><path d="M12 2l2.4 1.9 3-.3 1.1 2.8 2.7 1.4-.3 3L22.5 13l-1.9 2.4.3 3-2.8 1.1-1.4 2.7-3-.3L12 23.5l-2.4-1.9-3 .3-1.1-2.8-2.7-1.4.3-3L1.5 13l1.9-2.4-.3-3 2.8-1.1L7.3 3.8l3 .3L12 2zm-1.1 13.6l5.3-5.3-1.4-1.4-3.9 3.9-1.9-1.9-1.4 1.4 3.3 3.3z"/></svg>';
+
+function seedLocalSocial(){
+  return {
+    profiles:[
+      {id:'self',username:'you',display_name:'Your Creator Studio',status:'Online',verified:true,category:'Creator · Digital & AI',bio:'Building end-to-end encrypted apps & AI workflows on @whatsgram.\n#E2EE #Privacy #CreatorOS',location_text:'San Francisco, CA',website:'https://whatsgram-seven.vercel.app',links:[{title:'WhatsGram OS',url:'https://whatsgram-seven.vercel.app'},{title:'AI Assistant',url:'https://ai.google.dev'}],contact_email:'creator@whatsgram.app',threads_handle:'you',avatarUrl:''},
+      {id:'u_alex',username:'alex.rivera',display_name:'Alex Rivera',status:'Online',verified:true,category:'Product & Architecture',bio:'Shipping Q3 milestones & passkey architecture.\n@sarah.chen · #Architecture #ZeroKnowledge',location_text:'1115 Broadway, New York, NY',website:'https://example.com/roadmap',links:[{title:'Q3 Roadmap',url:'https://example.com/roadmap'},{title:'Security Whitepaper',url:'https://example.com/e2ee'}],contact_email:'alex@whatsgram.app',threads_handle:'alex.rivera',avatarUrl:''},
+      {id:'u_sarah',username:'sarah.chen',display_name:'Sarah Chen',status:'Away',verified:true,category:'Analytics & Growth',bio:'Turning retention curves into product insight 📊\n#Analytics #Growth',location_text:'London, UK',website:'https://example.com/reports',links:[{title:'Week 42 Export',url:'https://example.com/reports'}],contact_email:'sarah@whatsgram.app',threads_handle:'sarah.chen',avatarUrl:''},
+      {id:'u_dev',username:'dev.master',display_name:'Dev Master',status:'Online',verified:false,category:'Infrastructure & Edge',bio:'Zero-downtime deploys & Postgres RLS.\n#Postgres #Edge',location_text:'Berlin, Germany',website:'https://example.com/deploy',links:[],contact_email:'',threads_handle:'dev.master',avatarUrl:''}
+    ],
+    follows:[['self','u_alex'],['u_alex','self'],['u_sarah','self'],['u_dev','u_alex'],['u_sarah','u_alex']],
+    highlights:[
+      {id:'hl_1',userId:'self',title:'Launches',coverBg:POST_BGS[0],slides:[{title:'Launches',text:'WhatsGram OS 2.0 shipped with Creator Profiles, Stories & Gemini AI.',bg:POST_BGS[0]}]},
+      {id:'hl_2',userId:'self',title:'E2EE Lab',coverBg:POST_BGS[1],slides:[{title:'E2EE Lab',text:'ECDH P-256 + AES-GCM-256 encrypted DMs & safety verification.',bg:POST_BGS[1]}]},
+      {id:'hl_3',userId:'u_alex',title:'Q3 Roadmap',coverBg:POST_BGS[2],slides:[{title:'Q3 Roadmap',text:'Real-time messaging, multi-device keys & vertical Reels live.',bg:POST_BGS[2]}]},
+      {id:'hl_4',userId:'u_alex',title:'Passkeys',coverBg:POST_BGS[3],slides:[{title:'Passkeys',text:'Hardware-backed WebAuthn protection for private enclaves.',bg:POST_BGS[3]}]}
+    ],
+    posts:[
+      {id:'pt_seed_1',userId:'self',caption:'Excited to launch Creator Profiles inside WhatsGram OS — live posts, Story Highlights, Reels & E2EE messaging in one unified space! #WhatsGram #CreatorOS #E2EE',locationText:'San Francisco, CA',tags:['whatsgram','creatoros','e2ee','alex.rivera'],mediaType:'card',mediaUrls:[],bg:POST_BGS[0],pinned:true,createdAt:new Date(Date.now()-86400000*2).toISOString()},
+      {id:'pt_seed_2',userId:'self',caption:'Deep dive: How zero-knowledge media buckets sign temporary URLs while keeping client payloads encrypted. @dev.master #Security #Privacy',locationText:'Enclave Lab',tags:['security','privacy','dev.master'],mediaType:'carousel',mediaUrls:[],bg:POST_BGS[1],pinned:false,createdAt:new Date(Date.now()-86400000).toISOString()},
+      {id:'pt_seed_3',userId:'u_alex',caption:'Q3 architecture sign-off complete. Proud of what @you and @sarah.chen built together this sprint! #Architecture #Teamwork',locationText:'1115 Broadway, New York, NY',tags:['you','sarah.chen','architecture','teamwork'],mediaType:'card',mediaUrls:[],bg:POST_BGS[2],pinned:true,createdAt:new Date(Date.now()-3600000*18).toISOString()},
+      {id:'pt_seed_4',userId:'u_sarah',caption:'Week 42 engagement benchmark is live — retention climbed +34% after real-time Story polls shipped with @you #Analytics #Growth',locationText:'London, UK',tags:['you','analytics','growth'],mediaType:'carousel',mediaUrls:[],bg:POST_BGS[3],pinned:true,createdAt:new Date(Date.now()-3600000*8).toISOString()}
+    ],
+    likes:[['pt_seed_1','u_alex'],['pt_seed_1','u_sarah'],['pt_seed_3','self']],
+    comments:[
+      {id:'pc_seed_1',postId:'pt_seed_1',userId:'u_alex',authorName:'Alex Rivera',authorUsername:'alex.rivera',text:'This UI looks clean — loving the pinned posts!',createdAt:new Date(Date.now()-3600000*5).toISOString()},
+      {id:'pc_seed_2',postId:'pt_seed_3',userId:'u_sarah',authorName:'Sarah Chen',authorUsername:'sarah.chen',text:'Best sprint yet!',createdAt:new Date(Date.now()-3600000*4).toISOString()}
+    ],
+    saves:[['pt_seed_3','self','repost']]
+  };
+}
+let LOCAL_SOCIAL=store.get('social_v1',null)||seedLocalSocial();
+const saveLocalSocial=()=>store.set('social_v1',LOCAL_SOCIAL);
+
+function fmtCompactCount(n){
+  const v=Number(n)||0;
+  if(v>=1e6)return (v/1e6).toFixed(v%1e6>=1e5?1:0)+'M';
+  if(v>=1e4)return (v/1e3).toFixed(1).replace(/\.0$/,'')+'K';
+  return v.toLocaleString();
+}
+function renderAvatarCircle(prof,cls='w-20 h-20'){
+  if(prof?.avatarUrl)return `<img src="${esc(prof.avatarUrl)}" alt="${esc(prof.display_name||prof.username||'Avatar')}" class="${cls} rounded-full object-cover shrink-0">`;
+  return av(prof?.display_name||prof?.username||'U',cls);
+}
+function renderBioText(bio){
+  if(!bio)return '';
+  return esc(bio).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:underline">$1</a>')
+    .replace(/@([a-z0-9][a-z0-9._-]{1,31})/gi,'<button type="button" data-act="openProfile" data-arg="$1" class="text-sky-400 hover:underline font-medium">@$1</button>')
+    .replace(/#([a-z0-9][a-z0-9._-]{1,31})/gi,'<button type="button" data-act="filterTag" data-arg="$1" class="text-sky-400 hover:underline">#$1</button>')
+    .replace(/\n/g,'<br>');
+}
+function noteRealtimeActivity(kind,payload){
+  if(!S.user||!payload)return;
+  const row=payload.new||payload.old;if(!row)return;
+  if((kind==='follow'&&row.follower_id===S.user.id)||(kind!=='follow'&&row.user_id===S.user.id))return;
+  let txt='';
+  if(kind==='follow'&&payload.eventType==='INSERT'&&row.following_id===S.user.id)txt='A creator started following you';
+  else if(kind==='like'&&payload.eventType==='INSERT')txt='New like on a community post';
+  else if(kind==='comment'&&payload.eventType==='INSERT')txt=`${row.author_name||'Someone'} commented: "${String(row.text||'').slice(0,50)}"`;
+  else if(kind==='post'&&payload.eventType==='INSERT')txt='New post published in the network';
+  if(!txt)return;
+  pushActivity(kind,txt,row.follower_id||row.user_id||null);
+}
+function pushActivity(kind,text,refUserId=null){
+  S.activity.unshift({id:uid('act'),kind,text,refUserId,t:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  S.activity=S.activity.slice(0,40);
+  store.set('wg_activity',S.activity);
+  S.actUnread++;
+  renderActivityBadge();
+  if($('#m-activity')?.classList.contains('open'))renderActivityModal();
+}
+function renderActivityBadge(){
+  const b=$('#prof-act-badge');if(!b)return;
+  b.textContent=S.actUnread>9?'9+':String(S.actUnread);
+  b.classList.toggle('hidden',!S.actUnread);
+  b.classList.toggle('grid',Boolean(S.actUnread));
+}
+let profDebTm=null;
+function scheduleProfileRefresh(delay=250){
+  if(!S.user||S.view!=='profile')return;
+  clearTimeout(profDebTm);
+  profDebTm=setTimeout(()=>loadProfileData(S.profId||'self',true),delay);
+}
+
+function buildLocalProfileData(targetIdOrHandle){
+  const q=String(targetIdOrHandle||'self').trim().replace(/^@/,'').toLowerCase();
+  const profs=LOCAL_SOCIAL.profiles;
+  let target=profs.find(p=>p.id===q||normalizeHandle(p.username)===q||p.display_name.toLowerCase()===q);
+  if(!target)target=profs[0];
+  const viewerId='self';
+  const follows=LOCAL_SOCIAL.follows;
+  const viewerFollowSet=new Set(follows.filter(f=>f[0]===viewerId).map(f=>f[1]));
+  const followerIds=follows.filter(f=>f[1]===target.id).map(f=>f[0]);
+  const followingIds=follows.filter(f=>f[0]===target.id).map(f=>f[1]);
+  const followers=followerIds.map(id=>profs.find(p=>p.id===id)).filter(Boolean);
+  const following=followingIds.map(id=>profs.find(p=>p.id===id)).filter(Boolean);
+  const mutuals=followers.filter(u=>u.id!==viewerId&&viewerFollowSet.has(u.id));
+  const suggested=profs.filter(p=>p.id!==viewerId&&p.id!==target.id&&!viewerFollowSet.has(p.id));
+  const mapPost=pt=>{
+    const au=profs.find(p=>p.id===pt.userId)||profs[0];
+    const likes=LOCAL_SOCIAL.likes.filter(l=>l[0]===pt.id);
+    const cmList=LOCAL_SOCIAL.comments.filter(c=>c.postId===pt.id);
+    return {
+      ...pt,
+      author:au,
+      likesCount:likes.length,
+      commentsCount:cmList.length,
+      likedByMe:likes.some(l=>l[1]===viewerId),
+      savedByMe:LOCAL_SOCIAL.saves.some(s=>s[0]===pt.id&&s[1]===viewerId&&s[2]==='save'),
+      repostedByMe:LOCAL_SOCIAL.saves.some(s=>s[0]===pt.id&&s[1]===viewerId&&s[2]==='repost'),
+      comments:cmList
+    };
+  };
+  const allPosts=LOCAL_SOCIAL.posts.map(mapPost);
+  const ownPosts=allPosts.filter(p=>p.userId===target.id).sort((a,b)=>(Number(b.pinned)-Number(a.pinned))||String(b.createdAt).localeCompare(String(a.createdAt)));
+  const tHandle=normalizeHandle(target.username);
+  const taggedPosts=tHandle?allPosts.filter(p=>p.userId!==target.id&&((p.tags||[]).includes(tHandle)||new RegExp('@'+tHandle+'\\b','i').test(p.caption||''))):[];
+  const repostIds=LOCAL_SOCIAL.saves.filter(s=>s[1]===target.id&&(s[2]==='repost'||(target.id===viewerId&&s[2]==='save'))).map(s=>s[0]);
+  const reposts=[...new Set(repostIds)].map(pid=>allPosts.find(p=>p.id===pid)).filter(Boolean);
+  const reels=getReels().filter(r=>normalizeHandle(r.author)===tHandle||(target.id==='self'&&r.author==='You'));
+  const highlights=LOCAL_SOCIAL.highlights.filter(h=>h.userId===target.id);
+  return {
+    ok:true,
+    schemaReady:true,
+    profile:{
+      ...target,
+      isOwn:target.id===viewerId,
+      isFollowing:viewerFollowSet.has(target.id),
+      followsMe:followingIds.includes(viewerId),
+      postsCount:ownPosts.length+reels.length,
+      followersCount:followers.length,
+      followingCount:following.length
+    },
+    followers,following,mutuals,highlights,posts:ownPosts,reels,reposts,taggedPosts,suggested
+  };
+}
+const normalizeHandle=h=>String(h||'').trim().replace(/^@+/,'').toLowerCase();
+
+async function loadProfileData(targetIdOrHandle='self',quiet=false){
+  S.profId=targetIdOrHandle||'self';
+  if(!quiet){S.profLoading=true;renderProfile()}
+  try{
+    if(S.user){
+      const raw=String(targetIdOrHandle||'self').trim();
+      const params={};
+      if(raw&&raw!=='self'){
+        if(/^[0-9a-f-]{32,36}$/i.test(raw)||(S.users||[]).some(u=>u.id===raw))params.userId=raw;
+        else params.username=raw.replace(/^@/,'');
+      }
+      const res=await sbGet('profileData',params);
+      if(res?.ok&&res.profile){
+        S.profData=res;
+        if(res.profile.isOwn&&S.user){
+          S.user.displayName=res.profile.display_name||S.user.displayName;
+          S.user.avatarUrl=res.profile.avatarUrl||S.user.avatarUrl;
+          S.user.bio=res.profile.bio||'';
+        }
+        if($('#m-follow-list')?.classList.contains('open'))renderFollowListModal();
+        if($('#m-post-view')?.classList.contains('open')&&S.postViewId)renderPostView();
+      }else if(!quiet&&res?.error){
+        toast(res.error,'err');
+      }
+    }else{
+      S.profData=buildLocalProfileData(targetIdOrHandle);
+      if($('#m-follow-list')?.classList.contains('open'))renderFollowListModal();
+      if($('#m-post-view')?.classList.contains('open')&&S.postViewId)renderPostView();
+    }
+  }finally{
+    S.profLoading=false;
+    renderProfile();
+  }
+}
+
+function openProfile(target='self'){
+  const norm=normalizeHandle(target||'self'),curP=S.profData?.profile;
+  if(curP&&((norm==='self'&&!curP.isOwn)||(norm!=='self'&&curP.id!==target&&normalizeHandle(curP.username)!==norm)))S.profData=null;
+  S.profTag=null;
+  if(S.view!=='profile')S.profPrevView=S.view||'chats';
+  S.profId=target||'self';
+  setView('profile');
+}
+
+function findPostById(postId){
+  const d=S.profData;if(!d)return null;
+  for(const arr of [d.posts,d.reposts,d.taggedPosts]){
+    const hit=(arr||[]).find(x=>x.id===postId);
+    if(hit)return hit;
+  }
+  return null;
+}
+
+function renderProfile(){
+  const root=$('#prof-root');if(!root)return;
+  renderActivityBadge();
+  const data=S.profData;
+  const rtLbl=$('#prof-rt-lbl'),rtChip=$('#prof-rt-chip');
+  if(rtLbl&&rtChip){
+    const live=Boolean(S.user&&S.rtChan);
+    rtLbl.textContent=S.user?(live?'Realtime Live':'Cloud Synced'):'Local Sandbox';
+    rtChip.className='hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 '+(live?'bg-emerald-500/10 border border-emerald-400/20 text-emerald-300':'bg-white/[0.06] border border-white/[0.1] text-zinc-300');
+  }
+  if(!data&&S.profLoading){
+    root.innerHTML='<div class="p-6 space-y-6 animate-pulse"><div class="flex items-center gap-6"><div class="w-24 h-24 rounded-full bg-white/10"></div><div class="flex-1 grid grid-cols-3 gap-4"><div class="h-10 rounded-xl bg-white/10"></div><div class="h-10 rounded-xl bg-white/10"></div><div class="h-10 rounded-xl bg-white/10"></div></div></div><div class="h-16 rounded-2xl bg-white/10"></div><div class="grid grid-cols-3 gap-1.5"><div class="aspect-square bg-white/10 rounded-lg"></div><div class="aspect-square bg-white/10 rounded-lg"></div><div class="aspect-square bg-white/10 rounded-lg"></div></div></div>';
+    return;
+  }
+  if(!data?.profile){
+    root.innerHTML='<div class="p-12 text-center space-y-3"><p class="text-sm font-semibold text-zinc-300">Profile unavailable</p><button data-act="refreshProfileNow" class="btn-primary h-9 px-4 rounded-full text-xs font-semibold">Retry</button></div>';
+    icons();return;
+  }
+  const p=data.profile;
+  const handleTxt=p.username?('@'+p.username):(p.display_name||'profile');
+  setTxt('#prof-top-handle',handleTxt);
+  $('#prof-top-verified')?.classList.toggle('hidden',!p.verified);
+  const online=Boolean(p.isOwn||(S.user&&S.onlineUsers[p.id])||(!S.user&&p.status==='Online'));
+
+  const extraLinks=(p.links||[]).filter(l=>l?.url&&l.url!==p.website);
+  const totalLinksCount=(p.website?1:0)+extraLinks.length;
+  const primaryLink=p.website||(p.links?.[0]?.url||'');
+  const cleanLinkLbl=u=>String(u||'').replace(/^https?:\/\/(www\.)?/i,'').replace(/\/$/,'');
+  const mutuals=data.mutuals||[];
+  const mutualsHTML=(!p.isOwn&&mutuals.length)?`<button type="button" data-act="openFollowModal" data-arg="followers" class="flex items-center gap-2 text-left text-xs text-zinc-400 hover:text-zinc-200 transition pt-1"><span class="flex -space-x-2">${mutuals.slice(0,3).map(m=>`<span class="ring-2 ring-[#05060b] rounded-full">${renderAvatarCircle(m,'w-5 h-5')}</span>`).join('')}</span><span class="truncate">Followed by <strong class="text-zinc-200">${esc(mutuals[0].username||mutuals[0].display_name)}</strong>${mutuals.length>1?` and <strong class="text-zinc-200">${mutuals.length-1} other${mutuals.length>2?'s':''}</strong>`:''}</span></button>`:'';
+
+  const schemaBanner=(S.user&&data.schemaReady===false)?`<div class="mx-4 mt-4 rounded-2xl border border-amber-500/35 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-200 flex items-center justify-between gap-2"><span>Run updated <code class="font-mono text-amber-100">supabase/schema.sql</code> in Supabase SQL Editor to enable Postgres posts, highlights &amp; follows.</span><button data-act="refreshProfileNow" class="shrink-0 h-7 px-3 rounded-lg bg-amber-400 text-black font-bold text-[11px]">Retry</button></div>`:'';
+
+  const actionRow=p.isOwn
+    ?`<div class="flex items-center gap-2 pt-3">
+        <button data-act="openEditProfile" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Edit profile</button>
+        <button data-act="openPostModal" class="flex-1 h-9 rounded-xl bg-[#0095f6] hover:bg-[#1aa3ff] text-xs font-bold text-white shadow-[0_6px_18px_-4px_rgba(0,149,246,.5)] transition">Create post</button>
+        <button data-act="profShare" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Share profile</button>
+        <button data-act="toggleSuggest" aria-pressed="${S.profSuggest}" class="w-9 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] grid place-items-center text-white shrink-0 transition" title="Discover people" aria-label="Discover suggested people">${ic('user-plus','w-4 h-4')}</button>
+      </div>`
+    :`<div class="flex items-center gap-2 pt-3">
+        <button data-act="profFollow" class="flex-1 h-9 rounded-xl text-xs font-bold transition inline-flex items-center justify-center gap-1 ${p.isFollowing?'bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.12] text-white':'bg-[#0095f6] hover:bg-[#1aa3ff] text-white shadow-[0_6px_18px_-4px_rgba(0,149,246,.5)]'}">${p.isFollowing?`Following ${ic('chevron-down','w-3.5 h-3.5')}`:(p.followsMe?'Follow Back':'Follow')}</button>
+        <button data-act="profMsg" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Message</button>
+        ${p.contact_email?`<button data-act="profEmail" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Email</button>`:`<button data-act="profShare" class="flex-1 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] text-xs font-bold text-white transition">Share</button>`}
+        <button data-act="toggleSuggest" aria-pressed="${S.profSuggest}" class="w-9 h-9 rounded-xl bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.1] grid place-items-center text-white shrink-0 transition" title="Suggested creators" aria-label="Toggle suggested creators">${ic('user-plus','w-4 h-4')}</button>
+      </div>`;
+
+  const suggestHTML=S.profSuggest?`<div class="px-4 sm:px-6 pb-4">
+    <div class="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-3.5 space-y-3">
+      <div class="flex items-center justify-between"><span class="text-xs font-bold text-white">Suggested for you</span><button data-act="openFollowModal" data-arg="suggested" class="text-[11px] font-semibold text-sky-400 hover:underline">See all</button></div>
+      <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">${(data.suggested||[]).length?(data.suggested||[]).map(u=>`<div class="w-36 shrink-0 rounded-2xl border border-white/[0.08] bg-[#0b0d15] p-3 flex flex-col items-center text-center gap-2">
+        <button data-act="openProfile" data-arg="${esc(u.username||u.id)}" class="flex flex-col items-center gap-1.5 min-w-0 w-full">
+          <span class="relative">${renderAvatarCircle(u,'w-12 h-12')}${S.onlineUsers[u.id]?'<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-[#0b0d15]"></span>':''}</span>
+          <span class="text-xs font-bold text-white truncate w-full inline-flex items-center justify-center gap-1">${esc(u.display_name||u.username)}${u.verified?VERIFIED_BADGE_SVG:''}</span>
+          <span class="text-[10px] text-zinc-400 truncate w-full">@${esc(u.username||'user')}</span>
+        </button>
+        <button data-act="profToggleFollowId" data-arg="${esc(u.id)}" class="w-full h-7 rounded-lg bg-[#0095f6] hover:bg-[#1aa3ff] text-[11px] font-bold text-white transition">Follow</button>
+      </div>`).join(''):'<div class="text-xs text-zinc-500 py-3 px-2">You follow everyone in the directory right now.</div>'}</div>
+    </div>
+  </div>`:'';
+
+  const highlights=data.highlights||[];
+  const hlHTML=`<div class="flex items-start gap-4 px-4 sm:px-6 pb-5 overflow-x-auto no-scrollbar">
+    ${p.isOwn?`<button data-act="openHighlightModal" class="flex flex-col items-center gap-1.5 shrink-0 group" title="New Story Highlight">
+      <span class="w-16 h-16 rounded-full border-2 border-dashed border-white/25 group-hover:border-white/55 grid place-items-center text-zinc-300 group-hover:text-white bg-white/[0.03] transition">${ic('plus','w-6 h-6')}</span>
+      <span class="text-[11px] font-medium text-zinc-400 max-w-[72px] truncate">New</span>
+    </button>`:''}
+    ${highlights.map(h=>`<button data-act="openHighlight" data-arg="${esc(h.id)}" class="flex flex-col items-center gap-1.5 shrink-0 group">
+      <span class="p-[2.5px] rounded-full bg-gradient-to-tr from-zinc-500/70 via-zinc-300/60 to-zinc-500/70 group-hover:from-[#f58529] group-hover:via-[#dd2a7b] group-hover:to-[#8134af] transition">
+        <span class="block p-[2px] rounded-full bg-[#05060b]">
+          ${h.coverUrl?`<img src="${esc(h.coverUrl)}" alt="${esc(h.title)}" class="w-14 h-14 rounded-full object-cover">`:`<span class="w-14 h-14 rounded-full bg-gradient-to-br ${esc(h.coverBg||POST_BGS[0])} grid place-items-center text-white text-sm font-bold">${esc(h.title.slice(0,2).toUpperCase())}</span>`}
+        </span>
+      </span>
+      <span class="text-[11px] font-medium text-zinc-200 max-w-[72px] truncate">${esc(h.title)}</span>
+    </button>`).join('')}
+  </div>`;
+
+  const tabBtn=(k,icon,lbl)=>`<button role="tab" data-act="profTab" data-arg="${k}" aria-selected="${S.profTab===k}" class="flex-1 h-11 grid place-items-center border-b-2 transition-colors ${S.profTab===k?'border-white text-white':'border-transparent text-zinc-500 hover:text-zinc-300'}" title="${lbl}" aria-label="${lbl}">${ic(icon,'w-5 h-5')}</button>`;
+
+  let gridHTML='';
+  const filterByTag=arr=>!S.profTag?arr:arr.filter(pt=>(pt.tags||[]).includes(S.profTag.toLowerCase())||String(pt.caption||'').toLowerCase().includes('#'+S.profTag.toLowerCase()));
+  if(S.profTab==='reels'){
+    const rlList=data.reels||[];
+    gridHTML=rlList.length?`<div class="grid grid-cols-3 gap-0.5 sm:gap-1.5 px-0 sm:px-6">${rlList.map(r=>`<button data-act="jumpReel" data-arg="${esc(r.id)}" class="group relative aspect-[9/16] overflow-hidden bg-zinc-900 sm:rounded-xl text-left">
+      ${r.mediaUrl?(r.mediaMime?.startsWith('video/')?`<video src="${esc(r.mediaUrl)}" class="w-full h-full object-cover" muted playsinline></video>`:`<img src="${esc(r.mediaUrl)}" alt="" class="w-full h-full object-cover">`):`<div class="w-full h-full p-3 flex flex-col justify-end" style="background:${esc(r.g)}"><p class="text-[11px] font-semibold text-white line-clamp-3 drop-shadow">${esc(r.cap)}</p></div>`}
+      <span class="absolute top-2 right-2 text-white/90 drop-shadow">${ic('clapperboard','w-4 h-4')}</span>
+      <span class="absolute bottom-2 left-2 inline-flex items-center gap-1 text-[11px] font-bold text-white drop-shadow">${ic('play','w-3.5 h-3.5 fill-current')}<span>${fmtCompactCount(r.likes||0)}</span></span>
+    </button>`).join('')}</div>`
+    :`<div class="py-14 text-center space-y-2"><p class="text-sm font-semibold text-zinc-300">No Reels yet</p><p class="text-xs text-zinc-500">Create a vertical Reel in Studio to showcase it here.</p></div>`;
+  }else{
+    const src=S.profTab==='reposts'?(data.reposts||[]):S.profTab==='tagged'?(data.taggedPosts||[]):(data.posts||[]);
+    const list=filterByTag(src);
+    const tile=pt=>{
+      const url=pt.mediaUrls?.[0];
+      const isVid=pt.mediaType==='video';
+      const isCar=pt.mediaType==='carousel'||(pt.mediaUrls?.length>1);
+      return `<button data-act="viewPost" data-arg="${esc(pt.id)}" class="group relative aspect-square overflow-hidden bg-zinc-900 sm:rounded-xl text-left">
+        ${url?(isVid?`<video src="${esc(url)}" class="w-full h-full object-cover" muted playsinline></video>`:`<img src="${esc(url)}" alt="${esc(pt.caption||'Post')}" class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300">`)
+        :`<div class="w-full h-full bg-gradient-to-br ${esc(pt.bg||POST_BGS[0])} p-3 sm:p-4 flex items-center justify-center text-center group-hover:scale-[1.02] transition duration-300"><p class="text-[11px] sm:text-xs font-bold text-white drop-shadow line-clamp-4">${esc(pt.caption||'WhatsGram Post')}</p></div>`}
+        <div class="absolute top-2 right-2 flex items-center gap-1.5 text-white drop-shadow">
+          ${pt.pinned?`<span class="w-5 h-5 rounded-full bg-black/55 backdrop-blur-sm grid place-items-center" title="Pinned">${ic('pin','w-3 h-3 rotate-45')}</span>`:''}
+          ${isCar?`<span class="w-5 h-5 rounded-full bg-black/45 backdrop-blur-sm grid place-items-center">${ic('layers','w-3 h-3')}</span>`:''}
+          ${isVid?`<span class="w-5 h-5 rounded-full bg-black/45 backdrop-blur-sm grid place-items-center">${ic('play','w-3 h-3 fill-current')}</span>`:''}
+        </div>
+        <div class="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4 text-xs font-bold text-white">
+          <span class="inline-flex items-center gap-1">${ic('heart','w-4 h-4 fill-current')}<span>${fmtCompactCount(pt.likesCount)}</span></span>
+          <span class="inline-flex items-center gap-1">${ic('message-circle','w-4 h-4 fill-current')}<span>${fmtCompactCount(pt.commentsCount)}</span></span>
+        </div>
+      </button>`;
+    };
+    const emptyMsg=S.profTab==='reposts'?'Reposts & saved posts will appear here':(S.profTab==='tagged'?'Posts that @mention or tag this account appear here':'No posts shared yet');
+    gridHTML=list.length?`<div class="grid grid-cols-3 gap-0.5 sm:gap-1.5 px-0 sm:px-6">${list.map(tile).join('')}</div>`
+      :`<div class="py-14 text-center space-y-3 px-6">
+        <span class="w-14 h-14 mx-auto rounded-full border-2 border-white/15 grid place-items-center text-zinc-400">${ic(S.profTab==='tagged'?'user-check':(S.profTab==='reposts'?'repeat-2':'camera'),'w-6 h-6')}</span>
+        <div class="text-sm font-bold text-white">${esc(emptyMsg)}</div>
+        ${p.isOwn&&S.profTab==='posts'?`<button data-act="openPostModal" class="btn-primary h-9 px-5 rounded-full text-xs font-bold">Share your first post</button>`:''}
+      </div>`;
+  }
+
+  root.innerHTML=`${schemaBanner}
+  <div class="px-4 sm:px-6 pt-5 pb-3 space-y-4">
+    <div class="flex items-center gap-5 sm:gap-9">
+      <button type="button" data-act="profAvatarTap" class="relative shrink-0 group" title="${p.isOwn?'Change photo or view Story':'View Story'}">
+        <span class="block p-[3px] rounded-full bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] group-hover:scale-[1.03] transition">
+          <span class="block p-[2.5px] rounded-full bg-[#05060b]">
+            ${renderAvatarCircle(p,'w-20 h-20 sm:w-28 sm:h-28')}
+          </span>
+        </span>
+        ${online?'<span class="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-400 ring-[3px] ring-[#05060b] shadow-[0_0_10px_rgba(52,211,153,.9)]" title="Online now"></span>':''}
+      </button>
+      <div class="flex-1 min-w-0 space-y-3">
+        <div class="hidden sm:flex items-center gap-2">
+          <h1 class="text-lg font-extrabold text-white tracking-tight truncate">${esc(p.display_name||handleTxt)}</h1>
+          ${p.verified?VERIFIED_BADGE_SVG:''}
+          ${p.category?`<span class="px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-[11px] font-medium text-zinc-300 truncate">${esc(p.category)}</span>`:''}
+        </div>
+        <div class="grid grid-cols-3 gap-2 sm:max-w-sm">
+          <button data-act="scrollToPosts" class="py-1 rounded-xl hover:bg-white/[0.04] transition text-center sm:text-left">
+            <div class="text-base sm:text-lg font-extrabold text-white tabular-nums">${fmtCompactCount(p.postsCount)}</div>
+            <div class="text-[11.5px] text-zinc-400">posts</div>
+          </button>
+          <button data-act="openFollowModal" data-arg="followers" class="py-1 rounded-xl hover:bg-white/[0.04] transition text-center sm:text-left">
+            <div class="text-base sm:text-lg font-extrabold text-white tabular-nums">${fmtCompactCount(p.followersCount)}</div>
+            <div class="text-[11.5px] text-zinc-400">followers</div>
+          </button>
+          <button data-act="openFollowModal" data-arg="following" class="py-1 rounded-xl hover:bg-white/[0.04] transition text-center sm:text-left">
+            <div class="text-base sm:text-lg font-extrabold text-white tabular-nums">${fmtCompactCount(p.followingCount)}</div>
+            <div class="text-[11.5px] text-zinc-400">following</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-1 text-[13px] leading-snug">
+      <div class="flex sm:hidden items-center gap-1.5">
+        <span class="font-extrabold text-white text-sm">${esc(p.display_name||handleTxt)}</span>
+        ${p.verified?VERIFIED_BADGE_SVG:''}
+      </div>
+      ${p.category?`<div class="sm:hidden text-xs font-medium text-zinc-400">${esc(p.category)}</div>`:''}
+      ${p.bio?`<p class="text-zinc-100 leading-relaxed break-words">${renderBioText(p.bio)}</p>`:(p.isOwn?'<p class="text-zinc-500 text-xs">Add a bio, website link, or @hashtags from Edit profile.</p>':'')}
+      ${p.location_text?`<div class="flex items-center gap-1.5 text-sky-400 text-xs font-medium pt-0.5">${ic('map-pin','w-3.5 h-3.5 shrink-0')}<span class="truncate">${esc(p.location_text)}</span></div>`:''}
+      ${primaryLink?`<div class="flex items-center gap-1.5 text-xs pt-0.5 flex-wrap">
+        ${ic('link-2','w-3.5 h-3.5 text-zinc-400 shrink-0')}
+        <a href="${esc(primaryLink)}" target="_blank" rel="noopener noreferrer" class="font-semibold text-sky-300 hover:underline truncate max-w-[230px]">${esc(cleanLinkLbl(primaryLink))}</a>
+        ${totalLinksCount>1?`<button type="button" data-act="openLinksModal" class="font-bold text-zinc-200 hover:text-white transition">and ${totalLinksCount-1} more</button>`:''}
+      </div>`:''}
+      ${p.threads_handle?`<div class="pt-1"><button type="button" data-act="copyHandle" data-arg="${esc(p.threads_handle)}" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-[11px] font-bold text-white hover:bg-white/[0.12] transition">${ic('at-sign','w-3 h-3 text-zinc-400')}<span>${esc(p.threads_handle)}</span></button></div>`:''}
+      ${mutualsHTML}
+    </div>
+
+    ${actionRow}
+  </div>
+
+  ${suggestHTML}
+  ${hlHTML}
+
+  ${S.profTag?`<div class="mx-4 sm:mx-6 mb-2 px-3.5 py-2 rounded-xl bg-sky-500/10 border border-sky-400/25 flex items-center justify-between text-xs text-sky-200"><span>Showing posts tagged <strong>#${esc(S.profTag)}</strong></span><button data-act="clearTagFilter" class="font-bold text-white hover:underline">Clear</button></div>`:''}
+
+  <div id="prof-tabs-bar" role="tablist" aria-label="Profile content tabs" class="flex border-t border-b border-white/[0.08] sm:mx-6">
+    ${tabBtn('posts','grid-3x3','Posts')}
+    ${tabBtn('reels','clapperboard','Reels')}
+    ${tabBtn('reposts','repeat-2','Reposts & Saved')}
+    ${tabBtn('tagged','user-check','Tagged Posts')}
+  </div>
+
+  <div class="pt-1 sm:pt-3">${gridHTML}</div>`;
+  icons();
+}
+
+function renderEditProfileModal(){
+  const p=S.profData?.profile;if(!p)return;
+  S.epAvatarPath=p.avatar_path||'';S.epAvatarUrl=p.avatarUrl||'';
+  $('#ep-handle-lbl').textContent=p.username?('@'+p.username):(p.display_name||'@creator');
+  $('#ep-name').value=p.display_name||'';
+  $('#ep-cat').value=p.category||'';
+  $('#ep-bio').value=p.bio||'';
+  $('#ep-web').value=p.website||'';
+  $('#ep-links').value=(p.links||[]).map(l=>`${l.title} | ${l.url}`).join('\n');
+  $('#ep-loc').value=p.location_text||'';
+  $('#ep-email').value=p.contact_email||'';
+  $('#ep-threads').value=p.threads_handle||'';
+  $('#ep-status').value=p.status||'Online';
+  updateEpAvatarPreview();
+}
+function updateEpAvatarPreview(){
+  const box=$('#ep-av-prev'),clr=$('#ep-av-clear');if(!box)return;
+  const url=S.epAvatarUrl;
+  const p=S.profData?.profile||{display_name:'You'};
+  box.innerHTML=url?`<img src="${esc(url)}" alt="Avatar preview" class="w-16 h-16 rounded-full object-cover">`:av(p.display_name||'You','w-16 h-16');
+  clr?.classList.toggle('hidden',!url);
+}
+
+function renderPostPreview(){
+  const bg=POST_BGS[S.postBg]||POST_BGS[0];
+  const prev=$('#post-prev'),img=$('#post-prev-img'),vid=$('#post-prev-vid'),txt=$('#post-prev-txt'),clr=$('#post-media-clr');
+  if(!prev)return;
+  prev.className=`relative h-56 rounded-2xl border border-white/15 overflow-hidden bg-gradient-to-br ${bg} flex items-center justify-center p-5 text-center`;
+  $('#post-bgs').innerHTML=POST_BGS.map((g,i)=>`<button type="button" data-act="postBg" data-arg="${i}" class="w-7 h-7 rounded-lg bg-gradient-to-br ${g} border-2 transition ${i===S.postBg?'border-white scale-105':'border-white/15 opacity-75 hover:opacity-100'}" aria-label="Gradient ${i+1}"></button>`).join('');
+  img.classList.add('hidden');vid.classList.add('hidden');vid.pause();
+  const cap=$('#post-cap')?.value.trim()||'Share a moment, photo carousel, or creator announcement…';
+  txt.textContent=cap;
+  const first=S.postMedia[0];
+  if(first){
+    txt.classList.add('hidden');
+    clr.classList.remove('hidden');clr.classList.add('grid');
+    setTxt('#post-media-lbl',S.postMedia.length>1?`${S.postMedia.length} slides selected`:'Change media');
+    if(first.mime?.startsWith('video/')){vid.src=first.url;vid.classList.remove('hidden');vid.play().catch(()=>{})}
+    else{img.src=first.url;img.classList.remove('hidden')}
+  }else{
+    txt.classList.remove('hidden');
+    clr.classList.add('hidden');clr.classList.remove('grid');
+    setTxt('#post-media-lbl','Upload media');
+  }
+}
+
+function renderPostView(){
+  const p=findPostById(S.postViewId);
+  if(!p){closeM('m-post-view');return}
+  const box=$('#pv-media-box'),hdr=$('#pv-hdr'),body=$('#pv-body'),acts=$('#pv-acts'),meta=$('#pv-meta');
+  const au=p.author||{};const canDel=Boolean(S.profData?.profile?.isOwn||(S.user&&p.userId===S.user.id)||(!S.user&&p.userId==='self'));
+  const urls=p.mediaUrls||[];const sIdx=Math.max(0,Math.min(S.postViewSlide,Math.max(0,urls.length-1)));
+  const curUrl=urls[sIdx];
+  if(curUrl){
+    box.innerHTML=(p.mediaType==='video'
+      ?`<video src="${esc(curUrl)}" class="w-full h-full max-h-[80vh] object-contain" controls autoplay loop playsinline></video>`
+      :`<img src="${esc(curUrl)}" alt="" class="w-full h-full max-h-[80vh] object-contain">`)
+      +(urls.length>1?`<button type="button" data-act="pvSlide" data-arg="-1" class="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/65 text-white grid place-items-center hover:bg-black/85 transition" aria-label="Previous slide">${ic('chevron-left','w-4 h-4')}</button>
+        <button type="button" data-act="pvSlide" data-arg="1" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/65 text-white grid place-items-center hover:bg-black/85 transition" aria-label="Next slide">${ic('chevron-right','w-4 h-4')}</button>
+        <div class="absolute bottom-3 inset-x-0 flex justify-center gap-1.5">${urls.map((_,i)=>`<span class="w-1.5 h-1.5 rounded-full ${i===sIdx?'bg-white':'bg-white/40'}"></span>`).join('')}</div>`:'');
+  }else{
+    box.innerHTML=`<div class="w-full h-full min-h-[300px] bg-gradient-to-br ${esc(p.bg||POST_BGS[0])} p-8 flex items-center justify-center text-center"><p class="text-lg sm:text-xl font-extrabold text-white drop-shadow leading-snug max-w-md">${esc(p.caption||'WhatsGram Post')}</p></div>`;
+  }
+  hdr.innerHTML=`<button type="button" data-act="openProfileFromModal" data-arg="${esc(au.username||p.userId)}" class="flex items-center gap-2.5 min-w-0 text-left hover:opacity-85">
+    ${renderAvatarCircle(au,'w-8 h-8')}
+    <div class="min-w-0">
+      <div class="text-xs font-bold text-white inline-flex items-center gap-1 truncate">${esc(au.username||au.display_name||'creator')}${au.verified?VERIFIED_BADGE_SVG:''}</div>
+      ${p.locationText?`<div class="text-[10px] text-zinc-400 truncate">${esc(p.locationText)}</div>`:''}
+    </div>
+  </button>
+  <div class="flex items-center gap-1 shrink-0">
+    ${canDel?`<button type="button" data-act="pinPost" class="w-8 h-8 rounded-full grid place-items-center ${p.pinned?'text-sky-400 bg-sky-500/15':'text-zinc-400 hover:text-white hover:bg-white/[0.08]'} transition" title="${p.pinned?'Unpin from profile':'Pin to profile'}" aria-label="Pin post">${ic('pin','w-4 h-4')}</button>
+      <button type="button" data-act="delPost" class="w-8 h-8 rounded-full grid place-items-center text-rose-400 hover:bg-rose-500/15 transition" title="Delete post" aria-label="Delete post">${ic('trash-2','w-4 h-4')}</button>`:''}
+    <button type="button" data-act="closeModal" data-arg="m-post-view" class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" aria-label="Close post">${ic('x','w-4 h-4')}</button>
+  </div>`;
+
+  const cms=p.comments||[];
+  body.innerHTML=`<div class="text-xs text-zinc-100 leading-relaxed break-words"><strong class="font-bold text-white mr-1.5">${esc(au.username||au.display_name||'creator')}</strong>${renderBioText(p.caption)}</div>
+  <div class="border-t border-white/[0.06] pt-3 space-y-2.5">
+    ${cms.length?cms.map(cm=>{
+      const canDelCm=Boolean((S.user&&cm.userId===S.user.id)||(!S.user&&cm.userId==='self'));
+      return `<div class="flex items-start gap-2 group">
+        <button type="button" data-act="openProfileFromModal" data-arg="${esc(cm.authorUsername||cm.userId)}" class="shrink-0 mt-0.5">${cm.authorAvatarUrl?`<img src="${esc(cm.authorAvatarUrl)}" class="w-6 h-6 rounded-full object-cover" alt="">`:av(cm.authorName||'U','w-6 h-6')}</button>
+        <div class="min-w-0 flex-1 text-xs leading-snug break-words"><button type="button" data-act="openProfileFromModal" data-arg="${esc(cm.authorUsername||cm.userId)}" class="font-bold text-white mr-1.5 hover:underline">${esc(cm.authorUsername||cm.authorName)}</button><span class="text-zinc-200">${esc(cm.text)}</span></div>
+        ${canDelCm?`<button type="button" data-act="delPostComment" data-arg="${esc(cm.id)}" class="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-rose-400 transition shrink-0" aria-label="Delete comment">${ic('x','w-3.5 h-3.5')}</button>`:''}
+      </div>`;
+    }).join(''):'<div class="text-xs text-zinc-500 py-4 text-center">No comments yet — start the conversation.</div>'}
+  </div>`;
+
+  acts.innerHTML=`<div class="flex items-center gap-2">
+    <button type="button" data-act="likePost" class="w-8 h-8 rounded-full grid place-items-center hover:bg-white/[0.08] transition ${p.likedByMe?'text-rose-500':'text-white'}" aria-label="Like post">${ic('heart','w-5 h-5'+(p.likedByMe?' fill-current':''))}</button>
+    <button type="button" data-act="focusPostComment" class="w-8 h-8 rounded-full grid place-items-center text-white hover:bg-white/[0.08] transition" aria-label="Comment">${ic('message-circle','w-5 h-5')}</button>
+    <button type="button" data-act="repostPost" class="w-8 h-8 rounded-full grid place-items-center hover:bg-white/[0.08] transition ${p.repostedByMe?'text-emerald-400':'text-white'}" title="Repost to your profile" aria-label="Repost">${ic('repeat-2','w-5 h-5')}</button>
+  </div>
+  <button type="button" data-act="savePost" class="w-8 h-8 rounded-full grid place-items-center hover:bg-white/[0.08] transition ${p.savedByMe?'text-amber-400':'text-white'}" title="Save post" aria-label="Save post">${ic('bookmark','w-5 h-5'+(p.savedByMe?' fill-current':''))}</button>`;
+  meta.textContent=`${fmtCompactCount(p.likesCount)} ${p.likesCount===1?'like':'likes'} · ${fmtCompactCount(p.commentsCount)} ${p.commentsCount===1?'comment':'comments'}`;
+  icons();
+}
+
+function renderFollowListModal(){
+  const d=S.profData;if(!d)return;
+  const tab=S.followListTab||'followers';
+  const mapTab=(id,active)=>{const el=$('#fl-tab-'+id);if(el)el.className='h-8 rounded-xl text-xs font-semibold transition-all '+(active?'lux-tab-on':'lux-tab-off')};
+  mapTab('followers',tab==='followers');mapTab('following',tab==='following');mapTab('suggested',tab==='suggested');
+  const q=S.followListQ.trim().toLowerCase();
+  let list=[];
+  if(tab==='followers')list=d.followers||[];
+  else if(tab==='following')list=d.following||[];
+  else{
+    const seen=new Set();
+    const pool=S.user?[...(S.users||[]),...(d.suggested||[]),...(d.followers||[]),...(d.following||[])]:LOCAL_SOCIAL.profiles;
+    list=pool.filter(u=>{if(!u||!u.id||seen.has(u.id))return false;seen.add(u.id);return true});
+  }
+  if(q)list=list.filter(u=>(u.display_name||'').toLowerCase().includes(q)||(u.username||'').toLowerCase().includes(q));
+  setTxt('#fl-title',tab==='suggested'?'Discover Creators':(tab==='following'?'Following':'Followers'));
+  const viewerId=S.user?S.user.id:'self';
+  const followingIds=new Set(S.user?(d.profile.isOwn?(d.following||[]).map(u=>u.id):[]):LOCAL_SOCIAL.follows.filter(f=>f[0]==='self').map(f=>f[1]));
+  if(S.user&&!d.profile.isOwn){if(d.profile.isFollowing)followingIds.add(d.profile.id);(d.mutuals||[]).forEach(u=>followingIds.add(u.id))}
+  $('#fl-body').innerHTML=list.length?list.map(u=>{
+    const isMe=u.id===viewerId;const isF=followingIds.has(u.id);
+    return `<div class="flex items-center gap-3 p-2 rounded-2xl hover:bg-white/[0.04] transition">
+      <button type="button" data-act="openProfileFromModal" data-arg="${esc(u.username||u.id)}" class="flex items-center gap-2.5 flex-1 min-w-0 text-left">
+        <span class="relative shrink-0">${renderAvatarCircle(u,'w-10 h-10')}${S.onlineUsers[u.id]?'<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#070810]"></span>':''}</span>
+        <div class="min-w-0 flex-1">
+          <div class="text-xs font-bold text-white inline-flex items-center gap-1 truncate max-w-full">${esc(u.display_name||u.username||'User')}${u.verified?VERIFIED_BADGE_SVG:''}</div>
+          <div class="text-[11px] text-zinc-400 truncate">@${esc(u.username||'member')}</div>
+        </div>
+      </button>
+      ${!isMe?`<button type="button" data-act="profToggleFollowId" data-arg="${esc(u.id)}" class="h-8 px-3.5 rounded-xl text-[11px] font-bold shrink-0 transition ${isF?'bg-white/[0.1] border border-white/[0.12] text-white':'bg-[#0095f6] hover:bg-[#1aa3ff] text-white'}">${isF?'Following':'Follow'}</button>`:'<span class="text-[10px] font-semibold text-zinc-500 px-2">You</span>'}
+    </div>`;
+  }).join(''):'<div class="py-10 text-center text-xs text-zinc-500">No accounts matching your search.</div>';
+  icons();
+}
+
+function renderLinksModal(){
+  const p=S.profData?.profile;if(!p)return;
+  const all=[...(p.website?[{title:p.website.replace(/^https?:\/\/(www\.)?/i,'').split('/')[0],url:p.website}]:[]),...(p.links||[]).filter(l=>l?.url&&l.url!==p.website)];
+  $('#links-list').innerHTML=all.length?all.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition">
+    <span class="w-9 h-9 rounded-xl bg-sky-500/15 text-sky-400 grid place-items-center shrink-0">${ic('external-link','w-4 h-4')}</span>
+    <div class="min-w-0 flex-1">
+      <div class="text-xs font-bold text-white truncate">${esc(l.title||'Link')}</div>
+      <div class="text-[11px] text-zinc-400 truncate">${esc(l.url)}</div>
+    </div>
+  </a>`).join(''):'<div class="text-xs text-zinc-500 text-center py-6">No external links added yet.</div>';
+  icons();
+}
+
+function renderActivityModal(){
+  $('#act-list').innerHTML=S.activity.length?S.activity.map(it=>`<div class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.07]">
+    <span class="w-8 h-8 rounded-full grid place-items-center shrink-0 ${it.kind==='follow'?'bg-sky-500/15 text-sky-400':it.kind==='like'?'bg-rose-500/15 text-rose-400':'bg-emerald-500/15 text-emerald-400'}">${ic(it.kind==='follow'?'user-plus':it.kind==='like'?'heart':'message-circle','w-4 h-4')}</span>
+    <div class="min-w-0 flex-1">
+      <div class="text-xs text-zinc-100 leading-snug">${esc(it.text)}</div>
+      <div class="text-[10px] font-mono text-zinc-500 mt-0.5">${esc(it.t)}</div>
+    </div>
+    ${it.refUserId?`<button type="button" data-act="openProfileFromModal" data-arg="${esc(it.refUserId)}" class="btn-ghost h-7 px-2.5 rounded-lg text-[10px] font-semibold text-white shrink-0">View</button>`:''}
+  </div>`).join(''):'<div class="py-10 text-center text-xs text-zinc-500">Live followers, likes &amp; comments appear here in real time.</div>';
+  icons();
+}
+
+function renderHighlightViewer(){
+  const hv=S.hlView;if(!hv)return;
+  const slides=hv.slides?.length?hv.slides:[{title:hv.title,text:hv.title,bg:hv.coverBg,mediaUrl:hv.coverUrl}];
+  const idx=Math.max(0,Math.min(hv.idx||0,slides.length-1));hv.idx=idx;
+  const sl=slides[idx];
+  const imgUrl=sl.mediaUrl||hv.coverUrl||'';
+  const canDel=Boolean(S.profData?.profile?.isOwn);
+  $('#sv').style.background='linear-gradient(155deg,#1e1b4b,#311042)';
+  $('#sv').innerHTML=`<div class="absolute inset-0 bg-gradient-to-br ${esc(sl.bg||hv.coverBg||POST_BGS[0])}"></div>
+    ${imgUrl?`<img src="${esc(imgUrl)}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-80">`:''}
+    <div class="absolute top-0 inset-x-0 p-4 z-10 bg-gradient-to-b from-black/75 to-transparent">
+      <div class="h-0.5 rounded-full bg-white/30 mb-3 overflow-hidden"><div id="sv-bar" class="h-full bg-white origin-left" style="animation:bar 5s linear forwards"></div></div>
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">${renderAvatarCircle(S.profData?.profile,'w-8 h-8')}<div class="min-w-0"><div class="text-xs font-bold text-white truncate">${esc(hv.title)}</div><div class="text-[10px] text-white/75">${idx+1} of ${slides.length}</div></div></div>
+        <div class="flex items-center gap-1.5">
+          ${canDel?`<button data-act="delHighlight" data-arg="${esc(hv.id)}" class="w-8 h-8 rounded-full bg-black/45 hover:bg-rose-600/80 grid place-items-center text-white transition" title="Delete highlight" aria-label="Delete highlight">${ic('trash-2','w-3.5 h-3.5')}</button>`:''}
+          <button data-act="storyClose" class="w-8 h-8 rounded-full bg-black/45 hover:bg-black/65 grid place-items-center text-white transition" aria-label="Close highlight">${ic('x','w-4 h-4')}</button>
+        </div>
+      </div>
+    </div>
+    <button data-act="storyPrev" class="absolute inset-y-20 left-0 w-1/4 z-10" aria-label="Previous highlight slide"></button>
+    <button data-act="storyNext" class="absolute inset-y-20 right-0 w-1/4 z-10" aria-label="Next highlight slide"></button>
+    <div class="absolute inset-0 grid place-items-center px-8 pointer-events-none">
+      <div class="rounded-3xl bg-black/35 backdrop-blur-md border border-white/15 p-6 text-center shadow-2xl space-y-2">
+        <div class="text-base font-extrabold text-white">${esc(sl.title||hv.title)}</div>
+        ${sl.text?`<p class="text-xs sm:text-sm text-zinc-100 leading-relaxed">${esc(sl.text)}</p>`:''}
+      </div>
+    </div>`;
+  $('#sv-bar').addEventListener('animationend',()=>A.storyNext());
+  icons();
 }
 
 /* ---------- gemini & assistant ---------- */
@@ -3236,7 +4063,15 @@ const MENUS={
  msg:id=>{const m=cur()?.msgs.find(x=>x.id===id);return[{emojis:['❤️','👍','😂'],id},{sep:1},{l:'Reply',i:'corner-up-left',act:'reply',arg:id},...(m?.text?[{l:'Reply with AI',i:'sparkles',act:'aiReplyToMsg',arg:id},{l:'Explain / translate',i:'bot',act:'aiExplainMsg',arg:id}]:[]),...(m?.from==='me'&&m.type==='text'?[{l:'Edit message',i:'pencil',act:'editMsg',arg:id}]:[]),{l:cur()&&cur().pin===id?'Unpin message':'Pin message',i:'pin',act:'pin',arg:id},{l:'Copy text',i:'copy',act:'copy',arg:id},{sep:1},{l:'Delete message',i:'trash-2',act:'delMsg',arg:id,danger:1}]},
  reelFilter:()=>[{label:'AR filter'},...FILTERS.map(([n],i)=>({l:n,act:'setFilter',arg:String(i),radio:1,on:RS.filter===i}))],
  aiTools:()=>[{l:'Ask general knowledge',i:'globe',act:'aiRun',arg:'What is the scientific name of a lizard and 3 quick facts?'},{l:'Summarize all conversations',i:'sparkles',act:'aiRun',arg:'Summarize all conversations'},{l:'Find action items',i:'list-checks',act:'aiRun',arg:'Find action items'},{l:'Generate hashtags',i:'hash',act:'aiRun',arg:'Generate hashtags'},{sep:1},{l:'Clear conversation',i:'trash-2',act:'aiClear',danger:1}],
- account:()=>[{l:S.user?`Account · ${S.user.displayName||(S.user.username?'@'+S.user.username:S.user.email)}`:'Sign in / Create account',i:S.user?'user-check':'cloud',act:'open',arg:'m-auth'},{l:'Overview page',i:'layout-template',act:'openLanding'},{l:'Command palette',i:'command',act:'openCmd'},{sep:1},{l:'Settings',i:'settings',act:'nav',arg:'settings'},{l:'Security vault',i:'shield-check',act:'nav',arg:'vault'},{sep:1},{l:'Create story / reel',i:'plus-circle',act:'storyNew'},{l:'Lock now',i:'lock',act:'lock'}]
+ profileMore:()=>{const own=Boolean(S.profData?.profile?.isOwn);return[
+   ...(own?[{l:'Edit profile',i:'pencil',act:'openEditProfile'},{l:'Create post',i:'plus-square',act:'openPostModal'},{l:'New highlight',i:'circle-plus',act:'openHighlightModal'},{sep:1}]:[{l:'My profile',i:'user',act:'openProfile',arg:'self'},{sep:1}]),
+   {l:'Discover creators',i:'compass',act:'openFollowModal',arg:'suggested'},
+   {l:'Share profile link',i:'share-2',act:'profShare'},
+   {l:'Copy @handle',i:'copy',act:'copyHandle'},
+   {l:'Refresh live stats',i:'refresh-cw',act:'refreshProfileNow'},
+   ...(own?[{sep:1},{l:'Account & recovery',i:'shield-check',act:'open',arg:'m-auth'}]:[])
+ ]},
+ account:()=>[{l:S.user?`Account · ${S.user.displayName||(S.user.username?'@'+S.user.username:S.user.email)}`:'Sign in / Create account',i:S.user?'user-check':'cloud',act:'open',arg:'m-auth'},{l:'My creator profile',i:'user',act:'openProfile',arg:'self'},{l:'Overview page',i:'layout-template',act:'openLanding'},{l:'Command palette',i:'command',act:'openCmd'},{sep:1},{l:'Settings',i:'settings',act:'nav',arg:'settings'},{l:'Security vault',i:'shield-check',act:'nav',arg:'vault'},{sep:1},{l:'Create story / reel',i:'plus-circle',act:'storyNew'},{l:'Lock now',i:'lock',act:'lock'}]
 };
 function menuHTML(items){return items.map(it=>{
  if(it.sep)return '<div class="my-1 h-px bg-white/[0.08]" role="separator"></div>';
@@ -3371,7 +4206,7 @@ const A={
  landScroll(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},
  landTab(tab){const k=tab==='ai'||tab==='vault'?tab:'chat';['chat','ai','vault'].forEach(t=>{const b=$('#ltab-'+t),p=$('#lprev-'+t);if(b)b.className='px-2.5 py-1 rounded-lg font-semibold '+(t===k?'lux-tab-on':'lux-tab-off');if(p)p.classList.toggle('hidden',t!==k)})},
  landFaq(_,el){const open=el.getAttribute('aria-expanded')!=='true';el.setAttribute('aria-expanded',String(open));const body=el.nextElementSibling;if(body)body.classList.toggle('hidden',!open);const ico=el.querySelector('svg,[data-lucide]');if(ico)ico.style.transform=open?'rotate(180deg)':'rotate(0deg)'},
- enterDemo(){try{localStorage.setItem('wg_local_mode','1')}catch(e){}setShell('app');setView('chats');if(window.matchMedia('(min-width:768px)').matches&&D.length&&(!S.chat||!D.some(c=>c.id===S.chat)))openChat(D[0].id);audit('Local sandbox started')},
+ enterDemo(){closeM('m-auth');try{localStorage.setItem('wg_local_mode','1')}catch(e){}setShell('app');setView('chats');if(window.matchMedia('(min-width:768px)').matches&&D.length&&(!S.chat||!D.some(c=>c.id===S.chat)))openChat(D[0].id);audit('Local sandbox started')},
  openLanding(){closeMenu();setShell('landing');const ld=$('#landing');if(ld)ld.scrollTo({top:0,behavior:'smooth'})},
  openAuth(tab){S.authTab=['signin','signup','forgot','reset'].includes(tab)?tab:'signin';if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-fp-res'))$('#auth-fp-res').classList.add('hidden');renderAccountUI();openM('m-auth');setTimeout(()=>{const f=S.authTab==='signup'?'#auth-su-user':S.authTab==='forgot'?'#auth-fp-id':S.authTab==='reset'?'#auth-rs-p1':'#auth-si-id';$(f)?.focus()},40)},
  togglePass(id,el){const inp=document.getElementById(id);if(!inp)return;const showPass=inp.type==='password';inp.type=showPass?'text':'password';if(el){el.setAttribute('aria-label',showPass?'Hide password':'Show password');el.innerHTML=ic(showPass?'eye-off':'eye','w-3.5 h-3.5');icons()}},
@@ -3381,7 +4216,7 @@ const A={
    if(S.authTab==='reset')return A.confirmReset();
    const errEl=$('#auth-err'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};
    if(errEl)errEl.classList.add('hidden');
-   if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');
+   if(!S.sbConfigured)return showErr(`Missing ${(S.sbMissing?.length?S.sbMissing:['SUPABASE_URL','SUPABASE_SECRET_KEY']).join(' / ')} in Vercel Environment Variables. Add them & redeploy, or click "Continue in Local Sandbox Mode" below.`);
    let payload;
    if(S.authTab==='signup'){
      const username=($('#auth-su-user')?.value||'').trim().toLowerCase().replace(/^@+/,'');
@@ -3418,7 +4253,7 @@ const A={
    const errEl=$('#auth-err'),resEl=$('#auth-fp-res'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};
    if(errEl)errEl.classList.add('hidden');
    if(resEl)resEl.classList.add('hidden');
-   if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');
+   if(!S.sbConfigured)return showErr(`Missing ${(S.sbMissing?.length?S.sbMissing:['SUPABASE_URL','SUPABASE_SECRET_KEY']).join(' / ')} in Vercel Environment Variables. Add them & redeploy, or click "Continue in Local Sandbox Mode" below.`);
    const identifier=($('#auth-fp-id')?.value||'').trim();
    if(!identifier)return showErr('Enter your username or registered recovery email.');
    if(btn){btn.disabled=true;btn.textContent='Sending reset link…'}
@@ -3436,7 +4271,7 @@ const A={
  async confirmReset(){
    const errEl=$('#auth-err'),btn=$('#auth-submit'),showErr=msg=>{if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden')}};
    if(errEl)errEl.classList.add('hidden');
-   if(!S.sbConfigured)return showErr('Supabase env vars are not configured on /api/supabase.');
+   if(!S.sbConfigured)return showErr(`Missing ${(S.sbMissing?.length?S.sbMissing:['SUPABASE_URL','SUPABASE_SECRET_KEY']).join(' / ')} in Vercel Environment Variables. Add them & redeploy, or click "Continue in Local Sandbox Mode" below.`);
    if(!S.recovery?.token&&!S.recovery?.accessToken&&!S.recovery?.tokenHash)return showErr('Reset token is missing or already used.');
    const p1=$('#auth-rs-p1')?.value||'',p2=$('#auth-rs-p2')?.value||'';
    if(p1.length<6)return showErr('New password must be at least 6 characters.');
@@ -3525,7 +4360,7 @@ const A={
    if($('#auth-chg-new'))$('#auth-chg-new').value='';
    toast('Password updated');
  },
- async signOut(){disconnectRealtime();await sbPost({action:'signout'});try{localStorage.removeItem('wg_has_session');localStorage.removeItem('wg_local_mode')}catch(e){}S.user=null;S.users=[];S.ecdhId=null;S.e2eeRing={};S.onlineUsers={};S.typingTms={};S.recovery=null;await genKey();renderAccountUI();renderDmUsers();renderGroupMembers();renderList();renderThread();renderInfo();renderStories();closeM('m-auth');setShell('landing');toast('Signed out')},
+ async signOut(){disconnectRealtime();await sbPost({action:'signout'});try{localStorage.removeItem('wg_has_session');localStorage.removeItem('wg_local_mode')}catch(e){}S.user=null;S.users=[];S.profData=null;S.profId=null;S.ecdhId=null;S.e2eeRing={};S.onlineUsers={};S.typingTms={};S.recovery=null;await genKey();renderAccountUI();renderDmUsers();renderGroupMembers();renderList();renderThread();renderInfo();renderStories();closeM('m-auth');setShell('landing');toast('Signed out')},
  syncNow(){refreshCloud(false)},
  confirmYes(){const f=S.confirm;S.confirm=null;closeM('m-confirm');f&&f()},
  sw(k){cfg[k]=!cfg[k];if(k==='notify'&&cfg[k]&&typeof Notification!=='undefined'&&Notification.permission==='default'){Notification.requestPermission().then(p=>{if(p!=='granted'){cfg.notify=false;applyCfg()}saveCfg()})}saveCfg();applyCfg();if(k==='spatial'&&cfg[k]){tone(500,.25,-1,.05);setTimeout(()=>tone(700,.25,1,.05),300)}if(k==='e2ee'){renderHead();audit('E2EE '+(cfg[k]?'enabled':'disabled'))}if(k==='vanish')audit('Vanish mode '+(cfg[k]?'enabled':'disabled'))},
@@ -3580,11 +4415,384 @@ const A={
    ST.push(st);saveS();closeM('m-studio');renderStories();toast('Story published');
    if(S.user){const wire=Object.assign({},st);delete wire._localUrl;sbPost({action:'createStory',story:wire})}
  },
- storyOpen(i){S.story=+i;openM('m-story');renderStory()},
- storyNext(){if(S.story<ST.length-1){S.story++;renderStory()}else A.storyClose()},
- storyPrev(){if(S.story>0){S.story--;renderStory()}},
- storyClose(){S.story=-1;closeM('m-story');$('#sv').innerHTML=''},
+ storyOpen(i){S.hlView=null;S.story=+i;openM('m-story');renderStory()},
+ storyNext(){if(S.hlView){const slides=S.hlView.slides||[];if(S.hlView.idx<slides.length-1){S.hlView.idx++;renderHighlightViewer()}else A.storyClose();return}if(S.story<ST.length-1){S.story++;renderStory()}else A.storyClose()},
+ storyPrev(){if(S.hlView){if(S.hlView.idx>0){S.hlView.idx--;renderHighlightViewer()}return}if(S.story>0){S.story--;renderStory()}},
+ storyClose(){S.story=-1;S.hlView=null;closeM('m-story');$('#sv').innerHTML=''},
  storyVote(c){const s=ST[S.story];if(!s||s.voted)return;s[c]++;s.voted=true;saveS();renderStory();$('#sv-bar').style.animationPlayState='paused';if(S.user)sbPost({action:'voteStory',storyId:s.id,choice:c})},
+ openProfile:target=>openProfile(target||'self'),
+ openProfileFromModal(target){closeM('m-post-view');closeM('m-follow-list');closeM('m-activity');openProfile(target||'self')},
+ openPeerProfile(){
+   const c=cur();if(!c)return openProfile('self');
+   if(c.peerUserId){
+     const peer=(S.users||[]).find(u=>u.id===c.peerUserId);
+     return openProfile(peer?.username||c.peerUserId);
+   }
+   const match=LOCAL_SOCIAL.profiles.find(p=>p.display_name.toLowerCase()===c.name.toLowerCase());
+   openProfile(match?(match.username||match.id):'self');
+ },
+ openAuthorProfile(author){
+   const raw=normalizeHandle(author);if(!raw||raw==='you')return openProfile('self');
+   if(S.user){
+     const hit=S.users.find(u=>normalizeHandle(u.username)===raw||String(u.display_name||'').toLowerCase()===String(author||'').toLowerCase());
+     return openProfile(hit?(hit.id||hit.username):raw);
+   }
+   const loc=LOCAL_SOCIAL.profiles.find(p=>normalizeHandle(p.username)===raw||p.display_name.toLowerCase()===String(author||'').toLowerCase());
+   openProfile(loc?(loc.username||loc.id):'self');
+ },
+ profBack(){
+   if(S.profPrevView&&S.profPrevView!=='profile')setView(S.profPrevView);
+   else if(S.profId&&S.profId!=='self')openProfile('self');
+   else setView('chats');
+ },
+ async openProfilePicker(){
+   if(!S.profData)await loadProfileData('self',true);
+   A.openFollowModal('suggested');
+ },
+ openActivity(){S.actUnread=0;renderActivityBadge();renderActivityModal();openM('m-activity')},
+ refreshProfileNow(){loadProfileData(S.profId||'self',false)},
+ profAvatarTap(){
+   const d=S.profData;if(!d)return;
+   if(d.highlights?.length)return A.openHighlight(d.highlights[0].id);
+   if(d.profile?.isOwn)return A.openEditProfile();
+ },
+ scrollToPosts(){$('#prof-tabs-bar')?.scrollIntoView({behavior:'smooth',block:'start'})},
+ profTab(k){S.profTab=k||'posts';renderProfile()},
+ toggleSuggest(){S.profSuggest=!S.profSuggest;renderProfile()},
+ clearTagFilter(){S.profTag=null;renderProfile()},
+ filterTag(t){S.profTag=String(t||'').replace(/^#/,'');renderProfile()},
+ copyHandle(h){
+   const raw=h||(S.profData?.profile?.username)||(S.profData?.profile?.display_name)||'creator';
+   const txt='@'+String(raw).replace(/^@/,'');
+   navigator.clipboard?.writeText(txt).then(()=>toast(`Copied ${txt}`),()=>toast(txt));
+ },
+ profShare(){
+   const p=S.profData?.profile;
+   const slug=p?.username||p?.id||'self';
+   const url=`${location.origin}${location.pathname}#wg-profile=${encodeURIComponent(slug)}`;
+   if(navigator.share)navigator.share({title:`${p?.display_name||slug} on WhatsGram`,url}).catch(()=>{});
+   else navigator.clipboard?.writeText(url).then(()=>toast('Profile link copied'),()=>toast(url));
+ },
+ profEmail(){
+   const em=S.profData?.profile?.contact_email;
+   if(!em)return toast('No public contact email set','err');
+   navigator.clipboard?.writeText(em).catch(()=>{});
+   try{location.href='mailto:'+encodeURIComponent(em)}catch(e){}
+   toast(`Contact email copied: ${em}`);
+ },
+ async profFollow(){
+   const p=S.profData?.profile;if(!p||p.isOwn)return;
+   return A.profToggleFollowId(p.id);
+ },
+ async profToggleFollowId(targetId){
+   if(!targetId)return;
+   if(S.user){
+     const res=await sbPost({action:'toggleFollow',targetUserId:targetId});
+     if(!res?.ok)return toast(res?.error||'Could not update follow status','err');
+     toast(res.following?'Following':'Unfollowed');
+     await loadProfileData(S.profId||'self',true);
+     return;
+   }
+   const idx=LOCAL_SOCIAL.follows.findIndex(f=>f[0]==='self'&&f[1]===targetId);
+   if(idx>=0){LOCAL_SOCIAL.follows.splice(idx,1);toast('Unfollowed')}
+   else{LOCAL_SOCIAL.follows.push(['self',targetId]);toast('Following')}
+   saveLocalSocial();
+   S.profData=buildLocalProfileData(S.profId||'self');
+   renderProfile();
+   if($('#m-follow-list')?.classList.contains('open'))renderFollowListModal();
+ },
+ async profMsg(){
+   const p=S.profData?.profile;if(!p)return;
+   if(S.user){
+     if(p.id===S.user.id){setView('chats');return}
+     if(!S.users.some(u=>u.id===p.id))S.users.push(p);
+     return A.dmUser(p.id);
+   }
+   const existing=D.find(c=>c.name.toLowerCase()===(p.display_name||'').toLowerCase());
+   if(existing){setView('chats');return openChat(existing.id)}
+   const cid=uid('c');
+   D.push({id:cid,name:p.display_name||p.username||'Creator',folder:'personal',unread:0,status:p.status||'Online',pin:null,msgs:[{id:uid('m'),from:'sys',type:'sys',text:`Encrypted DM started with ${p.display_name||p.username}`,t:now(),ts:Date.now()}]});
+   saveD();setView('chats');openChat(cid);
+ },
+ openEditProfile(){renderEditProfileModal();openM('m-edit-profile')},
+ pickAvatar(){$('#ep-av-file').click()},
+ clearAvatar(){S.epAvatarPath='';S.epAvatarUrl='';updateEpAvatarPreview()},
+ async aiBioSuggest(){
+   const name=$('#ep-name').value.trim()||'Creator',cat=$('#ep-cat').value.trim()||'Digital Creator',curBio=$('#ep-bio').value.trim();
+   toast('Drafting bio with Gemini…');
+   const prompt=`Write a punchy, attractive 2-line Instagram creator bio (under 150 chars total) for ${name}${cat?' ('+cat+')':''}${curBio?', refining: "'+curBio+'"':''}. Include 2 relevant #hashtags. Return ONLY the bio text, no quotes.`;
+   const res=await callGemini({prompt,system:'You are a concise brand copywriter. Output only the requested bio text.'});
+   const bio=(res?.text||'').trim().replace(/^["']|["']$/g,'')||`${cat} · Building remarkable digital products & workflows.\n#CreatorOS #WhatsGram`;
+   $('#ep-bio').value=bio.slice(0,300);
+   toast(res?.text?'Bio polished with Gemini AI':'Crafted clean creator bio');
+ },
+ async saveProfile(){
+   const btn=$('#ep-save');
+   const displayName=$('#ep-name').value.trim();
+   if(!displayName)return toast('Display name is required','err');
+   const links=[];
+   for(const line of $('#ep-links').value.split('\n')){
+     const clean=line.trim();if(!clean)continue;
+     const parts=clean.split('|');
+     const urlRaw=(parts[1]||parts[0]).trim();
+     const title=(parts[1]?parts[0]:urlRaw.replace(/^https?:\/\//i,'').split('/')[0]).trim();
+     if(urlRaw)links.push({title,url:/^https?:\/\//i.test(urlRaw)?urlRaw:'https://'+urlRaw});
+   }
+   const payload={
+     displayName,
+     category:$('#ep-cat').value.trim(),
+     bio:$('#ep-bio').value.trim(),
+     website:$('#ep-web').value.trim(),
+     links,
+     locationText:$('#ep-loc').value.trim(),
+     contactEmail:$('#ep-email').value.trim(),
+     threadsHandle:$('#ep-threads').value.trim(),
+     status:$('#ep-status').value.trim()||'Online',
+     avatarPath:S.epAvatarPath||''
+   };
+   if(btn){btn.disabled=true;btn.textContent='Saving…'}
+   try{
+     if(S.user){
+       const res=await sbPost({action:'updateProfile',...payload});
+       if(!res?.ok)return toast(res?.error||'Save failed','err');
+       S.user.displayName=displayName;
+       if(res.profile?.avatarUrl)S.user.avatarUrl=res.profile.avatarUrl;
+       renderAccountUI();
+       closeM('m-edit-profile');
+       await loadProfileData('self',true);
+       toast('Profile updated');
+       return;
+     }
+     const me=LOCAL_SOCIAL.profiles[0];
+     Object.assign(me,{display_name:displayName,category:payload.category,bio:payload.bio,website:/^https?:\/\//i.test(payload.website)||!payload.website?payload.website:'https://'+payload.website,links,location_text:payload.locationText,contact_email:payload.contactEmail,threads_handle:payload.threadsHandle.replace(/^@/,''),status:payload.status,avatarUrl:S.epAvatarUrl||''});
+     saveLocalSocial();
+     closeM('m-edit-profile');
+     loadProfileData('self',true);
+     toast('Profile updated');
+   }finally{if(btn){btn.disabled=false;btn.textContent='Save profile changes'}}
+ },
+ openPostModal(){S.postMedia=[];S.postBg=0;$('#post-cap').value='';$('#post-loc').value='';$('#post-tags').value='';$('#post-pin').checked=false;$('#post-file').value='';renderPostPreview();openM('m-post')},
+ postBg(i){S.postBg=+i;renderPostPreview()},
+ pickPostMedia(){$('#post-file').click()},
+ clearPostMedia(){S.postMedia=[];$('#post-file').value='';renderPostPreview()},
+ async aiPostCaption(){
+   const seed=$('#post-cap').value.trim(),loc=$('#post-loc').value.trim();
+   toast('Generating caption with Gemini…');
+   const prompt=`Write an engaging, authentic Instagram post caption (2 sentences max) + 4 relevant #hashtags${seed?' about: '+seed:' about launching a sleek new encrypted workspace update'}${loc?' in '+loc:''}. Return only the caption.`;
+   const res=await callGemini({prompt,system:'You are a modern social creator assistant. Output only the caption and hashtags.'});
+   const txt=(res?.text||'').trim().replace(/^["']|["']$/g,'')||'Shipping fresh updates from the studio today — faster workflows, crisp design, zero compromise on privacy.\n#WhatsGram #LaunchDay #PrivacyFirst #BuildInPublic';
+   $('#post-cap').value=txt.slice(0,1200);
+   renderPostPreview();
+   toast(res?.text?'Caption generated with Gemini AI':'Sample caption generated');
+ },
+ async createPost(){
+   const caption=$('#post-cap').value.trim(),locationText=$('#post-loc').value.trim(),pinned=Boolean($('#post-pin').checked);
+   const rawTags=$('#post-tags').value.split(',').map(x=>x.trim().replace(/^[@#]+/,'').toLowerCase()).filter(Boolean);
+   if(!caption&&!S.postMedia.length)return toast('Add a caption or media file','err');
+   const btn=$('#post-submit');if(btn){btn.disabled=true;btn.textContent='Publishing…'}
+   try{
+     const pid=uid('pt');
+     if(S.user){
+       const mediaPaths=[];
+       for(let i=0;i<S.postMedia.length;i++){
+         const item=S.postMedia[i];
+         if(S.sbConfigured&&item.file){
+           const up=await uploadCloudMedia(null,`${pid}_${i}`,item.file,item.file.name,item.mime,{scope:'post'});
+           if(up?.mediaPath)mediaPaths.push(up.mediaPath);
+         }
+       }
+       const firstVid=S.postMedia[0]?.mime?.startsWith('video/');
+       const mediaType=mediaPaths.length>1?'carousel':(firstVid?'video':(mediaPaths.length?'image':'card'));
+       const res=await sbPost({action:'createPost',post:{id:pid,caption,locationText,tags:rawTags,mediaType,mediaPaths,bg:POST_BGS[S.postBg],pinned}});
+       if(!res?.ok)return toast(res?.error||'Publish failed','err');
+       closeM('m-post');
+       S.profTab='posts';
+       await loadProfileData('self',false);
+       toast('Post published');
+       return;
+     }
+     const mediaUrls=[];
+     for(const item of S.postMedia){
+       if(item.dataUrl)mediaUrls.push(item.dataUrl);
+       else if(item.url)mediaUrls.push(item.url);
+     }
+     const firstVid=S.postMedia[0]?.mime?.startsWith('video/');
+     const autoTags=[...new Set([...rawTags,...[...caption.matchAll(/[@#]([a-z0-9][a-z0-9._-]{1,31})/gi)].map(m=>m[1].toLowerCase())])];
+     LOCAL_SOCIAL.posts.unshift({id:pid,userId:'self',caption,locationText,tags:autoTags,mediaType:mediaUrls.length>1?'carousel':(firstVid?'video':(mediaUrls.length?'image':'card')),mediaUrls,bg:POST_BGS[S.postBg],pinned,createdAt:new Date().toISOString()});
+     saveLocalSocial();
+     closeM('m-post');
+     S.profTab='posts';
+     openProfile('self');
+     toast('Post published');
+   }finally{if(btn){btn.disabled=false;btn.textContent='Publish to Profile'}}
+ },
+ viewPost(postId){S.postViewId=postId;S.postViewSlide=0;renderPostView();openM('m-post-view')},
+ pvSlide(d){const p=findPostById(S.postViewId);const n=(p?.mediaUrls||[]).length;if(n<2)return;S.postViewSlide=(S.postViewSlide+(+d)+n)%n;renderPostView()},
+ dblLikePost(_,__,ev){
+   if(ev?.target?.closest('button'))return;
+   const n=Date.now();
+   if(S._pvTap&&n-S._pvTap<320){
+     S._pvTap=0;
+     const box=$('#pv-media-box');
+     if(box){const h=document.createElement('div');h.className='burst absolute z-20 text-6xl pointer-events-none';h.textContent='❤️';box.appendChild(h);setTimeout(()=>h.remove(),900)}
+     const p=findPostById(S.postViewId);if(p&&!p.likedByMe)A.likePost();
+   }else{S._pvTap=n}
+ },
+ async likePost(){
+   const p=findPostById(S.postViewId);if(!p)return;
+   if(S.user){
+     const res=await sbPost({action:'togglePostLike',postId:p.id});
+     if(!res?.ok)return toast(res?.error||'Could not like post','err');
+     p.likedByMe=res.liked;p.likesCount=res.count;
+     renderPostView();renderProfile();
+     return;
+   }
+   const idx=LOCAL_SOCIAL.likes.findIndex(l=>l[0]===p.id&&l[1]==='self');
+   if(idx>=0)LOCAL_SOCIAL.likes.splice(idx,1);else LOCAL_SOCIAL.likes.push([p.id,'self']);
+   saveLocalSocial();S.profData=buildLocalProfileData(S.profId||'self');renderPostView();renderProfile();
+ },
+ async savePost(){
+   const p=findPostById(S.postViewId);if(!p)return;
+   if(S.user){
+     const res=await sbPost({action:'togglePostSave',postId:p.id,kind:'save'});
+     if(!res?.ok)return toast(res?.error||'Save failed','err');
+     toast(res.active?'Saved to profile':'Removed from saved');
+     await loadProfileData(S.profId||'self',true);
+     return;
+   }
+   const idx=LOCAL_SOCIAL.saves.findIndex(s=>s[0]===p.id&&s[1]==='self'&&s[2]==='save');
+   if(idx>=0){LOCAL_SOCIAL.saves.splice(idx,1);toast('Removed from saved')}
+   else{LOCAL_SOCIAL.saves.push([p.id,'self','save']);toast('Saved to profile')}
+   saveLocalSocial();S.profData=buildLocalProfileData(S.profId||'self');renderPostView();renderProfile();
+ },
+ async repostPost(){
+   const p=findPostById(S.postViewId);if(!p)return;
+   if(S.user){
+     const res=await sbPost({action:'togglePostSave',postId:p.id,kind:'repost'});
+     if(!res?.ok)return toast(res?.error||'Repost failed','err');
+     toast(res.active?'Reposted to your profile':'Repost removed');
+     await loadProfileData(S.profId||'self',true);
+     return;
+   }
+   const idx=LOCAL_SOCIAL.saves.findIndex(s=>s[0]===p.id&&s[1]==='self'&&s[2]==='repost');
+   if(idx>=0){LOCAL_SOCIAL.saves.splice(idx,1);toast('Repost removed')}
+   else{LOCAL_SOCIAL.saves.push([p.id,'self','repost']);toast('Reposted to your profile')}
+   saveLocalSocial();S.profData=buildLocalProfileData(S.profId||'self');renderPostView();renderProfile();
+ },
+ async pinPost(){
+   const p=findPostById(S.postViewId);if(!p)return;
+   if(S.user){
+     const res=await sbPost({action:'togglePinPost',postId:p.id});
+     if(!res?.ok)return toast(res?.error||'Could not update pin','err');
+     toast(res.pinned?'Pinned to top of grid':'Unpinned');
+     await loadProfileData(S.profId||'self',true);
+     return;
+   }
+   const raw=LOCAL_SOCIAL.posts.find(x=>x.id===p.id);if(!raw)return;
+   if(!raw.pinned&&LOCAL_SOCIAL.posts.filter(x=>x.userId==='self'&&x.pinned).length>=3)return toast('Maximum 3 pinned posts allowed','err');
+   raw.pinned=!raw.pinned;saveLocalSocial();
+   S.profData=buildLocalProfileData(S.profId||'self');renderPostView();renderProfile();
+   toast(raw.pinned?'Pinned to top of grid':'Unpinned');
+ },
+ delPost(){
+   const p=findPostById(S.postViewId);if(!p)return;
+   ask('Delete post?','This permanently removes the post and its comments.',async()=>{
+     if(S.user){
+       const res=await sbPost({action:'deletePost',postId:p.id});
+       if(!res?.ok)return toast(res?.error||'Delete failed','err');
+       closeM('m-post-view');await loadProfileData(S.profId||'self',true);toast('Post deleted');
+       return;
+     }
+     LOCAL_SOCIAL.posts=LOCAL_SOCIAL.posts.filter(x=>x.id!==p.id);
+     LOCAL_SOCIAL.comments=LOCAL_SOCIAL.comments.filter(x=>x.postId!==p.id);
+     LOCAL_SOCIAL.likes=LOCAL_SOCIAL.likes.filter(x=>x[0]!==p.id);
+     LOCAL_SOCIAL.saves=LOCAL_SOCIAL.saves.filter(x=>x[0]!==p.id);
+     saveLocalSocial();closeM('m-post-view');S.profData=buildLocalProfileData(S.profId||'self');renderProfile();toast('Post deleted');
+   });
+ },
+ focusPostComment(){$('#pv-cm-in')?.focus()},
+ async aiPostComment(){
+   const p=findPostById(S.postViewId);if(!p)return;
+   const res=await callGemini({prompt:`Write one warm, natural, concise 1-sentence Instagram comment reacting to this post caption: "${p.caption.slice(0,250)}". Output only the comment text.`,system:'Be friendly, authentic, and under 18 words.'});
+   $('#pv-cm-in').value=(res?.text||'').trim().replace(/^["']|["']$/g,'')||'Love how clean and thoughtful this looks!';
+   $('#pv-cm-in').focus();
+ },
+ async addPostComment(){
+   const p=findPostById(S.postViewId),inp=$('#pv-cm-in');
+   const text=inp?.value.trim();if(!p||!text)return;
+   inp.value='';
+   if(S.user){
+     const res=await sbPost({action:'addPostComment',postId:p.id,text});
+     if(!res?.ok)return toast(res?.error||'Comment failed','err');
+     p.comments=[...(p.comments||[]),res.comment];p.commentsCount=p.comments.length;
+     renderPostView();renderProfile();
+     return;
+   }
+   const me=LOCAL_SOCIAL.profiles[0];
+   LOCAL_SOCIAL.comments.push({id:uid('pc'),postId:p.id,userId:'self',authorName:me.display_name,authorUsername:me.username,authorAvatarUrl:me.avatarUrl||null,text,createdAt:new Date().toISOString()});
+   saveLocalSocial();S.profData=buildLocalProfileData(S.profId||'self');renderPostView();renderProfile();
+ },
+ async delPostComment(cmId){
+   const p=findPostById(S.postViewId);if(!p||!cmId)return;
+   if(S.user){
+     const res=await sbPost({action:'deletePostComment',commentId:cmId});
+     if(!res?.ok)return toast(res?.error||'Delete failed','err');
+     await loadProfileData(S.profId||'self',true);
+     return;
+   }
+   LOCAL_SOCIAL.comments=LOCAL_SOCIAL.comments.filter(c=>c.id!==cmId);
+   saveLocalSocial();S.profData=buildLocalProfileData(S.profId||'self');renderPostView();renderProfile();
+ },
+ openFollowModal(tab){S.followListTab=tab||'followers';S.followListQ='';if($('#fl-search'))$('#fl-search').value='';renderFollowListModal();openM('m-follow-list')},
+ followListTab(tab){S.followListTab=tab||'followers';renderFollowListModal()},
+ openHighlightModal(){
+   S.hlBg=0;S.hlMedia=null;$('#hl-title').value='';$('#hl-text').value='';$('#hl-file').value='';setTxt('#hl-media-lbl','Cover photo');
+   $('#hl-bgs').innerHTML=POST_BGS.map((g,i)=>`<button type="button" data-act="hlBg" data-arg="${i}" class="w-7 h-7 rounded-lg bg-gradient-to-br ${g} border-2 transition ${i===S.hlBg?'border-white scale-105':'border-white/15 opacity-75'}" aria-label="Highlight color ${i+1}"></button>`).join('');
+   openM('m-highlight');
+ },
+ hlBg(i){S.hlBg=+i;$('#hl-bgs').innerHTML=POST_BGS.map((g,idx)=>`<button type="button" data-act="hlBg" data-arg="${idx}" class="w-7 h-7 rounded-lg bg-gradient-to-br ${g} border-2 transition ${idx===S.hlBg?'border-white scale-105':'border-white/15 opacity-75'}" aria-label="Highlight color ${idx+1}"></button>`).join('')},
+ pickHighlightMedia(){$('#hl-file').click()},
+ async createHighlight(){
+   const title=$('#hl-title').value.trim();if(!title)return toast('Enter a highlight title','err');
+   const text=$('#hl-text').value.trim();
+   const bg=POST_BGS[S.hlBg]||POST_BGS[0];
+   const hid=uid('hl');
+   if(S.user){
+     let coverPath='';
+     if(S.hlMedia?.file&&S.sbConfigured){
+       const up=await uploadCloudMedia(null,hid,S.hlMedia.file,S.hlMedia.file.name,S.hlMedia.mime,{scope:'highlight'});
+       if(up?.mediaPath)coverPath=up.mediaPath;
+     }
+     const res=await sbPost({action:'createHighlight',highlight:{id:hid,title,coverBg:bg,coverPath,slides:[{title,text,bg,mediaPath:coverPath}]}});
+     if(!res?.ok)return toast(res?.error||'Highlight failed','err');
+     closeM('m-highlight');await loadProfileData('self',true);toast('Highlight saved');
+     return;
+   }
+   const coverUrl=S.hlMedia?.dataUrl||S.hlMedia?.url||'';
+   LOCAL_SOCIAL.highlights.push({id:hid,userId:'self',title,coverBg:bg,coverUrl,slides:[{title,text,bg,mediaUrl:coverUrl}]});
+   saveLocalSocial();closeM('m-highlight');S.profData=buildLocalProfileData('self');renderProfile();toast('Highlight saved');
+ },
+ openHighlight(hlId){
+   const hl=(S.profData?.highlights||[]).find(h=>h.id===hlId);if(!hl)return;
+   S.hlView=Object.assign({},hl,{idx:0});openM('m-story');renderHighlightViewer();
+ },
+ async delHighlight(hlId){
+   if(!hlId)return;
+   if(S.user){
+     const res=await sbPost({action:'deleteHighlight',highlightId:hlId});
+     if(!res?.ok)return toast(res?.error||'Delete failed','err');
+     A.storyClose();await loadProfileData('self',true);toast('Highlight deleted');
+     return;
+   }
+   LOCAL_SOCIAL.highlights=LOCAL_SOCIAL.highlights.filter(h=>h.id!==hlId);
+   saveLocalSocial();A.storyClose();S.profData=buildLocalProfileData(S.profId||'self');renderProfile();toast('Highlight deleted');
+ },
+ openLinksModal(){renderLinksModal();openM('m-links')},
+ jumpReel(reelId){
+   const list=getReels();
+   const idx=list.findIndex(r=>String(r.id)===String(reelId));
+   S.reel=idx>=0?idx:0;setView('reels');
+ },
  aiRun:p=>aiRun(p),aiSend(){const i=$('#ai-in'),v=i.value;i.value='';aiRun(v)},
  aiStop(){if(S.aiAbort){S.aiAbort.abort();S.aiAbort=null}if(S.aiBusy){clearInterval(S.aiBusy);S.aiBusy=null}$('#ai-send').classList.remove('hidden');show('#ai-stop',false,'inline-flex')},
  aiClear(){A.aiStop();S.aiHist=[];$('#ai-log').innerHTML='';aiWelcome()},
@@ -3658,6 +4866,8 @@ document.addEventListener('input',e=>{
     if(lbl){lbl.textContent=lvl.t;lbl.className='text-[10px] font-mono '+(sc>=3&&p.length>=6?'text-emerald-300':'text-zinc-400')}
   }
   if(k==='storyPreview')renderStudioPreview();
+  if(k==='postPreview')renderPostPreview();
+  if(k==='followSearch'){S.followListQ=e.target.value;renderFollowListModal()}
   if(k==='threadSearch')searchThread(e.target.value);
   if(k==='cmd')renderCmdPalette(e.target.value);
   if(k==='sentiment'){
@@ -3702,6 +4912,38 @@ document.addEventListener('change',e=>{
 });
 $('#file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)sendAttachmentFile(f)});
 $('#st-file')?.addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;S.stMedia={file:f,url:URL.createObjectURL(f),mime:f.type};renderStudioPreview()});
+$('#ep-av-file')?.addEventListener('change',e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(S.user&&S.sbConfigured){
+    toast('Uploading avatar…');
+    uploadCloudMedia(null,'av_'+Date.now().toString(36),f,f.name,f.type,{scope:'avatar'}).then(up=>{
+      if(!up?.mediaPath)return toast('Avatar upload failed','err');
+      S.epAvatarPath=up.mediaPath;
+      const r=new FileReader();r.onload=()=>{S.epAvatarUrl=String(r.result||'');updateEpAvatarPreview()};r.readAsDataURL(f);
+      toast('Avatar uploaded — click Save to apply');
+    });
+  }else{
+    const r=new FileReader();r.onload=()=>{S.epAvatarUrl=String(r.result||'');updateEpAvatarPreview()};r.readAsDataURL(f);
+  }
+});
+$('#post-file')?.addEventListener('change',async e=>{
+  const files=[...(e.target.files||[])].slice(0,4);e.target.value='';if(!files.length)return;
+  const items=[];
+  for(const f of files){
+    let dataUrl=null;
+    if(!S.user&&f.type.startsWith('image/')&&f.size<=1500000){
+      dataUrl=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(String(r.result||''));r.onerror=()=>res(null);r.readAsDataURL(f)});
+    }
+    items.push({file:f,url:URL.createObjectURL(f),dataUrl,mime:f.type});
+  }
+  S.postMedia=items;renderPostPreview();
+});
+$('#hl-file')?.addEventListener('change',e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{S.hlMedia={file:f,url:URL.createObjectURL(f),dataUrl:String(r.result||''),mime:f.type};setTxt('#hl-media-lbl',f.name.slice(0,18))};
+  r.readAsDataURL(f);
+});
 $('#msg').addEventListener('paste',e=>{const f=e.clipboardData?.files?.[0];if(f){e.preventDefault();sendAttachmentFile(f)}});
 $('#stream').addEventListener('scroll',()=>{const s=$('#stream');show('#jump-bottom',Boolean(cur()&&s.scrollHeight-s.scrollTop-s.clientHeight>180))},{passive:true});
 let dragDepth=0;
@@ -3719,7 +4961,7 @@ window.addEventListener('resize',()=>closeMenu());
 window.addEventListener('scroll',e=>{if(S.menu&&!(e.target.nodeType===1&&e.target.closest('#menu')))closeMenu()},true);
 window.addEventListener('offline',()=>{show('#offline',true,null);toast('You are offline','err')});
 window.addEventListener('online',()=>{show('#offline',false,null);flushOutbox()});
-window.addEventListener('hashchange',()=>{if(parseHashOrSearchParams()){S.authTab='reset';if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-rs-p1'))$('#auth-rs-p1').value='';if($('#auth-rs-p2'))$('#auth-rs-p2').value='';renderAccountUI();openM('m-auth');setTimeout(()=>$('#auth-rs-p1')?.focus(),40)}});
+window.addEventListener('hashchange',()=>{if(parseHashOrSearchParams()){S.authTab='reset';if($('#auth-err'))$('#auth-err').classList.add('hidden');if($('#auth-rs-p1'))$('#auth-rs-p1').value='';if($('#auth-rs-p2'))$('#auth-rs-p2').value='';renderAccountUI();openM('m-auth');setTimeout(()=>$('#auth-rs-p1')?.focus(),40)}else if(S.pendingProfileLink){const pr=S.pendingProfileLink;S.pendingProfileLink=null;setShell('app');openProfile(pr)}});
 
 /* ---------- boot ---------- */
 const hasResetToken=parseHashOrSearchParams();
@@ -3736,7 +4978,8 @@ if(hasResetToken){
   setTimeout(()=>$('#auth-rs-p1')?.focus(),50);
 }else if(localDemo){
   setShell('app');
-  if(window.matchMedia('(min-width:768px)').matches&&D.length)openChat(D[0].id);
+  if(S.pendingProfileLink){const pr=S.pendingProfileLink;S.pendingProfileLink=null;openProfile(pr)}
+  else if(window.matchMedia('(min-width:768px)').matches&&D.length)openChat(D[0].id);
   if(cfg.lockLaunch)lock();else audit('Session started');
 }else{
   setShell('landing');

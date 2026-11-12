@@ -59,11 +59,37 @@ function isMissingRelationErr(res) {
   return res?.status === 404 || /relation .* does not exist|Could not find the (table|column)/i.test(msg);
 }
 
+function pickEnv(candidates, suffixRe, validate) {
+  for (const k of candidates) {
+    const v = (process.env[k] || '').trim();
+    if (v && (!validate || validate(v))) return v;
+  }
+  if (suffixRe) {
+    for (const [k, v] of Object.entries(process.env)) {
+      if (suffixRe.test(k) && typeof v === 'string') {
+        const clean = v.trim();
+        if (clean && (!validate || validate(clean))) return clean;
+      }
+    }
+  }
+  return '';
+}
+
 function getConfig() {
-  const rawUrl = (process.env.SUPABASE_URL || '').trim();
+  const rawUrl = pickEnv(
+    ['SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'VITE_SUPABASE_URL', 'PUBLIC_SUPABASE_URL', 'SUPABASE_PROJECT_URL', 'SUPABASE_API_URL'],
+    /^[A-Z0-9_]*SUPABASE_URL$/i,
+    v => /^https?:\/\//i.test(v)
+  );
   const url = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '');
-  const secretKey = (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
-  const publishableKey = (process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || '').trim();
+  const secretKey = pickEnv(
+    ['SUPABASE_SECRET_KEY', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_KEY', 'SUPABASE_PRIVATE_KEY'],
+    /^[A-Z0-9_]*SUPABASE_(SECRET|SERVICE_ROLE)_KEY$/i
+  );
+  const publishableKey = pickEnv(
+    ['SUPABASE_PUBLISHABLE_KEY', 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY', 'SUPABASE_ANON_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'VITE_SUPABASE_ANON_KEY', 'PUBLIC_SUPABASE_ANON_KEY'],
+    /^[A-Z0-9_]*SUPABASE_(PUBLISHABLE|ANON)_KEY$/i
+  );
   return { url, secretKey, publishableKey };
 }
 
@@ -452,12 +478,276 @@ async function assertConvAccess(cfg, convId, userId) {
   return false;
 }
 
+async function signUrlMap(cfg, paths) {
+  const unique = [...new Set((paths || []).filter(p => typeof p === 'string' && p.length > 0 && !p.includes('..')))];
+  const map = new Map();
+  if (!unique.length) return map;
+  await Promise.all(unique.map(async p => {
+    const r = await signDownloadUrl(cfg, p).catch(() => null);
+    if (r?.ok && r.url) map.set(p, r.url);
+  }));
+  return map;
+}
+
+function mapPublicProfile(p, avatarUrl = null) {
+  if (!p) return null;
+  return {
+    id: p.id,
+    username: p.username || null,
+    email: p.email || null,
+    display_name: p.display_name || p.username || 'User',
+    status: p.status || 'Online',
+    public_key: p.public_key || null,
+    key_fp: p.key_fp || null,
+    bio: p.bio || '',
+    category: p.category || '',
+    website: p.website || '',
+    links: Array.isArray(p.links) ? p.links : [],
+    contact_email: p.contact_email || '',
+    location_text: p.location_text || '',
+    avatar_path: p.avatar_path || '',
+    avatarUrl: avatarUrl || null,
+    verified: Boolean(p.verified),
+    threads_handle: p.threads_handle || ''
+  };
+}
+
+function sanitizeSafeUrl(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return '';
+  if (/^https?:\/\//i.test(s)) return s.slice(0, 300);
+  if (/^[a-z0-9.-]+\.[a-z]{2,}(\/\S*)?$/i.test(s)) return `https://${s}`.slice(0, 300);
+  return '';
+}
+
+function normalizeLinks(rawLinks) {
+  if (!Array.isArray(rawLinks)) return [];
+  const out = [];
+  for (const item of rawLinks) {
+    if (!item || typeof item !== 'object') continue;
+    const url = sanitizeSafeUrl(item.url || '');
+    if (!url) continue;
+    const title = String(item.title || url.replace(/^https?:\/\//i, '').split('/')[0] || 'Link').trim().slice(0, 60);
+    out.push({ title, url });
+    if (out.length >= 6) break;
+  }
+  return out;
+}
+
+function normalizePostTags(rawTags, caption) {
+  const set = new Set();
+  if (Array.isArray(rawTags)) {
+    for (const t of rawTags) {
+      const clean = String(t || '').trim().replace(/^[@#]+/, '').toLowerCase();
+      if (clean && /^[a-z0-9._-]{2,32}$/.test(clean)) set.add(clean);
+    }
+  }
+  const cap = String(caption || '');
+  for (const m of cap.matchAll(/[@#]([a-z0-9][a-z0-9._-]{1,31})/gi)) {
+    set.add(String(m[1]).toLowerCase());
+  }
+  return [...set].slice(0, 20);
+}
+
+async function assembleProfilePayload(cfg, viewerId, { userId, username }) {
+  const profilesRes = await sbFetch(cfg, '/rest/v1/wg_profiles?select=*&order=display_name.asc');
+  if (!profilesRes.ok) {
+    return { ok: false, status: profilesRes.status || 500, error: profilesRes.data?.message || 'Failed to load profiles' };
+  }
+  const profiles = Array.isArray(profilesRes.data) ? profilesRes.data : [];
+  const cleanHandle = normalizeUsername(username);
+  let target = null;
+  if (userId) target = profiles.find(p => p.id === String(userId));
+  else if (cleanHandle) target = profiles.find(p => normalizeUsername(p.username) === cleanHandle);
+  else target = profiles.find(p => p.id === viewerId);
+
+  if (!target) return { ok: false, status: 404, error: 'Profile not found' };
+
+  const tid = encodeURIComponent(target.id);
+  const uid = encodeURIComponent(viewerId);
+  const [followsRes, hlRes, postsRes, likesRes, comRes, savesRes, reelsRes] = await Promise.all([
+    sbFetch(cfg, `/rest/v1/wg_follows?select=follower_id,following_id,created_at&or=(follower_id.eq.${tid},following_id.eq.${tid},follower_id.eq.${uid})`),
+    sbFetch(cfg, `/rest/v1/wg_highlights?user_id=eq.${tid}&order=sort_order.asc,created_at.desc`),
+    sbFetch(cfg, '/rest/v1/wg_posts?order=pinned.desc,pinned_at.desc.nullslast,created_at.desc&limit=150'),
+    sbFetch(cfg, '/rest/v1/wg_post_likes?select=post_id,user_id'),
+    sbFetch(cfg, '/rest/v1/wg_post_comments?order=created_at.asc&limit=400'),
+    sbFetch(cfg, '/rest/v1/wg_post_saves?select=post_id,user_id,kind,created_at'),
+    sbFetch(cfg, `/rest/v1/wg_reels?user_id=eq.${tid}&order=created_at.desc&limit=60`)
+  ]);
+
+  const schemaReady = !(isMissingRelationErr(followsRes) || isMissingRelationErr(postsRes));
+  const follows = followsRes.ok && Array.isArray(followsRes.data) ? followsRes.data : [];
+  const highlightsRaw = hlRes.ok && Array.isArray(hlRes.data) ? hlRes.data : [];
+  const postsRaw = postsRes.ok && Array.isArray(postsRes.data) ? postsRes.data : [];
+  const likesRaw = likesRes.ok && Array.isArray(likesRes.data) ? likesRes.data : [];
+  const commentsRaw = comRes.ok && Array.isArray(comRes.data) ? comRes.data : [];
+  const savesRaw = savesRes.ok && Array.isArray(savesRes.data) ? savesRes.data : [];
+  const reelsRaw = reelsRes.ok && Array.isArray(reelsRes.data) ? reelsRes.data : [];
+
+  const pathsToSign = [];
+  for (const p of profiles) if (p.avatar_path) pathsToSign.push(p.avatar_path);
+  for (const h of highlightsRaw) {
+    if (h.cover_path) pathsToSign.push(h.cover_path);
+    if (Array.isArray(h.slides)) for (const s of h.slides) if (s?.mediaPath) pathsToSign.push(s.mediaPath);
+  }
+  for (const pt of postsRaw) {
+    if (Array.isArray(pt.media_paths)) for (const mp of pt.media_paths) if (typeof mp === 'string' && mp) pathsToSign.push(mp);
+  }
+  for (const rl of reelsRaw) if (rl.media_path) pathsToSign.push(rl.media_path);
+
+  const urlMap = await signUrlMap(cfg, pathsToSign);
+  const pMap = new Map(profiles.map(p => [p.id, mapPublicProfile(p, p.avatar_path ? urlMap.get(p.avatar_path) || null : null)]));
+
+  const followerIds = follows.filter(f => f.following_id === target.id).map(f => f.follower_id);
+  const followingIds = follows.filter(f => f.follower_id === target.id).map(f => f.following_id);
+  const viewerFollowingSet = new Set(follows.filter(f => f.follower_id === viewerId).map(f => f.following_id));
+  const targetFollowersSet = new Set(followerIds);
+  const targetFollowingSet = new Set(followingIds);
+
+  const followers = followerIds.map(id => pMap.get(id)).filter(Boolean);
+  const following = followingIds.map(id => pMap.get(id)).filter(Boolean);
+  const mutuals = followers.filter(u => u.id !== viewerId && viewerFollowingSet.has(u.id));
+  const suggested = [...pMap.values()]
+    .filter(u => u.id !== viewerId && u.id !== target.id && !viewerFollowingSet.has(u.id))
+    .slice(0, 12);
+
+  const likesByPost = new Map();
+  const likedByMe = new Set();
+  for (const l of likesRaw) {
+    likesByPost.set(l.post_id, (likesByPost.get(l.post_id) || 0) + 1);
+    if (l.user_id === viewerId) likedByMe.add(l.post_id);
+  }
+
+  const commentsByPost = new Map();
+  for (const cm of commentsRaw) {
+    if (!commentsByPost.has(cm.post_id)) commentsByPost.set(cm.post_id, []);
+    const au = pMap.get(cm.user_id);
+    commentsByPost.get(cm.post_id).push({
+      id: cm.id,
+      postId: cm.post_id,
+      userId: cm.user_id,
+      authorName: cm.author_name || au?.display_name || 'User',
+      authorUsername: au?.username || null,
+      authorAvatarUrl: au?.avatarUrl || null,
+      text: cm.text,
+      createdAt: cm.created_at
+    });
+  }
+
+  const viewerSaved = new Set();
+  const viewerReposted = new Set();
+  const targetRepostIds = [];
+  const targetSavedIds = [];
+  for (const sv of savesRaw) {
+    if (sv.user_id === viewerId) {
+      if (sv.kind === 'repost') viewerReposted.add(sv.post_id);
+      else viewerSaved.add(sv.post_id);
+    }
+    if (sv.user_id === target.id) {
+      if (sv.kind === 'repost') targetRepostIds.push(sv.post_id);
+      else if (target.id === viewerId) targetSavedIds.push(sv.post_id);
+    }
+  }
+
+  const mapPost = pt => {
+    const au = pMap.get(pt.user_id);
+    const paths = Array.isArray(pt.media_paths) ? pt.media_paths : [];
+    const mediaUrls = paths.map(mp => urlMap.get(mp) || null).filter(Boolean);
+    const cmList = commentsByPost.get(pt.id) || [];
+    return {
+      id: pt.id,
+      userId: pt.user_id,
+      author: au || { id: pt.user_id, display_name: 'Creator', username: null },
+      caption: pt.caption || '',
+      locationText: pt.location_text || '',
+      tags: Array.isArray(pt.tags) ? pt.tags : [],
+      mediaType: pt.media_type || (mediaUrls.length > 1 ? 'carousel' : mediaUrls.length ? 'image' : 'card'),
+      mediaPaths: paths,
+      mediaUrls,
+      bg: pt.bg || 'from-indigo-600 via-fuchsia-600 to-rose-500',
+      pinned: Boolean(pt.pinned),
+      pinnedAt: pt.pinned_at || null,
+      createdAt: pt.created_at,
+      likesCount: likesByPost.get(pt.id) || 0,
+      commentsCount: cmList.length,
+      likedByMe: likedByMe.has(pt.id),
+      savedByMe: viewerSaved.has(pt.id),
+      repostedByMe: viewerReposted.has(pt.id),
+      comments: cmList
+    };
+  };
+
+  const allMappedPosts = postsRaw.map(mapPost);
+  const postById = new Map(allMappedPosts.map(p => [p.id, p]));
+  const ownPosts = allMappedPosts.filter(p => p.userId === target.id)
+    .sort((a, b) => (Number(b.pinned) - Number(a.pinned)) || String(b.createdAt).localeCompare(String(a.createdAt)));
+
+  const targetHandle = normalizeUsername(target.username);
+  const taggedPosts = targetHandle
+    ? allMappedPosts.filter(p => p.userId !== target.id && (p.tags.includes(targetHandle) || new RegExp(`@${targetHandle}\\b`, 'i').test(p.caption)))
+    : [];
+  const reposts = [...new Set([...targetRepostIds, ...(target.id === viewerId ? targetSavedIds : [])])]
+    .map(pid => postById.get(pid))
+    .filter(Boolean);
+
+  const highlights = highlightsRaw.map(h => ({
+    id: h.id,
+    userId: h.user_id,
+    title: h.title,
+    coverBg: h.cover_bg || 'from-amber-400 via-rose-500 to-fuchsia-600',
+    coverUrl: h.cover_path ? (urlMap.get(h.cover_path) || null) : null,
+    slides: Array.isArray(h.slides) ? h.slides.map(s => ({
+      ...s,
+      mediaUrl: s?.mediaPath ? (urlMap.get(s.mediaPath) || null) : (s?.mediaUrl || null)
+    })) : []
+  }));
+
+  const reels = reelsRaw.map(r => ({
+    id: /^\d+$/.test(String(r.id)) ? Number(r.id) : r.id,
+    userId: r.user_id,
+    author: r.author_name,
+    cap: r.caption,
+    g: r.gradient,
+    mediaPath: r.media_path || undefined,
+    mediaUrl: r.media_path ? (urlMap.get(r.media_path) || null) : null,
+    mediaMime: r.media_mime || undefined,
+    likes: r.likes_count || 0
+  }));
+
+  const targetMapped = pMap.get(target.id);
+  return {
+    ok: true,
+    data: {
+      ok: true,
+      schemaReady,
+      profile: {
+        ...targetMapped,
+        isOwn: target.id === viewerId,
+        isFollowing: viewerFollowingSet.has(target.id),
+        followsMe: targetFollowingSet.has(viewerId),
+        postsCount: ownPosts.length + reels.length,
+        followersCount: targetFollowersSet.size,
+        followingCount: targetFollowingSet.size
+      },
+      followers,
+      following,
+      mutuals,
+      highlights,
+      posts: ownPosts,
+      reels,
+      reposts,
+      taggedPosts,
+      suggested
+    }
+  };
+}
+
 async function handleBootstrap(cfg, user, accessToken) {
   const uid = encodeURIComponent(user.id);
   const nowMs = Date.now();
 
-  const [profilesRes, convRes, myMemRes, storiesRes, votesRes, customReelsRes, prefsRes, commentsRes, settingsRes, auditRes, recRes] = await Promise.all([
-    sbFetch(cfg, '/rest/v1/wg_profiles?select=id,username,email,display_name,status,public_key,key_fp&order=display_name.asc'),
+  const [profilesRes, convRes, myMemRes, storiesRes, votesRes, customReelsRes, prefsRes, commentsRes, settingsRes, auditRes, recRes, myFollowsRes] = await Promise.all([
+    sbFetch(cfg, '/rest/v1/wg_profiles?select=*&order=display_name.asc'),
     sbFetch(cfg, `/rest/v1/wg_conversations?or=(owner_id.eq.${uid},peer_user_id.eq.${uid})&order=updated_at.desc`),
     sbFetch(cfg, `/rest/v1/wg_conversation_members?user_id=eq.${uid}&select=conversation_id,role,last_read_ms`),
     sbFetch(cfg, '/rest/v1/wg_stories?order=created_at.asc&limit=30'),
@@ -467,7 +757,8 @@ async function handleBootstrap(cfg, user, accessToken) {
     sbFetch(cfg, '/rest/v1/wg_reel_comments?order=created_at.asc&limit=200'),
     sbFetch(cfg, `/rest/v1/wg_settings?user_id=eq.${uid}&limit=1`),
     sbFetch(cfg, `/rest/v1/wg_audit_logs?user_id=eq.${uid}&order=id.desc&limit=40`),
-    sbFetch(cfg, `/rest/v1/wg_account_recovery?user_id=eq.${uid}&select=recovery_email&limit=1`)
+    sbFetch(cfg, `/rest/v1/wg_account_recovery?user_id=eq.${uid}&select=recovery_email&limit=1`),
+    sbFetch(cfg, `/rest/v1/wg_follows?select=follower_id,following_id&or=(follower_id.eq.${uid},following_id.eq.${uid})`)
   ]);
 
   if (!convRes.ok) {
@@ -641,7 +932,11 @@ async function handleBootstrap(cfg, user, accessToken) {
 
   const settingsRow = Array.isArray(settingsRes.data) && settingsRes.data[0] ? settingsRes.data[0] : null;
   const auditLogs = (Array.isArray(auditRes.data) ? auditRes.data : []).map(l => ({ t: l.event_time, m: l.message }));
+  const avatarUrlMap = await signUrlMap(cfg, profiles.map(p => p.avatar_path).filter(Boolean));
   const myProfile = profileMap.get(user.id);
+  const myFollowRows = myFollowsRes?.ok && Array.isArray(myFollowsRes.data) ? myFollowsRes.data : [];
+  const followersCount = myFollowRows.filter(f => f.following_id === user.id).length;
+  const followingCount = myFollowRows.filter(f => f.follower_id === user.id).length;
   const myRecEmail = (recRes.ok && Array.isArray(recRes.data) && recRes.data[0]?.recovery_email)
     || (user.email && !String(user.email).endsWith(`@${INTERNAL_EMAIL_DOMAIN}`) ? user.email : null);
   const myUsername = myProfile?.username || user.user_metadata?.username || null;
@@ -657,9 +952,21 @@ async function handleBootstrap(cfg, user, accessToken) {
         hasRecoveryEmail: Boolean(myRecEmail),
         displayName: myProfile?.display_name || user.user_metadata?.display_name || myUsername || user.email,
         publicKey: myProfile?.public_key || null,
-        keyFp: myProfile?.key_fp || null
+        keyFp: myProfile?.key_fp || null,
+        bio: myProfile?.bio || '',
+        category: myProfile?.category || '',
+        website: myProfile?.website || '',
+        links: Array.isArray(myProfile?.links) ? myProfile.links : [],
+        contactEmail: myProfile?.contact_email || '',
+        locationText: myProfile?.location_text || '',
+        avatarPath: myProfile?.avatar_path || '',
+        avatarUrl: myProfile?.avatar_path ? (avatarUrlMap.get(myProfile.avatar_path) || null) : null,
+        verified: Boolean(myProfile?.verified),
+        threadsHandle: myProfile?.threads_handle || '',
+        followersCount,
+        followingCount
       },
-      users: profiles.filter(p => p.id !== user.id),
+      users: profiles.filter(p => p.id !== user.id).map(p => mapPublicProfile(p, p.avatar_path ? (avatarUrlMap.get(p.avatar_path) || null) : null)),
       chats,
       stories,
       customReels,
@@ -688,15 +995,22 @@ module.exports = async function handler(req, res) {
   const action = req.query?.action || '';
 
   if (req.method === 'GET' && action === 'status') {
+    const missing = [];
+    if (!cfg.url) missing.push('SUPABASE_URL');
+    if (!cfg.secretKey) missing.push('SUPABASE_SECRET_KEY');
     return res.status(200).json({
       ok: true,
       configured: Boolean(cfg.url && cfg.secretKey),
-      hasRealtime: Boolean(cfg.url && cfg.publishableKey)
+      hasRealtime: Boolean(cfg.url && cfg.publishableKey),
+      missing
     });
   }
 
   if (!cfg.url || !cfg.secretKey) {
-    return res.status(503).json({ error: 'SUPABASE_URL and SUPABASE_SECRET_KEY are not configured.' });
+    const miss = [];
+    if (!cfg.url) miss.push('SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)');
+    if (!cfg.secretKey) miss.push('SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY)');
+    return res.status(503).json({ error: `${miss.join(' and ')} not configured on Vercel.`, missing: miss });
   }
 
   try {
@@ -715,8 +1029,44 @@ module.exports = async function handler(req, res) {
         return res.status(200).json(boot.data);
       }
       if (action === 'users') {
-        const r = await sbFetch(cfg, `/rest/v1/wg_profiles?id=neq.${encodeURIComponent(session.user.id)}&select=id,username,email,display_name,status,public_key,key_fp&order=display_name.asc`);
-        return res.status(r.ok ? 200 : r.status).json({ users: Array.isArray(r.data) ? r.data : [] });
+        const r = await sbFetch(cfg, `/rest/v1/wg_profiles?id=neq.${encodeURIComponent(session.user.id)}&select=*&order=display_name.asc`);
+        const list = Array.isArray(r.data) ? r.data : [];
+        const uMap = await signUrlMap(cfg, list.map(p => p.avatar_path).filter(Boolean));
+        return res.status(r.ok ? 200 : r.status).json({ users: list.map(p => mapPublicProfile(p, p.avatar_path ? (uMap.get(p.avatar_path) || null) : null)) });
+      }
+      if (action === 'profileData') {
+        const result = await assembleProfilePayload(cfg, session.user.id, {
+          userId: req.query?.userId || '',
+          username: req.query?.username || ''
+        });
+        if (!result.ok) return res.status(result.status || 500).json({ error: result.error });
+        return res.status(200).json(result.data);
+      }
+      if (action === 'postComments') {
+        const postId = String(req.query?.postId || '');
+        if (!postId) return res.status(400).json({ error: 'postId required' });
+        const [cmRes, pRes] = await Promise.all([
+          sbFetch(cfg, `/rest/v1/wg_post_comments?post_id=eq.${encodeURIComponent(postId)}&order=created_at.asc&limit=200`),
+          sbFetch(cfg, '/rest/v1/wg_profiles?select=id,username,display_name,avatar_path')
+        ]);
+        if (!cmRes.ok) return res.status(cmRes.status || 500).json({ error: cmRes.data?.message || 'Failed to load comments' });
+        const profs = Array.isArray(pRes.data) ? pRes.data : [];
+        const avMap = await signUrlMap(cfg, profs.map(p => p.avatar_path).filter(Boolean));
+        const pById = new Map(profs.map(p => [p.id, p]));
+        const comments = (Array.isArray(cmRes.data) ? cmRes.data : []).map(cm => {
+          const au = pById.get(cm.user_id);
+          return {
+            id: cm.id,
+            postId: cm.post_id,
+            userId: cm.user_id,
+            authorName: cm.author_name || au?.display_name || 'User',
+            authorUsername: au?.username || null,
+            authorAvatarUrl: au?.avatar_path ? (avMap.get(au.avatar_path) || null) : null,
+            text: cm.text,
+            createdAt: cm.created_at
+          };
+        });
+        return res.status(200).json({ ok: true, comments });
       }
       if (action === 'rtcConfig') {
         return res.status(200).json({ ok: true, iceServers: getRtcConfig() });
@@ -1280,7 +1630,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (act === 'signUpload') {
-      const isSocial = body.scope === 'story' || body.scope === 'reel';
+      const isSocial = ['story', 'reel', 'post', 'avatar', 'highlight'].includes(body.scope);
       if (!isSocial) {
         const conv = await assertConvAccess(cfg, body.conversationId, uid);
         if (!conv) return res.status(conv === false ? 403 : 404).json({ error: 'Conversation inaccessible' });
@@ -1302,7 +1652,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (act === 'uploadMedia') {
-      const isSocial = body.scope === 'story' || body.scope === 'reel';
+      const isSocial = ['story', 'reel', 'post', 'avatar', 'highlight'].includes(body.scope);
       if (!isSocial) {
         const conv = await assertConvAccess(cfg, body.conversationId, uid);
         if (!conv) return res.status(conv === false ? 403 : 404).json({ error: 'Conversation inaccessible' });
@@ -1418,20 +1768,288 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    if (act === 'updateProfile') {
+      const displayName = String(body.displayName || '').trim().slice(0, 60);
+      if (body.displayName !== undefined && !displayName) {
+        return res.status(400).json({ error: 'Display name cannot be empty' });
+      }
+      const contactEmail = normalizeEmail(body.contactEmail || '');
+      if (contactEmail && !EMAIL_RE.test(contactEmail)) {
+        return res.status(400).json({ error: 'Invalid public contact email address' });
+      }
+      const patch = {};
+      if (displayName) patch.display_name = displayName;
+      if (body.status !== undefined) patch.status = String(body.status || 'Online').trim().slice(0, 60) || 'Online';
+      if (body.bio !== undefined) patch.bio = String(body.bio || '').slice(0, 300);
+      if (body.category !== undefined) patch.category = String(body.category || '').trim().slice(0, 60);
+      if (body.website !== undefined) patch.website = sanitizeSafeUrl(body.website);
+      if (body.links !== undefined) patch.links = normalizeLinks(body.links);
+      if (body.contactEmail !== undefined) patch.contact_email = contactEmail;
+      if (body.locationText !== undefined) patch.location_text = String(body.locationText || '').trim().slice(0, 120);
+      if (body.threadsHandle !== undefined) patch.threads_handle = normalizeUsername(body.threadsHandle).slice(0, 32);
+      if (body.avatarPath !== undefined) {
+        const ap = String(body.avatarPath || '').trim();
+        if (ap && (!ap.startsWith(`${uid}/`) || ap.includes('..'))) {
+          return res.status(403).json({ error: 'Invalid avatar storage path' });
+        }
+        patch.avatar_path = ap;
+      }
+      const r = await sbFetch(cfg, `/rest/v1/wg_profiles?id=eq.${encodeURIComponent(uid)}`, {
+        method: 'PATCH',
+        prefer: 'return=representation',
+        body: patch
+      });
+      if (!r.ok) {
+        const msg = isMissingRelationErr(r)
+          ? 'Profile columns missing. Re-run updated supabase/schema.sql in Supabase SQL Editor.'
+          : (r.data?.message || 'Failed to update profile');
+        return res.status(r.status || 500).json({ error: msg });
+      }
+      const row = Array.isArray(r.data) ? r.data[0] : null;
+      const avSigned = row?.avatar_path ? await signDownloadUrl(cfg, row.avatar_path).catch(() => null) : null;
+      return res.status(200).json({ ok: true, profile: mapPublicProfile(row, avSigned?.ok ? avSigned.url : null) });
+    }
+
+    if (act === 'toggleFollow') {
+      const targetId = String(body.targetUserId || '').trim();
+      if (!targetId) return res.status(400).json({ error: 'targetUserId required' });
+      if (targetId === uid) return res.status(400).json({ error: 'You cannot follow your own account' });
+      const chk = await sbFetch(cfg, `/rest/v1/wg_follows?follower_id=eq.${encodeURIComponent(uid)}&following_id=eq.${encodeURIComponent(targetId)}&select=follower_id`);
+      if (!chk.ok) {
+        return res.status(chk.status || 500).json({ error: isMissingRelationErr(chk) ? 'Follows table missing. Re-run updated supabase/schema.sql in Supabase SQL Editor.' : (chk.data?.message || 'Follow lookup failed') });
+      }
+      const exists = Array.isArray(chk.data) && chk.data.length > 0;
+      if (exists) {
+        const dr = await sbFetch(cfg, `/rest/v1/wg_follows?follower_id=eq.${encodeURIComponent(uid)}&following_id=eq.${encodeURIComponent(targetId)}`, { method: 'DELETE' });
+        if (!dr.ok) return res.status(dr.status || 500).json({ error: 'Unfollow failed' });
+        return res.status(200).json({ ok: true, following: false });
+      }
+      const ir = await sbFetch(cfg, '/rest/v1/wg_follows', {
+        method: 'POST',
+        prefer: 'return=minimal',
+        body: [{ follower_id: uid, following_id: targetId }]
+      });
+      if (!ir.ok) return res.status(ir.status || 500).json({ error: ir.data?.message || 'Follow failed' });
+      return res.status(200).json({ ok: true, following: true });
+    }
+
+    if (act === 'createPost') {
+      const p = body.post || body || {};
+      const caption = String(p.caption || '').slice(0, 1200);
+      const rawPaths = Array.isArray(p.mediaPaths) ? p.mediaPaths : [];
+      const mediaPaths = [];
+      for (const mp of rawPaths) {
+        const clean = String(mp || '').trim();
+        if (!clean) continue;
+        if (!clean.startsWith(`${uid}/`) || clean.includes('..')) {
+          return res.status(403).json({ error: 'Invalid post media path' });
+        }
+        mediaPaths.push(clean);
+        if (mediaPaths.length >= 6) break;
+      }
+      if (!caption.trim() && !mediaPaths.length) {
+        return res.status(400).json({ error: 'Add a caption or at least one image/video' });
+      }
+      const pinned = Boolean(p.pinned);
+      if (pinned) {
+        const pinChk = await sbFetch(cfg, `/rest/v1/wg_posts?user_id=eq.${encodeURIComponent(uid)}&pinned=eq.true&select=id`);
+        if (pinChk.ok && Array.isArray(pinChk.data) && pinChk.data.length >= 3) {
+          return res.status(400).json({ error: 'Maximum 3 pinned posts allowed on profile grid' });
+        }
+      }
+      const allowedTypes = new Set(['image', 'video', 'carousel', 'card']);
+      const derivedType = mediaPaths.length > 1 ? 'carousel' : (mediaPaths.length === 1 ? 'image' : 'card');
+      const mediaType = allowedTypes.has(p.mediaType) ? p.mediaType : derivedType;
+      const postId = String(p.id || `pt_${Date.now().toString(36)}_${crypto.randomBytes(3).toString('hex')}`);
+      const row = {
+        id: postId,
+        user_id: uid,
+        caption,
+        location_text: String(p.locationText || '').trim().slice(0, 120),
+        tags: normalizePostTags(p.tags, caption),
+        media_type: mediaType,
+        media_paths: mediaPaths,
+        bg: String(p.bg || 'from-indigo-600 via-fuchsia-600 to-rose-500').slice(0, 120),
+        pinned,
+        pinned_at: pinned ? new Date().toISOString() : null
+      };
+      const ir = await sbFetch(cfg, '/rest/v1/wg_posts', { method: 'POST', prefer: 'return=representation', body: [row] });
+      if (!ir.ok) {
+        return res.status(ir.status || 500).json({ error: isMissingRelationErr(ir) ? 'Posts table missing. Re-run updated supabase/schema.sql in Supabase SQL Editor.' : (ir.data?.message || 'Failed to publish post') });
+      }
+      const created = Array.isArray(ir.data) ? ir.data[0] : row;
+      return res.status(200).json({ ok: true, id: postId, post: created });
+    }
+
+    if (act === 'togglePinPost') {
+      const postId = String(body.postId || '').trim();
+      if (!postId) return res.status(400).json({ error: 'postId required' });
+      const pr = await sbFetch(cfg, `/rest/v1/wg_posts?id=eq.${encodeURIComponent(postId)}&select=id,user_id,pinned&limit=1`);
+      const post = Array.isArray(pr.data) ? pr.data[0] : null;
+      if (!post) return res.status(404).json({ error: 'Post not found' });
+      if (post.user_id !== uid) return res.status(403).json({ error: 'Only the author can pin this post' });
+      const nextPinned = !post.pinned;
+      if (nextPinned) {
+        const pinChk = await sbFetch(cfg, `/rest/v1/wg_posts?user_id=eq.${encodeURIComponent(uid)}&pinned=eq.true&select=id`);
+        if (pinChk.ok && Array.isArray(pinChk.data) && pinChk.data.length >= 3) {
+          return res.status(400).json({ error: 'Maximum 3 pinned posts allowed' });
+        }
+      }
+      const up = await sbFetch(cfg, `/rest/v1/wg_posts?id=eq.${encodeURIComponent(postId)}`, {
+        method: 'PATCH',
+        body: { pinned: nextPinned, pinned_at: nextPinned ? new Date().toISOString() : null }
+      });
+      if (!up.ok) return res.status(up.status || 500).json({ error: 'Failed to update pin state' });
+      return res.status(200).json({ ok: true, pinned: nextPinned });
+    }
+
+    if (act === 'deletePost') {
+      const postId = String(body.postId || '').trim();
+      if (!postId) return res.status(400).json({ error: 'postId required' });
+      const pr = await sbFetch(cfg, `/rest/v1/wg_posts?id=eq.${encodeURIComponent(postId)}&select=id,user_id,media_paths&limit=1`);
+      const post = Array.isArray(pr.data) ? pr.data[0] : null;
+      if (!post) return res.status(404).json({ error: 'Post not found' });
+      if (post.user_id !== uid) return res.status(403).json({ error: 'Only the author can delete this post' });
+      if (Array.isArray(post.media_paths) && post.media_paths.length) {
+        await deleteMediaObjects(cfg, post.media_paths);
+      }
+      const dr = await sbFetch(cfg, `/rest/v1/wg_posts?id=eq.${encodeURIComponent(postId)}`, { method: 'DELETE' });
+      if (!dr.ok) return res.status(dr.status || 500).json({ error: 'Delete failed' });
+      return res.status(200).json({ ok: true });
+    }
+
+    if (act === 'togglePostLike') {
+      const postId = String(body.postId || '').trim();
+      if (!postId) return res.status(400).json({ error: 'postId required' });
+      const chk = await sbFetch(cfg, `/rest/v1/wg_post_likes?post_id=eq.${encodeURIComponent(postId)}&user_id=eq.${encodeURIComponent(uid)}&select=post_id`);
+      if (!chk.ok) return res.status(chk.status || 500).json({ error: chk.data?.message || 'Like check failed' });
+      const exists = Array.isArray(chk.data) && chk.data.length > 0;
+      if (exists) {
+        await sbFetch(cfg, `/rest/v1/wg_post_likes?post_id=eq.${encodeURIComponent(postId)}&user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' });
+      } else {
+        await sbFetch(cfg, '/rest/v1/wg_post_likes', { method: 'POST', prefer: 'return=minimal', body: [{ post_id: postId, user_id: uid }] });
+      }
+      const cntRes = await sbFetch(cfg, `/rest/v1/wg_post_likes?post_id=eq.${encodeURIComponent(postId)}&select=user_id`);
+      const count = Array.isArray(cntRes.data) ? cntRes.data.length : 0;
+      return res.status(200).json({ ok: true, liked: !exists, count });
+    }
+
+    if (act === 'togglePostSave') {
+      const postId = String(body.postId || '').trim();
+      const kind = body.kind === 'repost' ? 'repost' : 'save';
+      if (!postId) return res.status(400).json({ error: 'postId required' });
+      const chk = await sbFetch(cfg, `/rest/v1/wg_post_saves?post_id=eq.${encodeURIComponent(postId)}&user_id=eq.${encodeURIComponent(uid)}&kind=eq.${kind}&select=post_id`);
+      if (!chk.ok) return res.status(chk.status || 500).json({ error: chk.data?.message || 'Action failed' });
+      const exists = Array.isArray(chk.data) && chk.data.length > 0;
+      if (exists) {
+        await sbFetch(cfg, `/rest/v1/wg_post_saves?post_id=eq.${encodeURIComponent(postId)}&user_id=eq.${encodeURIComponent(uid)}&kind=eq.${kind}`, { method: 'DELETE' });
+      } else {
+        await sbFetch(cfg, '/rest/v1/wg_post_saves', { method: 'POST', prefer: 'return=minimal', body: [{ post_id: postId, user_id: uid, kind }] });
+      }
+      return res.status(200).json({ ok: true, active: !exists, kind });
+    }
+
+    if (act === 'addPostComment') {
+      const postId = String(body.postId || '').trim();
+      const text = String(body.text || '').trim().slice(0, 500);
+      if (!postId || !text) return res.status(400).json({ error: 'postId and comment text required' });
+      const pRes = await sbFetch(cfg, `/rest/v1/wg_profiles?id=eq.${encodeURIComponent(uid)}&select=username,display_name,avatar_path&limit=1`);
+      const pRow = Array.isArray(pRes.data) ? pRes.data[0] : null;
+      const authorName = String(body.authorName || pRow?.display_name || pRow?.username || 'You').slice(0, 60);
+      const id = String(body.id || `pc_${Date.now().toString(36)}_${crypto.randomBytes(3).toString('hex')}`);
+      const ir = await sbFetch(cfg, '/rest/v1/wg_post_comments', {
+        method: 'POST',
+        prefer: 'return=representation',
+        body: [{ id, post_id: postId, user_id: uid, author_name: authorName, text }]
+      });
+      if (!ir.ok) return res.status(ir.status || 500).json({ error: ir.data?.message || 'Comment failed' });
+      const row = Array.isArray(ir.data) ? ir.data[0] : { id, post_id: postId, user_id: uid, author_name: authorName, text, created_at: new Date().toISOString() };
+      const avSigned = pRow?.avatar_path ? await signDownloadUrl(cfg, pRow.avatar_path).catch(() => null) : null;
+      return res.status(200).json({
+        ok: true,
+        comment: {
+          id: row.id,
+          postId: row.post_id,
+          userId: row.user_id,
+          authorName,
+          authorUsername: pRow?.username || null,
+          authorAvatarUrl: avSigned?.ok ? avSigned.url : null,
+          text: row.text,
+          createdAt: row.created_at
+        }
+      });
+    }
+
+    if (act === 'deletePostComment') {
+      const commentId = String(body.commentId || '').trim();
+      if (!commentId) return res.status(400).json({ error: 'commentId required' });
+      const cmRes = await sbFetch(cfg, `/rest/v1/wg_post_comments?id=eq.${encodeURIComponent(commentId)}&select=id,user_id&limit=1`);
+      const cm = Array.isArray(cmRes.data) ? cmRes.data[0] : null;
+      if (!cm) return res.status(404).json({ error: 'Comment not found' });
+      if (cm.user_id !== uid) return res.status(403).json({ error: 'Only the author can delete this comment' });
+      await sbFetch(cfg, `/rest/v1/wg_post_comments?id=eq.${encodeURIComponent(commentId)}`, { method: 'DELETE' });
+      return res.status(200).json({ ok: true });
+    }
+
+    if (act === 'createHighlight') {
+      const h = body.highlight || body || {};
+      const title = String(h.title || '').trim().slice(0, 36);
+      if (!title) return res.status(400).json({ error: 'Highlight title required' });
+      const coverPath = h.coverPath && String(h.coverPath).startsWith(`${uid}/`) && !String(h.coverPath).includes('..') ? String(h.coverPath) : '';
+      const slides = Array.isArray(h.slides) ? h.slides.slice(0, 8).map(s => ({
+        title: String(s?.title || title).slice(0, 80),
+        text: String(s?.text || '').slice(0, 260),
+        bg: String(s?.bg || h.coverBg || 'from-amber-400 via-rose-500 to-fuchsia-600').slice(0, 120),
+        mediaPath: s?.mediaPath && String(s.mediaPath).startsWith(`${uid}/`) && !String(s.mediaPath).includes('..') ? String(s.mediaPath) : ''
+      })) : [];
+      const id = String(h.id || `hl_${Date.now().toString(36)}_${crypto.randomBytes(2).toString('hex')}`);
+      const ir = await sbFetch(cfg, '/rest/v1/wg_highlights', {
+        method: 'POST',
+        prefer: 'return=representation',
+        body: [{ id, user_id: uid, title, cover_bg: String(h.coverBg || 'from-amber-400 via-rose-500 to-fuchsia-600').slice(0, 120), cover_path: coverPath, slides }]
+      });
+      if (!ir.ok) {
+        return res.status(ir.status || 500).json({ error: isMissingRelationErr(ir) ? 'Highlights table missing. Re-run updated supabase/schema.sql in Supabase SQL Editor.' : (ir.data?.message || 'Failed to create highlight') });
+      }
+      return res.status(200).json({ ok: true, id });
+    }
+
+    if (act === 'deleteHighlight') {
+      const id = String(body.highlightId || '').trim();
+      if (!id) return res.status(400).json({ error: 'highlightId required' });
+      const hr = await sbFetch(cfg, `/rest/v1/wg_highlights?id=eq.${encodeURIComponent(id)}&select=id,user_id,cover_path&limit=1`);
+      const hl = Array.isArray(hr.data) ? hr.data[0] : null;
+      if (!hl) return res.status(404).json({ error: 'Highlight not found' });
+      if (hl.user_id !== uid) return res.status(403).json({ error: 'Forbidden' });
+      if (hl.cover_path) await deleteMediaObjects(cfg, [hl.cover_path]);
+      await sbFetch(cfg, `/rest/v1/wg_highlights?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE' });
+      return res.status(200).json({ ok: true });
+    }
+
     if (act === 'clearAudit') {
       await sbFetch(cfg, `/rest/v1/wg_audit_logs?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' });
       return res.status(200).json({ ok: true });
     }
 
     if (act === 'purgeEnclave') {
-      const mr = await sbFetch(cfg, `/rest/v1/wg_messages?sender_id=eq.${encodeURIComponent(uid)}&media_path=not.is.null&select=media_path`);
-      const paths = Array.isArray(mr.data) ? mr.data.map(x => x.media_path).filter(Boolean) : [];
+      const [mr, pr, hr] = await Promise.all([
+        sbFetch(cfg, `/rest/v1/wg_messages?sender_id=eq.${encodeURIComponent(uid)}&media_path=not.is.null&select=media_path`),
+        sbFetch(cfg, `/rest/v1/wg_posts?user_id=eq.${encodeURIComponent(uid)}&select=media_paths`),
+        sbFetch(cfg, `/rest/v1/wg_highlights?user_id=eq.${encodeURIComponent(uid)}&select=cover_path`)
+      ]);
+      const msgPaths = Array.isArray(mr.data) ? mr.data.map(x => x.media_path).filter(Boolean) : [];
+      const postPaths = Array.isArray(pr.data) ? pr.data.flatMap(x => Array.isArray(x.media_paths) ? x.media_paths : []).filter(Boolean) : [];
+      const hlPaths = Array.isArray(hr.data) ? hr.data.map(x => x.cover_path).filter(Boolean) : [];
+      const paths = [...msgPaths, ...postPaths, ...hlPaths];
       if (paths.length) await deleteMediaObjects(cfg, paths);
       await Promise.all([
         sbFetch(cfg, `/rest/v1/wg_conversations?owner_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' }),
         sbFetch(cfg, `/rest/v1/wg_settings?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' }),
         sbFetch(cfg, `/rest/v1/wg_reels_prefs?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' }),
-        sbFetch(cfg, `/rest/v1/wg_audit_logs?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' })
+        sbFetch(cfg, `/rest/v1/wg_audit_logs?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' }),
+        sbFetch(cfg, `/rest/v1/wg_posts?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' }),
+        sbFetch(cfg, `/rest/v1/wg_highlights?user_id=eq.${encodeURIComponent(uid)}`, { method: 'DELETE' }),
+        sbFetch(cfg, `/rest/v1/wg_follows?or=(follower_id.eq.${encodeURIComponent(uid)},following_id.eq.${encodeURIComponent(uid)})`, { method: 'DELETE' })
       ]);
       return res.status(200).json({ ok: true });
     }

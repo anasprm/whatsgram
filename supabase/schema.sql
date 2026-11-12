@@ -10,11 +10,29 @@ create table if not exists public.wg_profiles (
   status text not null default 'Online',
   public_key jsonb,
   key_fp text,
+  bio text not null default '',
+  category text not null default '',
+  website text not null default '',
+  links jsonb not null default '[]'::jsonb,
+  contact_email text not null default '',
+  location_text text not null default '',
+  avatar_path text not null default '',
+  verified boolean not null default false,
+  threads_handle text not null default '',
   created_at timestamptz not null default now()
 );
 alter table public.wg_profiles add column if not exists username text;
 alter table public.wg_profiles add column if not exists public_key jsonb;
 alter table public.wg_profiles add column if not exists key_fp text;
+alter table public.wg_profiles add column if not exists bio text not null default '';
+alter table public.wg_profiles add column if not exists category text not null default '';
+alter table public.wg_profiles add column if not exists website text not null default '';
+alter table public.wg_profiles add column if not exists links jsonb not null default '[]'::jsonb;
+alter table public.wg_profiles add column if not exists contact_email text not null default '';
+alter table public.wg_profiles add column if not exists location_text text not null default '';
+alter table public.wg_profiles add column if not exists avatar_path text not null default '';
+alter table public.wg_profiles add column if not exists verified boolean not null default false;
+alter table public.wg_profiles add column if not exists threads_handle text not null default '';
 create unique index if not exists idx_wg_profiles_username_lower
   on public.wg_profiles (lower(username))
   where username is not null;
@@ -199,6 +217,70 @@ create table if not exists public.wg_audit_logs (
 );
 create index if not exists idx_wg_audit_user on public.wg_audit_logs(user_id, created_at desc);
 
+-- 11. Instagram-style Social Profile: Follows, Highlights, Posts, Likes, Comments, Reposts/Saves
+create table if not exists public.wg_follows (
+  follower_id uuid not null references auth.users(id) on delete cascade,
+  following_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (follower_id, following_id),
+  check (follower_id <> following_id)
+);
+create index if not exists idx_wg_follows_following on public.wg_follows(following_id, created_at desc);
+
+create table if not exists public.wg_highlights (
+  id text primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text not null,
+  cover_bg text not null default 'from-amber-400 via-rose-500 to-fuchsia-600',
+  cover_path text not null default '',
+  slides jsonb not null default '[]'::jsonb,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_wg_highlights_user on public.wg_highlights(user_id, sort_order asc, created_at desc);
+
+create table if not exists public.wg_posts (
+  id text primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  caption text not null default '',
+  location_text text not null default '',
+  tags jsonb not null default '[]'::jsonb,
+  media_type text not null default 'image',
+  media_paths jsonb not null default '[]'::jsonb,
+  bg text not null default 'from-indigo-600 via-fuchsia-600 to-rose-500',
+  pinned boolean not null default false,
+  pinned_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_wg_posts_user on public.wg_posts(user_id, pinned desc, created_at desc);
+
+create table if not exists public.wg_post_likes (
+  post_id text not null references public.wg_posts(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (post_id, user_id)
+);
+create index if not exists idx_wg_post_likes_user on public.wg_post_likes(user_id, created_at desc);
+
+create table if not exists public.wg_post_comments (
+  id text primary key,
+  post_id text not null references public.wg_posts(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  author_name text not null,
+  text text not null,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_wg_post_comments_post on public.wg_post_comments(post_id, created_at asc);
+
+create table if not exists public.wg_post_saves (
+  post_id text not null references public.wg_posts(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  kind text not null default 'save',
+  created_at timestamptz not null default now(),
+  primary key (post_id, user_id, kind)
+);
+create index if not exists idx_wg_post_saves_user on public.wg_post_saves(user_id, kind, created_at desc);
+
 -- Enable Row Level Security (RLS) on all tables
 alter table public.wg_profiles enable row level security;
 alter table public.wg_account_recovery enable row level security;
@@ -213,6 +295,12 @@ alter table public.wg_reels enable row level security;
 alter table public.wg_reels_prefs enable row level security;
 alter table public.wg_reel_comments enable row level security;
 alter table public.wg_audit_logs enable row level security;
+alter table public.wg_follows enable row level security;
+alter table public.wg_highlights enable row level security;
+alter table public.wg_posts enable row level security;
+alter table public.wg_post_likes enable row level security;
+alter table public.wg_post_comments enable row level security;
+alter table public.wg_post_saves enable row level security;
 
 -- Profiles policies
 drop policy if exists "wg_profiles_select" on public.wg_profiles;
@@ -317,12 +405,58 @@ create policy "wg_reel_comments_read" on public.wg_reel_comments for select to a
 drop policy if exists "wg_reel_comments_insert" on public.wg_reel_comments;
 create policy "wg_reel_comments_insert" on public.wg_reel_comments for insert to authenticated with check ((select auth.uid()) = user_id);
 
--- Enable Realtime replication for live chat, group memberships, profiles, stories, reels, and comments
+-- Social profile policies (follows, highlights, posts, likes, comments, reposts/saves)
+drop policy if exists "wg_follows_read" on public.wg_follows;
+create policy "wg_follows_read" on public.wg_follows for select to authenticated using (true);
+drop policy if exists "wg_follows_insert" on public.wg_follows;
+create policy "wg_follows_insert" on public.wg_follows for insert to authenticated with check ((select auth.uid()) = follower_id);
+drop policy if exists "wg_follows_delete" on public.wg_follows;
+create policy "wg_follows_delete" on public.wg_follows for delete to authenticated using ((select auth.uid()) = follower_id);
+
+drop policy if exists "wg_highlights_read" on public.wg_highlights;
+create policy "wg_highlights_read" on public.wg_highlights for select to authenticated using (true);
+drop policy if exists "wg_highlights_own" on public.wg_highlights;
+create policy "wg_highlights_own" on public.wg_highlights for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+
+drop policy if exists "wg_posts_read" on public.wg_posts;
+create policy "wg_posts_read" on public.wg_posts for select to authenticated using (true);
+drop policy if exists "wg_posts_own" on public.wg_posts;
+create policy "wg_posts_own" on public.wg_posts for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+
+drop policy if exists "wg_post_likes_read" on public.wg_post_likes;
+create policy "wg_post_likes_read" on public.wg_post_likes for select to authenticated using (true);
+drop policy if exists "wg_post_likes_own" on public.wg_post_likes;
+create policy "wg_post_likes_own" on public.wg_post_likes for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+
+drop policy if exists "wg_post_comments_read" on public.wg_post_comments;
+create policy "wg_post_comments_read" on public.wg_post_comments for select to authenticated using (true);
+drop policy if exists "wg_post_comments_insert" on public.wg_post_comments;
+create policy "wg_post_comments_insert" on public.wg_post_comments for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "wg_post_comments_delete" on public.wg_post_comments;
+create policy "wg_post_comments_delete" on public.wg_post_comments for delete to authenticated using ((select auth.uid()) = user_id);
+
+drop policy if exists "wg_post_saves_read" on public.wg_post_saves;
+create policy "wg_post_saves_read" on public.wg_post_saves for select to authenticated
+  using (kind = 'repost' or (select auth.uid()) = user_id);
+drop policy if exists "wg_post_saves_own" on public.wg_post_saves;
+create policy "wg_post_saves_own" on public.wg_post_saves for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+
+-- Enable Realtime replication for live chat, group memberships, profiles, stories, reels, comments, and social profiles
 alter table public.wg_conversations replica identity full;
 alter table public.wg_conversation_members replica identity full;
 alter table public.wg_messages replica identity full;
 alter table public.wg_profiles replica identity full;
 alter table public.wg_reels replica identity full;
+alter table public.wg_follows replica identity full;
+alter table public.wg_highlights replica identity full;
+alter table public.wg_posts replica identity full;
+alter table public.wg_post_likes replica identity full;
+alter table public.wg_post_comments replica identity full;
+alter table public.wg_post_saves replica identity full;
 
 do $$
 begin
@@ -357,6 +491,36 @@ end $$;
 do $$
 begin
   alter publication supabase_realtime add table public.wg_reel_comments;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.wg_follows;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.wg_highlights;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.wg_posts;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.wg_post_likes;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.wg_post_comments;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.wg_post_saves;
 exception when duplicate_object then null;
 end $$;
 
