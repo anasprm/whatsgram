@@ -56,6 +56,9 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
 @keyframes wave{0%{transform:scaleY(.35)}100%{transform:scaleY(1.25)}}
 @keyframes msgIn{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes tdot{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-4px);opacity:1}}
+@keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.spin-slow{animation:spinSlow 7s linear infinite}
+.ig-ring{background:linear-gradient(45deg,#f58529,#dd2a7b 45%,#8134af 78%,#515bd4)}
 .msg-in{animation:msgIn .18s cubic-bezier(.16,1,.3,1)}
 .tdot i{display:inline-block;width:5px;height:5px;border-radius:9999px;background:#a1a1aa;animation:tdot 1.1s infinite ease-in-out}
 .tdot i:nth-child(2){animation-delay:.16s}
@@ -617,41 +620,45 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
     </section>
 
     <!-- REELS VIEW -->
-    <section id="v-reels" class="reel-aura view absolute inset-0 hidden flex items-center justify-center p-0 md:p-6 overflow-hidden">
-      <div class="pointer-events-none absolute inset-0 opacity-50" style="background:radial-gradient(circle at 50% 35%, rgba(221,42,123,.22), transparent 52%), radial-gradient(circle at 60% 70%, rgba(0,149,246,.18), transparent 48%)"></div>
-      <div id="reel-stage" class="relative isolate w-full md:w-[396px] h-full md:h-[min(86vh,790px)] overflow-hidden md:rounded-[32px] md:border md:border-white/[0.14] bg-[#06070c] select-none touch-pan-x shadow-[0_34px_95px_-18px_rgba(0,0,0,.95),0_0_80px_-28px_rgb(var(--ac-rgb)/.35)]">
-        <div id="reel-bg" class="absolute inset-0 transition-[filter] duration-300">
-          <video id="reel-vid" class="hidden absolute inset-0 w-full h-full object-cover" loop playsinline muted></video>
-          <img id="reel-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
-          <div class="absolute w-72 h-72 rounded-full bg-white/10 blur-3xl -top-10 -left-10" style="animation:drift 9s ease-in-out infinite"></div>
-          <div class="absolute w-64 h-64 rounded-full bg-white/10 blur-3xl bottom-20 -right-16" style="animation:drift 11s ease-in-out infinite reverse"></div>
-          <div class="absolute inset-0 grid place-items-center font-mono text-8xl font-semibold tracking-tighter text-white/[0.12]" id="reel-n"></div>
-        </div>
+    <section id="v-reels" class="view absolute inset-0 hidden bg-[#000000] flex items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden">
+      <div id="reel-aura" class="pointer-events-none absolute inset-0 opacity-35 transition-all duration-700" style="background:radial-gradient(circle at 50% 42%, rgba(221,42,123,.26), transparent 54%), radial-gradient(circle at 58% 68%, rgba(0,149,246,.2), transparent 52%)"></div>
+      <div id="reel-wrap" class="relative z-10 w-full h-full sm:w-auto sm:h-auto flex items-center justify-center sm:items-end sm:gap-4">
+        <div id="reel-stage" class="relative isolate w-full h-full sm:w-auto sm:h-[min(88dvh,800px)] sm:aspect-[9/16] max-w-full overflow-hidden sm:rounded-[16px] sm:border sm:border-white/[0.12] bg-[#08090e] select-none touch-pan-x shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)]">
+          <div id="reel-bg" class="absolute inset-0 transition-[filter,background] duration-500">
+            <video id="reel-vid" class="hidden absolute inset-0 w-full h-full object-cover" loop playsinline muted></video>
+            <img id="reel-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
+            <div id="reel-n" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+          </div>
 
-        <div class="absolute inset-x-0 top-0 z-10 p-4 bg-gradient-to-b from-black/80 via-black/35 to-transparent">
-          <div class="h-0.5 rounded-full bg-white/25 mb-3.5 overflow-hidden"><div id="reel-bar" class="h-full bg-white origin-left shadow-[0_0_10px_#fff]"></div></div>
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-sm font-bold tracking-tight text-white drop-shadow">Reels</span>
-            <div class="flex items-center gap-2">
-              <button class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 grid place-items-center text-white hover:bg-white/15 transition" data-act="reelNew" title="Upload reel" aria-label="Upload reel"><i data-lucide="plus" class="w-4 h-4"></i></button>
-              <button class="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 text-xs font-semibold text-white hover:bg-white/15 transition" data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false" aria-label="AR filter">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i>
-                <span id="filter-lbl">Normal</span>
-                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
+          <div class="absolute inset-x-0 top-0 z-10 p-3.5 sm:p-4 bg-gradient-to-b from-black/75 via-black/30 to-transparent flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-[15px] font-bold tracking-tight text-white drop-shadow">Reels</span>
+              <button class="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-white/[0.12] hover:bg-white/[0.2] backdrop-blur-md border border-white/[0.12] text-[11px] font-semibold text-white transition" data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false" aria-label="AR filter">
+                <i data-lucide="sparkles" class="w-3 h-3 text-pink-400 shrink-0"></i>
+                <span id="filter-lbl" class="truncate max-w-[82px]">Normal</span>
+                <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-300 shrink-0"></i>
               </button>
-              <div class="inline-flex items-center rounded-full bg-black/45 backdrop-blur-xl border border-white/15 p-0.5" role="group" aria-label="Navigate reels">
-                <button class="w-7 h-7 rounded-full grid place-items-center text-white hover:bg-white/15 transition" data-act="reelPrev" title="Previous reel" aria-label="Previous reel"><i data-lucide="chevron-up" class="w-4 h-4"></i></button>
-                <button class="w-7 h-7 rounded-full grid place-items-center text-white hover:bg-white/15 transition" data-act="reelNext" title="Next reel" aria-label="Next reel"><i data-lucide="chevron-down" class="w-4 h-4"></i></button>
-              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button class="w-8 h-8 rounded-full bg-black/45 hover:bg-white/20 backdrop-blur-md border border-white/[0.14] grid place-items-center text-white transition" data-act="reelMute" title="Toggle sound" aria-label="Toggle sound"><i id="reel-mute-ic" data-lucide="volume-x" class="w-4 h-4"></i></button>
+              <button class="h-8 px-2.5 sm:px-3 rounded-full bg-black/45 hover:bg-white/20 backdrop-blur-md border border-white/[0.14] inline-flex items-center gap-1 text-xs font-semibold text-white transition" data-act="reelNew" title="Create reel" aria-label="Upload reel"><i data-lucide="camera" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Create</span></button>
             </div>
           </div>
+
+          <div id="reel-pause" class="hidden absolute inset-0 z-10 grid place-items-center pointer-events-none">
+            <span class="w-16 h-16 rounded-full bg-black/55 backdrop-blur-xl border border-white/20 grid place-items-center text-white shadow-2xl"><i data-lucide="play" class="w-7 h-7 fill-white translate-x-0.5"></i></span>
+          </div>
+
+          <div class="absolute inset-x-0 bottom-0 z-10 p-4 pr-16 sm:p-5 sm:pr-5 pb-5 pt-24 bg-gradient-to-t from-black/95 via-black/50 to-transparent" id="reel-ui"></div>
+          <div class="absolute inset-x-0 bottom-0 z-20 h-[2.5px] bg-white/20 overflow-hidden"><div id="reel-bar" class="h-full bg-white origin-left shadow-[0_0_8px_rgba(255,255,255,.8)]"></div></div>
         </div>
 
-        <div id="reel-pause" class="hidden absolute inset-0 z-10 grid place-items-center pointer-events-none">
-          <span class="w-16 h-16 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 grid place-items-center text-white shadow-2xl"><i data-lucide="pause" class="w-6 h-6"></i></span>
-        </div>
+        <div id="reel-actions" class="max-sm:absolute max-sm:right-3 max-sm:bottom-5 max-sm:z-20 sm:static flex flex-col items-center gap-4 pb-1 shrink-0"></div>
 
-        <div class="absolute inset-x-0 bottom-0 z-10 p-5 pt-24 bg-gradient-to-t from-black/95 via-black/50 to-transparent flex items-end justify-between gap-4" id="reel-ui"></div>
+        <div class="max-sm:absolute max-sm:top-14 max-sm:right-3 max-sm:z-20 sm:self-center flex flex-col gap-2 sm:ml-2 shrink-0" role="group" aria-label="Navigate reels">
+          <button class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/45 sm:bg-[#1a1c24]/90 hover:bg-[#272a36] backdrop-blur-md border border-white/[0.12] grid place-items-center text-white shadow-xl transition" data-act="reelPrev" title="Previous reel" aria-label="Previous reel"><i data-lucide="chevron-up" class="w-4 h-4 sm:w-5 sm:h-5"></i></button>
+          <button class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/45 sm:bg-[#1a1c24]/90 hover:bg-[#272a36] backdrop-blur-md border border-white/[0.12] grid place-items-center text-white shadow-xl transition" data-act="reelNext" title="Next reel" aria-label="Next reel"><i data-lucide="chevron-down" class="w-4 h-4 sm:w-5 sm:h-5"></i></button>
+        </div>
       </div>
     </section>
 
@@ -1111,47 +1118,132 @@ html.rm *,html.rm *::before,html.rm *::after{animation-duration:.001ms!important
   </div>
 </div>
 
-<div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-  <div class="lux-modal w-full max-w-md rounded-[28px] p-6 space-y-4">
-    <div class="flex justify-between items-center">
-      <h3 id="studio-title" class="text-base font-bold text-white">Creator Studio</h3>
-      <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08]" data-act="closeModal" data-arg="m-studio" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+<div id="m-studio" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/85 backdrop-blur-xl p-2.5 sm:p-5 overflow-y-auto">
+  <div class="w-full max-w-[760px] rounded-[22px] bg-[#14151c] border border-white/[0.11] shadow-[0_32px_100px_-14px_rgba(0,0,0,.98)] overflow-hidden my-auto">
+    <div class="px-4 py-3 border-b border-white/[0.08] bg-[#181921] flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button class="w-8 h-8 rounded-full grid place-items-center text-zinc-400 hover:text-white hover:bg-white/[0.08] transition shrink-0" data-act="closeModal" data-arg="m-studio" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <h3 id="studio-title" class="text-sm font-bold tracking-tight text-white truncate">Create story</h3>
+      </div>
+      <div class="inline-flex items-center gap-0.5 p-0.5 rounded-full bg-black/55 border border-white/[0.09] shrink-0">
+        <button id="st-tab-story" data-act="studioMode" data-arg="story" class="h-7 px-3.5 rounded-full text-xs font-semibold bg-white text-black transition-all">Story</button>
+        <button id="st-tab-reel" data-act="studioMode" data-arg="reel" class="h-7 px-3.5 rounded-full text-xs font-semibold text-zinc-400 hover:text-white transition-all">Reel</button>
+      </div>
     </div>
-    <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/[0.08]">
-      <button id="st-tab-story" data-act="studioMode" data-arg="story" class="h-8 rounded-xl text-xs font-semibold lux-tab-on transition-all">Story Poll</button>
-      <button id="st-tab-reel" data-act="studioMode" data-arg="reel" class="h-8 rounded-xl text-xs font-semibold lux-tab-off transition-all">New Reel</button>
-    </div>
-    <div id="st-prev" class="relative overflow-hidden h-48 rounded-2xl border border-white/15 p-5 flex flex-col items-center justify-center gap-3 text-center shadow-[0_18px_40px_-14px_rgba(0,0,0,.85)]">
-      <img id="st-media-img" class="hidden absolute inset-0 w-full h-full object-cover opacity-80" alt="">
-      <video id="st-media-vid" class="hidden absolute inset-0 w-full h-full object-cover opacity-80" muted loop autoplay playsinline></video>
-      <div class="relative z-10 space-y-3 w-full">
-        <p id="st-q" class="text-base font-bold text-white drop-shadow">Approve the Q3 scope?</p>
-        <div id="st-poll-prev" class="flex justify-center gap-2 text-xs font-semibold">
-          <span class="px-5 py-1.5 rounded-xl bg-black/45 backdrop-blur-md border border-white/25 text-white">Yes</span>
-          <span class="px-5 py-1.5 rounded-xl bg-black/45 backdrop-blur-md border border-white/25 text-white">No</span>
+
+    <div class="grid grid-cols-1 md:grid-cols-12">
+      <div class="md:col-span-5 bg-[#090a0f] border-b md:border-b-0 md:border-r border-white/[0.08] p-4 sm:p-5 flex flex-col items-center justify-center gap-3">
+        <div id="st-prev" class="relative w-[196px] sm:w-[224px] aspect-[9/16] rounded-[20px] overflow-hidden border border-white/[0.14] shadow-[0_24px_65px_-12px_rgba(0,0,0,.98)] flex flex-col justify-between p-3 select-none transition-all">
+          <div id="st-prev-bg" class="absolute inset-0 transition-all duration-300">
+            <img id="st-media-img" class="hidden absolute inset-0 w-full h-full object-cover" alt="">
+            <video id="st-media-vid" class="hidden absolute inset-0 w-full h-full object-cover" muted loop autoplay playsinline></video>
+            <div class="pointer-events-none absolute -top-12 -left-10 w-36 h-36 rounded-full bg-white/15 blur-2xl"></div>
+            <div class="pointer-events-none absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-black/30 blur-2xl"></div>
+          </div>
+
+          <div class="relative z-10">
+            <div id="st-hud-story" class="space-y-2">
+              <div class="h-[2px] rounded-full bg-white/30 overflow-hidden"><div class="h-full w-2/3 bg-white rounded-full"></div></div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span id="st-hud-av" class="w-5 h-5 rounded-full ig-ring p-[1.5px] grid place-items-center text-[9px] font-bold text-white shrink-0">Y</span>
+                  <span id="st-hud-name" class="text-[11px] font-semibold text-white truncate drop-shadow">you</span>
+                  <span class="text-[9px] text-white/75 shrink-0">Just now</span>
+                </div>
+                <span id="st-hud-co" class="hidden text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-black/45 text-white/90 truncate max-w-[78px]"></span>
+              </div>
+            </div>
+            <div id="st-hud-reel" class="hidden flex items-center justify-between text-white">
+              <span class="text-[12px] font-bold tracking-tight drop-shadow">Reels</span>
+              <span class="w-6 h-6 rounded-full bg-black/35 backdrop-blur-md grid place-items-center"><i data-lucide="camera" class="w-3 h-3"></i></span>
+            </div>
+          </div>
+
+          <div class="relative z-10 my-auto flex flex-col items-center gap-2.5 w-full">
+            <div id="st-poll-prev" class="w-full rounded-[15px] bg-white text-zinc-900 shadow-[0_14px_34px_-6px_rgba(0,0,0,.55)] p-2.5 space-y-2">
+              <p id="st-q" class="px-1 text-[11.5px] font-extrabold leading-snug text-center text-zinc-900 break-words">Drop the new release tonight?</p>
+              <div class="space-y-1.5 text-[11px] font-bold text-zinc-900">
+                <div id="st-opt1-prev" class="w-full py-1.5 px-3 rounded-xl bg-zinc-100 border border-zinc-200/70 text-center truncate">Yes</div>
+                <div id="st-opt2-prev" class="w-full py-1.5 px-3 rounded-xl bg-zinc-100 border border-zinc-200/70 text-center truncate">No</div>
+              </div>
+            </div>
+            <div id="st-reel-visual" class="hidden w-full flex flex-col items-center gap-2 opacity-90">
+              <span class="w-12 h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/25 grid place-items-center text-white shadow-xl"><i data-lucide="play" class="w-5 h-5 fill-white translate-x-0.5"></i></span>
+              <span class="inline-flex items-end gap-0.5 h-3 text-white/85"><i class="eq-bar h-2"></i><i class="eq-bar h-3" style="animation-delay:.16s"></i><i class="eq-bar h-1.5" style="animation-delay:.32s"></i><i class="eq-bar h-2.5" style="animation-delay:.48s"></i></span>
+            </div>
+            <span id="st-link" class="hidden inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-white/95 text-[#0095f6] shadow-lg max-w-full truncate"></span>
+          </div>
+
+          <div id="st-foot-reel" class="relative z-10 hidden space-y-1.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent -mx-3 -mb-3 p-3 pt-6">
+            <div class="flex items-center gap-1.5">
+              <span id="st-reel-av" class="w-5 h-5 rounded-full ig-ring p-[1px] grid place-items-center text-[9px] font-bold text-white bg-zinc-900">Y</span>
+              <span id="st-reel-auth" class="text-[10.5px] font-semibold text-white truncate">you</span>
+              <span class="px-1.5 py-0.5 rounded border border-white/50 text-[9px] font-semibold text-white">Follow</span>
+            </div>
+            <p id="st-reel-cap" class="text-[10.5px] text-white/95 leading-snug line-clamp-2 break-words"></p>
+            <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/45 text-[9px] text-white/90"><i data-lucide="music-2" class="w-2.5 h-2.5"></i><span class="truncate">Original audio</span></div>
+          </div>
+          <div id="st-foot-story" class="relative z-10 flex items-center justify-between pt-2 text-[9px] text-white/75">
+            <span class="px-2.5 py-1 rounded-full bg-black/35 border border-white/20 backdrop-blur-md">Send message…</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="heart" class="w-3.5 h-3.5"></i><i data-lucide="send" class="w-3.5 h-3.5"></i></span>
+          </div>
         </div>
-        <span id="st-link" class="hidden inline-block text-[11px] px-3 py-1 rounded-full bg-black/55 border border-white/20 text-white"></span>
+        <span class="text-[10.5px] text-zinc-500">9:16 Live Preview · Drag photo or video onto canvas</span>
+      </div>
+
+      <div class="md:col-span-7 p-4 sm:p-5 flex flex-col justify-between gap-3.5 bg-[#111218]">
+        <div class="space-y-3.5">
+          <div id="st-dropzone" class="rounded-2xl border border-dashed border-white/[0.14] hover:border-[#0095f6]/60 bg-white/[0.025] px-3.5 py-2.5 flex items-center justify-between gap-2.5 transition">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-xl bg-[#0095f6]/15 border border-[#0095f6]/30 text-[#0095f6] grid place-items-center shrink-0"><i data-lucide="image-plus" class="w-4 h-4"></i></span>
+              <div class="min-w-0">
+                <div class="text-xs font-semibold text-white truncate" id="st-media-title">Background photo or video</div>
+                <div class="text-[10.5px] text-zinc-500 truncate">MP4, WebM, PNG, JPG · Optional</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <input type="file" id="st-file" accept="image/*,video/*" class="hidden">
+              <button type="button" data-act="studioPickMedia" class="h-8 px-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.1] text-xs font-semibold text-white transition" id="st-media-lbl">Upload</button>
+              <button type="button" id="st-media-clr" data-act="studioClearMedia" class="hidden w-8 h-8 rounded-xl bg-white/[0.06] hover:bg-white/[0.14] border border-white/[0.1] grid place-items-center text-zinc-300" aria-label="Clear media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-semibold text-zinc-400">Backdrop gradient</span>
+              <div id="st-bgs" class="flex items-center gap-2"></div>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 pt-0.5" id="st-filters"></div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="st-in" id="st-in-lbl" class="text-[11px] font-semibold text-zinc-400">Poll question</label>
+              <button type="button" data-act="aiStudioSuggest" class="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0095f6] hover:underline"><i data-lucide="sparkles" class="w-3 h-3"></i>AI suggest</button>
+            </div>
+            <textarea id="st-in" rows="2" data-input="storyPreview" class="lux-input w-full rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none resize-none" placeholder="Ask a poll question…"></textarea>
+          </div>
+
+          <div id="st-story-extra" class="space-y-2.5">
+            <div class="grid grid-cols-2 gap-2">
+              <input id="st-opt1" data-input="storyPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Option 1 (Yes)" maxlength="24" autocomplete="off">
+              <input id="st-opt2" data-input="storyPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Option 2 (No)" maxlength="24" autocomplete="off">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <input id="st-url" data-input="storyPreview" class="lux-input h-9 w-full rounded-xl px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Link sticker URL" autocomplete="off">
+              <select id="st-co" class="lux-input h-9 w-full rounded-xl px-2.5 text-xs text-zinc-300 focus:outline-none"><option value="" class="bg-zinc-900">Tag co-author</option></select>
+            </div>
+          </div>
+        </div>
+
+        <button id="st-submit" class="w-full h-10 rounded-xl bg-[#0095f6] hover:bg-[#1877f2] active:scale-[.99] text-white text-[13px] font-semibold shadow-[0_10px_28px_-10px_rgba(0,149,246,.75)] transition" data-act="publish">Share to story</button>
       </div>
     </div>
-    <div class="flex items-center justify-between gap-2">
-      <div id="st-bgs" class="flex gap-2"></div>
-      <div class="flex items-center gap-1.5 shrink-0">
-        <input type="file" id="st-file" accept="image/*,video/*" class="hidden">
-        <button data-act="studioPickMedia" class="btn-ghost h-8 px-3 rounded-xl text-xs font-semibold text-white inline-flex items-center gap-1.5"><i data-lucide="image-plus" class="w-3.5 h-3.5 text-accent"></i><span id="st-media-lbl">Add media</span></button>
-        <button id="st-media-clr" data-act="studioClearMedia" class="btn-ghost hidden w-8 h-8 rounded-xl grid place-items-center text-zinc-300" aria-label="Clear media"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-      </div>
-    </div>
-    <input id="st-in" data-input="storyPreview" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Poll question" autocomplete="off">
-    <div id="st-story-extra" class="grid grid-cols-2 gap-2.5">
-      <input id="st-url" data-input="storyPreview" class="lux-input h-10 w-full rounded-xl px-3.5 text-[13px] text-white placeholder:text-zinc-500 focus:outline-none" placeholder="Link (optional)" autocomplete="off">
-      <select id="st-co" class="lux-input h-10 w-full rounded-xl px-3 text-[13px] text-white focus:outline-none"><option value="" class="bg-zinc-900">No co-author</option></select>
-    </div>
-    <button id="st-submit" class="btn-ac btn-primary w-full h-10 rounded-xl text-xs font-bold" data-act="publish">Publish story</button>
   </div>
 </div>
 
 <div id="m-story" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/95 backdrop-blur-xl p-0 sm:p-4">
-  <div id="sv" class="relative w-full max-w-sm h-full sm:h-[min(84vh,740px)] overflow-hidden sm:rounded-[30px] sm:border sm:border-white/[0.14] shadow-[0_32px_90px_-15px_rgba(0,0,0,.95)]"></div>
+  <div id="sv" class="relative w-full max-w-[400px] h-full sm:h-[min(88vh,740px)] overflow-hidden sm:rounded-[20px] sm:border sm:border-white/[0.14] shadow-[0_32px_90px_-15px_rgba(0,0,0,.95)]"></div>
 </div>
 
 <div id="m-call" class="modal fixed inset-0 z-50 hidden [&.open]:flex items-center justify-center bg-black/85 backdrop-blur-2xl p-4">
@@ -1617,8 +1709,8 @@ const seedChats=()=>[
  {id:'c1',name:'Alex Rivera',folder:'work',unread:1,status:'Online',pin:'m1',msgs:[{id:'m1',from:'them',type:'text',text:'Confirmed receipt of the Q3 project documents.',t:'19:40',react:{'❤️':1}},{id:'m2',from:'me',type:'text',text:'Thanks. Let me know if any architectural revisions are required.',t:'19:42',react:{}}]},
  {id:'c2',name:'Sarah Chen',folder:'personal',unread:0,status:'Away',pin:null,msgs:[{id:'m3',from:'them',type:'text',text:'Analytics export is ready for review at https://example.com/reports',t:'14:10',react:{}}]},
  {id:'c3',name:'Dev Master',folder:'work',unread:2,status:'Online',pin:null,msgs:[{id:'m4',from:'them',type:'text',text:'Can you review the deployment checklist before Friday?',t:'09:12',react:{}},{id:'m5',from:'them',type:'text',text:'Please send the updated files when ready.',t:'09:13',react:{}}]}];
-const bgs=['linear-gradient(155deg,#833ab4,#fd1d1d 60%,#fcb045)','linear-gradient(155deg,#0575e6,#021b79)','linear-gradient(155deg,#11998e,#38ef7d 120%)','linear-gradient(155deg,#ee0979,#ff6a00)'];
-const seedStories=()=>[{id:'s1',name:'Alex Rivera',bg:bgs[0],q:'Ship the beta this week?',yes:12,no:3,link:'',co:'',seen:false,voted:false},{id:'s2',name:'Sarah Chen',bg:bgs[1],q:'Approve the Q3 scope?',yes:7,no:1,link:'example.com/scope',co:'',seen:false,voted:false}];
+const bgs=['linear-gradient(155deg,#833ab4,#fd1d1d 58%,#fcb045)','linear-gradient(155deg,#4f46e5,#9333ea 55%,#ec4899)','linear-gradient(155deg,#0575e6,#021b79)','linear-gradient(155deg,#0f766e,#065f46 55%,#0284c7)','linear-gradient(155deg,#ec4899,#f97316)','linear-gradient(160deg,#18181b,#27272a 55%,#09090b)'];
+const seedStories=()=>[{id:'s1',name:'Alex Rivera',bg:bgs[0],q:'Ship the new design system tonight?',optYes:'Ship it',optNo:'Wait',yes:14,no:3,link:'',co:'',seen:false,voted:false},{id:'s2',name:'Sarah Chen',bg:bgs[1],q:'Coffee chat or live demo stream?',optYes:'Live demo',optNo:'Coffee',yes:9,no:4,link:'example.com/demo',co:'',seen:false,voted:false}];
 const R=[
  {id:108,author:'alex.rivera',cap:'Quarterly roadmap update and architecture review',g:'linear-gradient(160deg,#1e3a8a,#0b1020 65%,#312e81)',likes:1240,com:[{n:'Sarah Chen',t:'Great breakdown of the milestones.'},{n:'Dev Master',t:'Can we get the slides?'}]},
  {id:109,author:'sarah.chen',cap:'Analytics dashboard walkthrough, week 42',g:'linear-gradient(160deg,#065f46,#04130f 65%,#134e4a)',likes:3890,com:[{n:'Alex Rivera',t:'The retention chart is the best part.'}]},
@@ -1635,7 +1727,7 @@ let LOG=store.get('log',[]);
 let CUSTOM_REELS=store.get('custom_reels',[]);
 const getReels=()=>[...R,...CUSTOM_REELS];
 const RS=Object.assign({liked:[],saved:[],follow:['alex.rivera'],filter:0,extra:{}},store.get('reels',{}));
-const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',aiLastErr:null,aiThread:store.get('ai_threads',{}),draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{}),profId:null,profPrevView:'chats',profTab:'posts',profSuggest:false,profTag:null,profData:null,profLoading:false,postViewId:null,postViewSlide:0,followListTab:'followers',followListQ:'',activity:store.get('wg_activity',[]),actUnread:0,postMedia:[],postBg:0,hlBg:0,hlMedia:null,hlView:null,epAvatarPath:null,epAvatarUrl:null,pendingProfileLink:null};
+const S={view:'chats',chat:null,folder:'all',q:'',reply:null,editId:null,thSearch:false,thQ:'',thMatches:[],thIdx:0,typing:{},typingTms:{},myTypingTm:0,myTypingChat:null,reel:0,reelMuted:true,paused:false,story:-1,rec:null,call:null,confirm:null,menu:null,stBg:0,contactTab:'dm',studioMode:'story',stMedia:null,smart:[],smartFor:null,knownFps:store.get('known_fps',{}),rtcCfg:null,lbMsgId:null,idleT:0,aiBusy:null,aiAbort:null,aiHist:[],aiMode:'local',aiLastErr:null,aiThread:store.get('ai_threads',{}),draft:'',user:null,users:[],onlineUsers:{},sbConfigured:false,sbRealtime:false,authTab:'signin',rtClient:null,rtChan:null,rtSig:null,rtPres:null,peerChans:{},pollTm:null,syncing:false,bootstrapping:false,ecdhId:null,e2eeRing:{},pubCache:store.get('e2ee_pubs',{}),profId:null,profPrevView:'chats',profTab:'posts',profSuggest:false,profTag:null,profData:null,profLoading:false,postViewId:null,postViewSlide:0,followListTab:'followers',followListQ:'',activity:store.get('wg_activity',[]),actUnread:0,postMedia:[],postBg:0,hlBg:0,hlMedia:null,hlView:null,epAvatarPath:null,epAvatarUrl:null,pendingProfileLink:null};
 const BLOBS={};const MEDIA_LOADING=new Set();let KEY=null,FP='';
 function notifyDesktop(title,body){if(!cfg.notify||typeof Notification==='undefined'||Notification.permission!=='granted'||!document.hidden)return;try{new Notification(title,{body:String(body||'').slice(0,120),icon:'/icon.svg'})}catch(e){}}
 const saveD=()=>store.set('chats',D),saveAiThread=()=>store.set('ai_threads',S.aiThread),saveCfg=()=>{store.set('cfg',cfg);if(S.user&&!S.bootstrapping)sbPost({action:'saveSettings',cfg})},saveR=()=>{store.set('reels',RS);if(S.user&&!S.bootstrapping)sbPost({action:'saveReelsPrefs',reels:{liked:RS.liked,saved:RS.saved,follow:RS.follow,filter:RS.filter}})},saveS=()=>store.set('stories',ST);
@@ -3057,15 +3149,36 @@ function endCall(){
 }
 
 /* ---------- reels & stories ---------- */
+const fmtCount=n=>{const x=+n||0;if(x>=1e6)return (x/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(x>=1e3)return (x/1e3).toFixed(1).replace(/\.0$/,'')+'K';return String(x)};
 const bar=()=>$('#reel-bar');
 function pauseBar(p){const b=bar();if(b)b.style.animationPlayState=p?'paused':'running';const v=$('#reel-vid');if(v&&!v.classList.contains('hidden'))p?v.pause():v.play().catch(()=>{})}
+function renderReelCanvas(r){
+  const bars=[14,24,42,28,54,36,60,44,26,48,22,38,50,30,16].map((h,i)=>`<span class="w-[3px] rounded-full bg-white/85" style="height:${h}px;animation:wave .9s ${(i*.07).toFixed(2)}s infinite alternate ease-in-out"></span>`).join('');
+  return `<div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(255,255,255,.12),transparent_56%)]"></div>
+    <div class="absolute -top-16 -left-14 w-72 h-72 rounded-full bg-white/[0.11] blur-3xl" style="animation:drift 9s ease-in-out infinite"></div>
+    <div class="absolute bottom-16 -right-14 w-64 h-64 rounded-full bg-black/35 blur-3xl" style="animation:drift 11s ease-in-out infinite reverse"></div>
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image:radial-gradient(rgba(255,255,255,.75) 1px,transparent 1px);background-size:22px 22px"></div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pointer-events-none">
+      <div class="relative w-36 h-36 flex items-center justify-center mb-4">
+        <span class="absolute inset-0 rounded-full border border-white/[0.15] animate-ping opacity-20" style="animation-duration:4s"></span>
+        <span class="absolute inset-3 rounded-full border border-white/[0.2] bg-black/25 backdrop-blur-md shadow-[0_0_40px_rgba(255,255,255,.06)]"></span>
+        <span class="relative z-10 flex items-center justify-center gap-1 h-16 px-4">${bars}</span>
+      </div>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/[0.14] text-[10px] font-semibold uppercase tracking-[0.14em] text-white/85">${ic('clapperboard','w-3 h-3')}<span>@${esc(r.author)}</span></span>
+    </div>`;
+}
 function renderReel(reset=true){
   const list=getReels();
   if(S.reel>=list.length)S.reel=0;
   const r=list[S.reel],liked=RS.liked.includes(r.id),saved=RS.saved.includes(r.id),f=RS.follow.includes(r.author),n=(r.likes||0)+(liked?1:0),com=(r.com||[]).length+(RS.extra[r.id]||[]).length;
-  $('#reel-bg').style.background=r.g;$('#reel-bg').style.filter=FILTERS[RS.filter][1];setTxt('#reel-n','#'+r.id);setTxt('#filter-lbl',FILTERS[RS.filter][0]);
+  const fi=typeof r.filterIdx==='number'&&FILTERS[r.filterIdx]?r.filterIdx:RS.filter;
+  $('#reel-bg').style.background=r.g;$('#reel-bg').style.filter=FILTERS[fi][1];setTxt('#filter-lbl',FILTERS[fi][0]);
+  const aura=$('#reel-aura');if(aura)aura.style.background=r.g;
   const rv=$('#reel-vid'),ri=$('#reel-img'),rn=$('#reel-n');
   rv.classList.add('hidden');ri.classList.add('hidden');rn.classList.remove('hidden');rv.pause();
+  rv.muted=Boolean(S.reelMuted);
+  const mic=$('#reel-mute-ic');if(mic)mic.setAttribute('data-lucide',S.reelMuted?'volume-x':'volume-2');
+  rn.innerHTML=renderReelCanvas(r);
   const applyReelUrl=url=>{
     if(!url||getReels()[S.reel]?.id!==r.id)return;
     rn.classList.add('hidden');
@@ -3075,13 +3188,37 @@ function renderReel(reset=true){
   const cached=r._localUrl||BLOBS['social:reel:'+r.id];
   if(cached)applyReelUrl(cached);
   else if(r.mediaPath&&S.user)resolveSocialMediaUrl('reel',r).then(applyReelUrl);
-  const sb=(act,i,l,on,col='text-rose-500')=>`<button data-act="${act}" class="group flex flex-col items-center gap-1" aria-label="${l}"><span class="w-11 h-11 rounded-full bg-black/45 backdrop-blur-xl border border-white/[0.16] shadow-[inset_0_1px_0_rgba(255,255,255,.15),0_8px_20px_-6px_rgba(0,0,0,.6)] grid place-items-center group-hover:scale-110 group-hover:bg-white/[0.14] transition-all ${on?col:'text-white'}">${ic(i,'w-5 h-5'+(on?' fill-current':''))}</span><span class="text-[11px] font-semibold text-white drop-shadow tabular-nums">${l}</span></button>`;
+  const isVerified=['alex.rivera','sarah.chen','anas_dev'].includes(String(r.author).toLowerCase());
   $('#reel-ui').innerHTML=`<div class="min-w-0 space-y-2.5">
-    <div class="flex items-center gap-2.5"><button data-act="openAuthorProfile" data-arg="${esc(r.author)}" class="flex items-center gap-2 min-w-0 hover:opacity-85 transition text-left">${av(r.author,'w-8 h-8')}<span class="text-xs font-bold text-white drop-shadow truncate">${esc(r.author)}</span></button><button data-act="reelFollow" class="h-7 px-3 rounded-full border text-[11px] font-semibold backdrop-blur-md transition-all shrink-0 ${f?'bg-white/[0.16] border-white/25 text-white':'bg-white/[0.08] border-white/20 text-white hover:bg-white/[0.2]'}">${f?'Following':'Follow'}</button></div>
-    <p class="text-[13px] text-white/95 leading-snug drop-shadow">${esc(r.cap)}</p>
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/45 backdrop-blur-xl border border-white/15 text-[10px] text-zinc-200"><span class="inline-flex items-end gap-0.5 h-2.5 text-pink-400"><i class="eq-bar h-2"></i><i class="eq-bar h-2.5" style="animation-delay:.18s"></i><i class="eq-bar h-1.5" style="animation-delay:.36s"></i></span><span>Original Audio · WhatsGram Studio</span></div>
-  </div>
-  <div class="flex flex-col items-center gap-3.5 shrink-0">${sb('reelLike','heart',n.toLocaleString(),liked,'text-rose-500')}${sb('reelComments','message-circle',com,false)}${sb('reelSave','bookmark',saved?'Saved':'Save',saved,'text-amber-400')}${sb('reelShare','share-2','Share',false)}</div>`;
+    <div class="flex items-center gap-2.5 min-w-0">
+      <button data-act="openAuthorProfile" data-arg="${esc(r.author)}" class="flex items-center gap-2 min-w-0 hover:opacity-85 transition text-left">
+        <span class="p-[1.5px] rounded-full ig-ring shrink-0"><span class="block p-[1.5px] rounded-full bg-black">${av(r.author,'w-8 h-8')}</span></span>
+        <span class="text-[13px] font-semibold text-white drop-shadow truncate">${esc(r.author)}</span>
+        ${isVerified?VERIFIED_BADGE_SVG:''}
+      </button>
+      <button data-act="reelFollow" class="h-[26px] px-3 rounded-lg border text-[12px] font-semibold transition shrink-0 ${f?'border-white/30 bg-white/[0.14] text-white':'border-white/65 bg-transparent hover:bg-white/[0.12] text-white'}">${f?'Following':'Follow'}</button>
+    </div>
+    <p class="text-[13px] text-white/95 leading-[1.38] line-clamp-2 drop-shadow break-words">${renderBioText(r.cap)}</p>
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/[0.14] text-[11px] font-medium text-white max-w-full">
+      <span class="inline-flex items-end gap-0.5 h-2.5 text-white shrink-0"><i class="eq-bar h-2"></i><i class="eq-bar h-2.5" style="animation-delay:.18s"></i><i class="eq-bar h-1.5" style="animation-delay:.36s"></i></span>
+      <span class="truncate">Original audio · ${esc(r.author)}</span>
+    </div>
+  </div>`;
+  const actBtn=(act,icon,lbl,on,onCls='text-[#ff3040] fill-current',extra='')=>`<button ${act==='menu'?'data-act="menu" data-arg="reelFilter" aria-haspopup="menu" aria-expanded="false"':`data-act="${act}"`} class="group flex flex-col items-center gap-1 select-none" aria-label="${esc(lbl||icon)}">
+    <span class="w-10 h-10 rounded-full grid place-items-center transition-transform group-hover:scale-110 group-active:scale-95 ${on?onCls:'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.9)]'} ${extra}">${ic(icon,'w-6 h-6'+(on?' fill-current':''))}</span>
+    ${lbl?`<span class="text-[11px] font-semibold text-white drop-shadow-[0_1px_6px_rgba(0,0,0,.95)] tabular-nums">${lbl}</span>`:''}
+  </button>`;
+  const ra=$('#reel-actions');
+  if(ra){
+    ra.innerHTML=`${actBtn('reelLike','heart',fmtCount(n),liked,'text-[#ff3040]')}
+      ${actBtn('reelComments','message-circle',fmtCount(com),false)}
+      ${actBtn('reelShare','send','Share',false)}
+      ${actBtn('reelSave','bookmark',saved?'Saved':'Save',saved,'text-white')}
+      ${actBtn('menu','more-horizontal','',false)}
+      <button data-act="openAuthorProfile" data-arg="${esc(r.author)}" class="mt-0.5 w-7 h-7 rounded-[7px] p-0.5 border-[1.5px] border-white/85 shadow-lg overflow-hidden hover:scale-105 transition" style="background:${r.g}" aria-label="Audio track by ${esc(r.author)}">
+        <span class="w-full h-full rounded-[4px] bg-black/35 grid place-items-center text-white spin-slow">${ic('disc-3','w-3.5 h-3.5')}</span>
+      </button>`;
+  }
   if(reset){const b=bar();b.style.animation='none';void b.offsetWidth;b.style.animation='bar 9s linear forwards';S.paused=false;show('#reel-pause',false)}
   icons();
 }
@@ -3101,59 +3238,113 @@ function renderStudioPreview(){
   const isReel=S.studioMode==='reel';
   const ts=$('#st-tab-story'),tr=$('#st-tab-reel');
   if(ts&&tr){
-    ts.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isReel?'lux-tab-off':'lux-tab-on');
-    tr.className='h-8 rounded-xl text-xs font-semibold transition-all '+(isReel?'lux-tab-on':'lux-tab-off');
+    ts.className='h-7 px-3.5 rounded-full text-xs font-semibold transition-all '+(isReel?'text-zinc-400 hover:text-white':'bg-white text-black shadow-sm');
+    tr.className='h-7 px-3.5 rounded-full text-xs font-semibold transition-all '+(isReel?'bg-white text-black shadow-sm':'text-zinc-400 hover:text-white');
   }
-  setTxt('#studio-title',isReel?'Create reel':'Create story');
-  $('#st-in').placeholder=isReel?'Reel caption…':'Poll question';
-  setTxt('#st-submit',isReel?'Publish reel':'Publish story');
-  show('#st-poll-prev',!isReel);
-  show('#st-story-extra',!isReel,'grid');
-  const q=$('#st-in').value.trim()||(isReel?'Shipping new capabilities today':'Approve the Q3 scope?'),u=$('#st-url').value.trim();
+  setTxt('#studio-title',isReel?'New reel':'Create story');
+  setTxt('#st-in-lbl',isReel?'Reel caption':'Poll question');
+  $('#st-in').placeholder=isReel?'Write a caption… use #tags and @mentions':'Ask a poll question…';
+  setTxt('#st-submit',isReel?'Share reel':'Share to story');
+  show('#st-poll-prev',!isReel,'block');
+  show('#st-hud-story',!isReel,'block');
+  show('#st-foot-story',!isReel,'flex');
+  show('#st-hud-reel',isReel,'flex');
+  show('#st-foot-reel',isReel,'block');
+  show('#st-reel-visual',isReel&&!S.stMedia?.url,'flex');
+  show('#st-story-extra',!isReel,'block');
+
+  const rawIn=$('#st-in').value.trim();
+  const q=rawIn||(isReel?'Behind the scenes from today’s build #WhatsGram':'Drop the new release tonight?');
+  const o1=($('#st-opt1')?.value||'').trim()||'Yes',o2=($('#st-opt2')?.value||'').trim()||'No';
+  const u=$('#st-url').value.trim(),co=$('#st-co')?.value||'';
   setTxt('#st-q',q);
-  const l=$('#st-link');l.textContent='🔗 '+u;l.classList.toggle('hidden',isReel||!u);
-  $('#st-prev').style.background=bgs[S.stBg];
-  $('#st-bgs').innerHTML=bgs.map((g,i)=>`<button data-act="stBg" data-arg="${i}" class="w-9 h-9 rounded-xl border-2 transition ${i===S.stBg?'border-white scale-105':'border-white/15 opacity-80 hover:opacity-100'}" style="background:${g}" aria-label="Background ${i+1}"></button>`).join('');
+  setTxt('#st-reel-cap',q);
+  setTxt('#st-opt1-prev',o1);
+  setTxt('#st-opt2-prev',o2);
+
+  const meName=(S.user?.displayName||S.user?.email||'you').split(' ')[0].toLowerCase();
+  const meInit=(S.user?.displayName||'Y')[0].toUpperCase();
+  setTxt('#st-hud-av',meInit);setTxt('#st-reel-av',meInit);setTxt('#st-hud-name',meName);setTxt('#st-reel-auth',meName);
+  const coBadge=$('#st-hud-co');
+  if(coBadge){coBadge.textContent='with '+co;coBadge.classList.toggle('hidden',isReel||!co)}
+
+  const l=$('#st-link');
+  l.innerHTML=u?`${ic('link-2','w-3 h-3 shrink-0')}<span>${esc(u.replace(/^https?:\/\//,''))}</span>`:'';
+  l.classList.toggle('hidden',isReel||!u);
+  l.classList.toggle('inline-flex',!isReel&&Boolean(u));
+
+  const bg=$('#st-prev-bg');
+  if(bg){
+    bg.style.background=bgs[S.stBg]||bgs[0];
+    bg.style.filter=(FILTERS[RS.filter]||FILTERS[0])[1];
+  }
+  $('#st-bgs').innerHTML=bgs.map((g,i)=>`<button type="button" data-act="stBg" data-arg="${i}" class="w-7 h-7 rounded-full border-2 transition ${i===S.stBg?'border-white scale-110 ring-2 ring-[#0095f6]/60':'border-white/15 opacity-75 hover:opacity-100'}" style="background:${g}" aria-label="Background ${i+1}"></button>`).join('');
+  const fl=$('#st-filters');
+  if(fl){
+    fl.innerHTML=FILTERS.map(([n],i)=>`<button type="button" data-act="studioFilter" data-arg="${i}" class="h-6 px-2.5 rounded-full text-[11px] font-semibold shrink-0 border transition ${RS.filter===i?'bg-[#0095f6]/20 border-[#0095f6] text-white':'bg-white/[0.04] border-white/[0.08] text-zinc-400 hover:text-white'}">${esc(n)}</button>`).join('');
+  }
   const img=$('#st-media-img'),vid=$('#st-media-vid'),clr=$('#st-media-clr');
   img.classList.add('hidden');vid.classList.add('hidden');vid.pause();
   if(S.stMedia?.url){
     if(S.stMedia.mime?.startsWith('video/')){vid.src=S.stMedia.url;vid.classList.remove('hidden');vid.play().catch(()=>{})}
     else{img.src=S.stMedia.url;img.classList.remove('hidden')}
+    setTxt('#st-media-title',S.stMedia.file?.name||'Custom media attached');
     setTxt('#st-media-lbl','Change');clr.classList.remove('hidden');clr.classList.add('grid');
   }else{
-    setTxt('#st-media-lbl','Add media');clr.classList.add('hidden');clr.classList.remove('grid');
+    setTxt('#st-media-title','Background photo or video');
+    setTxt('#st-media-lbl','Upload');clr.classList.add('hidden');clr.classList.remove('grid');
   }
+  icons();
 }
 function renderStory(){
   const s=ST[S.story];if(!s)return;
-  const tot=Math.max(1,s.yes+s.no),py=Math.round(s.yes/tot*100);
+  const tot=Math.max(1,(s.yes||0)+(s.no||0)),py=Math.round((s.yes||0)/tot*100),pn=100-py;
+  const o1=s.optYes||'Yes',o2=s.optNo||'No';
   $('#sv').style.background=s.bg;
   const mediaKey='social:story:'+s.id,localUrl=s._localUrl||BLOBS[mediaKey];
-  const bgTag=url=>!url?'':(s.mediaMime?.startsWith('video/')?`<video src="${esc(url)}" class="sv-media absolute inset-0 w-full h-full object-cover opacity-80" autoplay loop muted playsinline></video>`:`<img src="${esc(url)}" class="sv-media absolute inset-0 w-full h-full object-cover opacity-80" alt="">`);
-  $('#sv').innerHTML=`${bgTag(localUrl)}<div class="absolute top-0 inset-x-0 p-4 z-10 bg-gradient-to-b from-black/70 to-transparent">
-    <div class="h-0.5 rounded-full bg-white/30 mb-3 overflow-hidden"><div id="sv-bar" class="h-full bg-white origin-left" style="animation:bar 6s linear forwards"></div></div>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2.5">${av(s.name,'w-8 h-8')}<div><div class="text-xs font-bold text-white">${esc(s.name)}</div><div class="text-[10px] text-white/75">${s.co?'with '+esc(s.co):'Story'}</div></div></div>
-      <button data-act="storyClose" class="w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 grid place-items-center text-white transition" aria-label="Close story">${ic('x')}</button>
+  const bgTag=url=>!url?'':(s.mediaMime?.startsWith('video/')?`<video src="${esc(url)}" class="sv-media absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline></video>`:`<img src="${esc(url)}" class="sv-media absolute inset-0 w-full h-full object-cover" alt="">`);
+  const barsHtml=ST.map((_,idx)=>`<div class="h-[2px] flex-1 rounded-full bg-white/30 overflow-hidden">${idx<S.story?'<div class="h-full w-full bg-white"></div>':idx===S.story?'<div id="sv-bar" class="h-full bg-white origin-left" style="animation:bar 6s linear forwards"></div>':''}</div>`).join('');
+  $('#sv').innerHTML=`${bgTag(localUrl)}<div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,.12),transparent_60%)]"></div>
+  <div class="absolute top-0 inset-x-0 p-3.5 z-10 bg-gradient-to-b from-black/75 via-black/30 to-transparent">
+    <div class="flex gap-1 mb-3">${barsHtml}</div>
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="p-[1.5px] rounded-full ig-ring shrink-0">${av(s.name,'w-8 h-8')}</span>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-white inline-flex items-center gap-1 truncate">${esc(s.name)}${VERIFIED_BADGE_SVG}</div>
+          <div class="text-[10px] text-white/75 truncate">${s.co?'with '+esc(s.co):'Just now'}</div>
+        </div>
+      </div>
+      <button data-act="storyClose" class="w-8 h-8 rounded-full bg-black/40 hover:bg-black/65 grid place-items-center text-white transition shrink-0" aria-label="Close story">${ic('x','w-4 h-4')}</button>
     </div>
   </div>
   <button data-act="storyPrev" class="absolute inset-y-20 left-0 w-1/4 z-10" aria-label="Previous story"></button>
   <button data-act="storyNext" class="absolute inset-y-20 right-0 w-1/4 z-10" aria-label="Next story"></button>
-  <div class="absolute inset-0 grid place-items-center px-8">
-    <div class="w-full space-y-4 text-center z-20 rounded-3xl bg-black/30 backdrop-blur-md border border-white/15 p-6 shadow-2xl">
-      <p class="text-lg font-bold text-white">${esc(s.q)}</p>
-      <div class="grid grid-cols-2 gap-2.5 relative z-20">
-        <button data-act="storyVote" data-arg="yes" class="h-11 rounded-xl border border-white/30 bg-black/45 hover:bg-black/65 text-sm font-semibold text-white transition" ${s.voted?'disabled':''}>Yes${s.voted?' · '+py+'%':''}</button>
-        <button data-act="storyVote" data-arg="no" class="h-11 rounded-xl border border-white/30 bg-black/45 hover:bg-black/65 text-sm font-semibold text-white transition" ${s.voted?'disabled':''}>No${s.voted?' · '+(100-py)+'%':''}</button>
+  <div class="absolute inset-0 grid place-items-center px-6 pointer-events-none">
+    <div class="w-full max-w-[300px] space-y-3.5 z-20 pointer-events-auto text-center">
+      <div class="rounded-[20px] bg-white text-zinc-900 shadow-[0_24px_60px_rgba(0,0,0,.6)] p-3.5 space-y-2.5">
+        <p class="px-1 text-[15px] font-extrabold text-zinc-900 leading-snug break-words">${esc(s.q)}</p>
+        <div class="space-y-2">
+          <button data-act="storyVote" data-arg="yes" class="relative w-full overflow-hidden rounded-xl bg-zinc-100 border border-zinc-200/80 hover:bg-zinc-200/70 transition disabled:cursor-default flex items-center justify-between px-3.5 py-2.5 text-left" ${s.voted?'disabled':''}>
+            ${s.voted?`<span class="absolute inset-y-0 left-0 bg-[#0095f6]/20 transition-all" style="width:${py}%"></span>`:''}
+            <span class="relative z-10 text-xs font-extrabold text-zinc-900 truncate pr-2">${esc(o1)}</span>
+            ${s.voted?`<span class="relative z-10 text-xs font-extrabold text-[#0095f6] tabular-nums shrink-0">${py}%</span>`:''}
+          </button>
+          <button data-act="storyVote" data-arg="no" class="relative w-full overflow-hidden rounded-xl bg-zinc-100 border border-zinc-200/80 hover:bg-zinc-200/70 transition disabled:cursor-default flex items-center justify-between px-3.5 py-2.5 text-left" ${s.voted?'disabled':''}>
+            ${s.voted?`<span class="absolute inset-y-0 left-0 bg-zinc-300/60 transition-all" style="width:${pn}%"></span>`:''}
+            <span class="relative z-10 text-xs font-extrabold text-zinc-900 truncate pr-2">${esc(o2)}</span>
+            ${s.voted?`<span class="relative z-10 text-xs font-extrabold text-zinc-600 tabular-nums shrink-0">${pn}%</span>`:''}
+          </button>
+        </div>
       </div>
-      ${s.link?`<a href="https://${esc(s.link.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener noreferrer" class="relative z-20 inline-block text-xs font-medium px-3.5 py-1.5 rounded-full bg-black/50 border border-white/20 text-white hover:bg-black/70">🔗 ${esc(s.link)}</a>`:''}
+      ${s.link?`<a href="https://${esc(s.link.replace(/^https?:\/\//,''))}" target="_blank" rel="noopener noreferrer" class="relative z-20 inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-white/95 text-[#0095f6] shadow-xl hover:scale-[1.03] transition">${ic('link-2','w-3.5 h-3.5')}<span>${esc(s.link.replace(/^https?:\/\//,''))}</span></a>`:''}
     </div>
   </div>`;
   if(!localUrl&&s.mediaPath&&S.user){
     const curId=s.id;
     resolveSocialMediaUrl('story',s).then(url=>{if(url&&ST[S.story]?.id===curId&&!$('.sv-media',$('#sv')))$('#sv').insertAdjacentHTML('afterbegin',bgTag(url))});
   }
-  s.seen=true;saveS();renderStories();$('#sv-bar').addEventListener('animationend',()=>A.storyNext());icons();
+  s.seen=true;saveS();renderStories();$('#sv-bar')?.addEventListener('animationend',()=>A.storyNext());icons();
 }
 
 /* ---------- instagram-style creator profile, highlights, posts & realtime social ---------- */
@@ -4385,20 +4576,45 @@ const A={
  lbDownload(){if(S.lbMsgId)A.downloadFile(S.lbMsgId)},
  async downloadFile(id){const c=cur(),m=c?.msgs.find(x=>x.id===id);if(!m)return;const url=BLOBS[m.id]||(m.mediaPath?await resolveMediaUrl(c,m):'');if(!url){toast(m.mediaPath?'Sign in to download cloud attachment':'File preview expired (local-only)');return}const a=document.createElement('a');a.href=url;a.download=m.name||'attachment';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()},
  reelNext:()=>goReel(1),reelPrev:()=>goReel(-1),reelLike:()=>likeReel(),
+ reelMute(){S.reelMuted=!S.reelMuted;const rv=$('#reel-vid');if(rv)rv.muted=S.reelMuted;const mic=$('#reel-mute-ic');if(mic){mic.setAttribute('data-lucide',S.reelMuted?'volume-x':'volume-2');icons()}toast(S.reelMuted?'Sound muted':'Sound unmuted')},
  reelSave(){const id=getReels()[S.reel].id,i=RS.saved.indexOf(id);i<0?RS.saved.push(id):RS.saved.splice(i,1);saveR();renderReel(false);toast(i<0?'Saved to collection':'Removed from collection')},
  reelFollow(){const a=getReels()[S.reel].author,i=RS.follow.indexOf(a);i<0?RS.follow.push(a):RS.follow.splice(i,1);saveR();renderReel(false)},
  setFilter(i){RS.filter=+i;saveR();$('#reel-bg').style.filter=FILTERS[RS.filter][1];setTxt('#filter-lbl',FILTERS[RS.filter][0])},
+ studioFilter(i){RS.filter=+i;saveR();renderStudioPreview();if(S.view==='reels'){$('#reel-bg').style.filter=FILTERS[RS.filter][1];setTxt('#filter-lbl',FILTERS[RS.filter][0])}},
  reelComments:()=>openComments(),
  reelShare(){const u=`${location.href.split('#')[0]}#reel-${getReels()[S.reel].id}`;if(navigator.share)navigator.share({title:'WhatsGram reel',url:u}).catch(()=>{});else navigator.clipboard?.writeText(u).then(()=>toast('Reel link copied'),()=>toast('Copy blocked by browser','err'))},
  postComment(){const i=$('#cm-in'),t=i.value.trim();if(!t)return;const id=getReels()[S.reel].id,author=S.user?.displayName||'You';(RS.extra[id]=RS.extra[id]||[]).push({n:author,t});saveR();i.value='';openComments();renderReel(false);if(S.user)sbPost({action:'addReelComment',reelId:id,id:uid('rc'),authorName:author,text:t})},
  reelNew(){A.storyNew('reel')},
- storyNew(mode){S.studioMode=mode==='reel'?'reel':'story';S.stBg=0;S.stMedia=null;$('#st-in').value='';$('#st-url').value='';$('#st-file').value='';$('#st-co').innerHTML='<option value="">No co-author</option>'+D.map(c=>`<option>${esc(c.name)}</option>`).join('');renderStudioPreview();openM('m-studio')},
+ storyNew(mode){S.studioMode=mode==='reel'?'reel':'story';S.stBg=0;S.stMedia=null;$('#st-in').value='';$('#st-url').value='';$('#st-file').value='';if($('#st-opt1'))$('#st-opt1').value='';if($('#st-opt2'))$('#st-opt2').value='';$('#st-co').innerHTML='<option value="">Tag co-author</option>'+D.map(c=>`<option>${esc(c.name)}</option>`).join('');renderStudioPreview();openM('m-studio')},
  studioMode(m){S.studioMode=m==='reel'?'reel':'story';renderStudioPreview()},
  studioPickMedia(){$('#st-file').click()},
  studioClearMedia(){S.stMedia=null;$('#st-file').value='';renderStudioPreview()},
  stBg(i){S.stBg=+i;renderStudioPreview()},
+ async aiStudioSuggest(){
+   const isReel=S.studioMode==='reel',seed=$('#st-in').value.trim();
+   toast('Generating with Gemini…');
+   const prompt=isReel
+     ?`Write a catchy short Instagram Reel caption (1-2 sentences) with 3 relevant #hashtags${seed?' about: '+seed:' about behind-the-scenes studio craftsmanship'}. Output only the caption.`
+     :`Write a short punchy Instagram Story Poll question (under 55 characters, ends with ?) + two short 1-2 word answer choices separated by | e.g. Question? | Opt A | Opt B${seed?' inspired by: '+seed:''}.`;
+   const res=await callGemini({prompt,system:'You are a concise Instagram creative assistant. Follow exact output format.'});
+   const txt=(res?.text||'').trim().replace(/^["']|["']$/g,'');
+   if(isReel){
+     $('#st-in').value=(txt||'Behind the scenes shipping the latest creator studio upgrade today. #WhatsGram #CreatorStudio #DarkMode').slice(0,500);
+   }else{
+     const parts=txt.split('|').map(x=>x.trim()).filter(Boolean);
+     if(parts.length>=3){
+       $('#st-in').value=parts[0].slice(0,120);
+       if($('#st-opt1'))$('#st-opt1').value=parts[1].slice(0,24);
+       if($('#st-opt2'))$('#st-opt2').value=parts[2].slice(0,24);
+     }else{
+       $('#st-in').value=(txt||'Drop the new release tonight?').slice(0,120);
+     }
+   }
+   renderStudioPreview();
+   toast(res?.text?'Generated with Gemini AI':'Sample prompt inserted');
+ },
  async publish(){
-   const isReel=S.studioMode==='reel',q=$('#st-in').value.trim()||(isReel?'Shipping new capabilities today':'Approve the Q3 scope?');
+   const isReel=S.studioMode==='reel',q=$('#st-in').value.trim()||(isReel?'Behind the scenes from today’s build #WhatsGram':'Drop the new release tonight?');
    const itemId=isReel?(Math.floor(Date.now()%1800000000)+10000):uid('s');
    let up=null;
    if(S.stMedia?.file&&S.user&&S.sbConfigured){
@@ -4406,12 +4622,13 @@ const A={
      up=await uploadCloudMedia(null,String(itemId),S.stMedia.file,S.stMedia.file.name,S.stMedia.mime,{scope:S.studioMode});
    }
    if(isReel){
-     const rl={id:itemId,author:S.user?.displayName||S.user?.email||'you',cap:q,g:bgs[S.stBg],filterIdx:RS.filter,likes:1,com:[],...(up?{mediaPath:up.mediaPath,mediaMime:up.mediaMime}:{}),...(S.stMedia?.url?{_localUrl:S.stMedia.url,mediaMime:S.stMedia.mime}:{})};
+     const rl={id:itemId,author:S.user?.displayName||S.user?.email||'you',cap:q,g:bgs[S.stBg]||bgs[0],filterIdx:RS.filter,likes:1,com:[],...(up?{mediaPath:up.mediaPath,mediaMime:up.mediaMime}:{}),...(S.stMedia?.url?{_localUrl:S.stMedia.url,mediaMime:S.stMedia.mime}:{})};
      CUSTOM_REELS.push(rl);store.set('custom_reels',CUSTOM_REELS);closeM('m-studio');setView('reels');S.reel=getReels().length-1;renderReel();toast('Reel published');
      if(S.user){const wire=Object.assign({},rl);delete wire._localUrl;sbPost({action:'createReel',reel:wire})}
      return;
    }
-   const st={id:itemId,name:S.user?.displayName||'You',bg:bgs[S.stBg],q,yes:1,no:0,link:$('#st-url').value.trim(),co:$('#st-co').value,seen:true,voted:false,...(up?{mediaPath:up.mediaPath,mediaMime:up.mediaMime}:{}),...(S.stMedia?.url?{_localUrl:S.stMedia.url,mediaMime:S.stMedia.mime}:{})};
+   const optYes=($('#st-opt1')?.value||'').trim()||'Yes',optNo=($('#st-opt2')?.value||'').trim()||'No';
+   const st={id:itemId,name:S.user?.displayName||'You',bg:bgs[S.stBg]||bgs[0],q,optYes,optNo,yes:1,no:0,link:$('#st-url').value.trim(),co:$('#st-co').value,seen:true,voted:false,...(up?{mediaPath:up.mediaPath,mediaMime:up.mediaMime}:{}),...(S.stMedia?.url?{_localUrl:S.stMedia.url,mediaMime:S.stMedia.mime}:{})};
    ST.push(st);saveS();closeM('m-studio');renderStories();toast('Story published');
    if(S.user){const wire=Object.assign({},st);delete wire._localUrl;sbPost({action:'createStory',story:wire})}
  },
@@ -4912,6 +5129,8 @@ document.addEventListener('change',e=>{
 });
 $('#file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)sendAttachmentFile(f)});
 $('#st-file')?.addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;S.stMedia={file:f,url:URL.createObjectURL(f),mime:f.type};renderStudioPreview()});
+$('#st-co')?.addEventListener('change',()=>renderStudioPreview());
+['#st-prev','#st-dropzone'].forEach(sel=>{const el=$(sel);if(!el)return;el.addEventListener('dragover',e=>{if(e.dataTransfer?.types?.includes('Files')){e.preventDefault();el.classList.add('ring-2','ring-[#0095f6]/70')}});el.addEventListener('dragleave',()=>el.classList.remove('ring-2','ring-[#0095f6]/70'));el.addEventListener('drop',e=>{el.classList.remove('ring-2','ring-[#0095f6]/70');const f=e.dataTransfer?.files?.[0];if(!f)return;e.preventDefault();S.stMedia={file:f,url:URL.createObjectURL(f),mime:f.type};renderStudioPreview()})});
 $('#ep-av-file')?.addEventListener('change',e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   if(S.user&&S.sbConfigured){
