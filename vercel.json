@@ -25,11 +25,11 @@
     { "source": "/profile", "destination": "/index.html" },
     { "source": "/u/:handle", "destination": "/index.html" },
     { "source": "/chat/:id", "destination": "/index.html" },
-      { "source": "/share/u/:handle", "destination": "/api/og?user=:handle" },
+    { "source": "/share/u/:handle", "destination": "/api/og?user=:handle" },
     { "source": "/share/post/:id", "destination": "/api/og?post=:id" }
   ],
   "crons": [
-    { "path": "/api/cron", "schedule": "0 * * * *" }
+    { "path": "/api/cron", "schedule": "0 0 * * *" }
   ],
   "headers": [
     {
